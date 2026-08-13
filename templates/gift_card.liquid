@@ -17,7 +17,7 @@
     {%- endif -%}
 
     <style data-theme-tokens>
-      {%- assign s = settings.color_schemes.scheme-1.settings -%}
+      {%- assign s = settings.color_schemes['scheme-1'].settings -%}
       :root {
         --color-background-rgb: {{ s.background.red }} {{ s.background.green }} {{ s.background.blue }};
         --color-surface-rgb: {{ s.surface.red }} {{ s.surface.green }} {{ s.surface.blue }};
