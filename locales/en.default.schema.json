@@ -570,5 +570,25 @@
       "timing": "Timing",
       "stacking": "Stacking"
     }
+  },
+  "customer": {
+    "login_page": {
+      "title": "Login"
+    },
+    "register": {
+      "title": "Create account"
+    },
+    "orders": {
+      "title": "Order"
+    },
+    "addresses": {
+      "title": "Addresses"
+    },
+    "reset_password": {
+      "title": "Reset password"
+    },
+    "activate_account": {
+      "title": "Activate account"
+    }
   }
 }

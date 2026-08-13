@@ -1,0 +1,116 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Address book. Each form is present in the HTML and simply hidden, so
+  everything still works without JavaScript — the panels are just open.
+{%- endcomment -%}
+
+<div class="section color-{{ section.settings.color_scheme }}" style="{% render 'section-style', st: 48, sb: 96 %}">
+  <div class="page-width">
+    <div class="section-header">
+      <p class="eyebrow">[&nbsp;{{ 'customer.account.title' | t | upcase }}&nbsp;]</p>
+      <h1 class="h2">{{ 'customer.addresses.title' | t }}</h1>
+    </div>
+
+    <div class="account-layout">
+      {% render 'account-nav', current: 'addresses' %}
+
+      <div class="account-main">
+        <div class="account-card">
+          <button
+            type="button"
+            class="button"
+            data-address-toggle="AddressNew"
+            aria-expanded="false"
+            aria-controls="AddressNew"
+          >
+            {{- 'customer.addresses.add_new' | t -}}
+          </button>
+
+          <div id="AddressNew" class="address-form" hidden style="margin-top: var(--space-4);">
+            {%- form 'customer_address', customer.new_address -%}
+              {% render 'address-fields', form: form, prefix: 'New' %}
+              <button type="submit" class="button">{{ 'customer.addresses.add' | t }}</button>
+              <button type="button" class="button button--secondary" data-address-toggle="AddressNew">
+                {{- 'customer.addresses.cancel' | t -}}
+              </button>
+            {%- endform -%}
+          </div>
+        </div>
+
+        {%- paginate customer.addresses by 10 -%}
+          {%- for address in customer.addresses -%}
+            <div class="account-card">
+              {%- if address == customer.default_address -%}
+                <span class="badge badge--support">{{ 'customer.addresses.default' | t }}</span>
+              {%- endif -%}
+
+              <div class="text-caption" style="margin-top: var(--space-2);">
+                {{ address | format_address }}
+              </div>
+
+              <div class="cluster" style="margin-top: var(--space-3);">
+                <button
+                  type="button"
+                  class="link-mono"
+                  data-address-toggle="Address-{{ address.id }}"
+                  aria-expanded="false"
+                  aria-controls="Address-{{ address.id }}"
+                >
+                  {{- 'customer.addresses.edit' | t -}}
+                </button>
+
+                {%- form 'customer_address', address -%}
+                  <button
+                    type="submit"
+                    class="link-mono"
+                    name="_method"
+                    value="delete"
+                    data-address-delete
+                    data-confirm="{{ 'customer.addresses.delete_confirm' | t | escape }}"
+                  >
+                    {{- 'customer.addresses.delete' | t -}}
+                  </button>
+                {%- endform -%}
+              </div>
+
+              <div id="Address-{{ address.id }}" class="address-form" hidden style="margin-top: var(--space-4);">
+                {%- form 'customer_address', address -%}
+                  {% render 'address-fields', form: form, prefix: address.id %}
+                  <button type="submit" class="button">{{ 'customer.addresses.update' | t }}</button>
+                  <button
+                    type="button"
+                    class="button button--secondary"
+                    data-address-toggle="Address-{{ address.id }}"
+                  >
+                    {{- 'customer.addresses.cancel' | t -}}
+                  </button>
+                {%- endform -%}
+              </div>
+            </div>
+          {%- endfor -%}
+
+          {% render 'pagination', paginate: paginate %}
+        {%- endpaginate -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'shopify-common.js' | shopify_asset_url }}" defer="defer"></script>
+<script src="{{ 'account.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:customer.addresses.title",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,135 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Classic customer accounts login, with the password-recovery form on the same
+  page. Stores using new customer accounts never reach this template — Shopify
+  handles that flow — so the header's account link points at the right place
+  either way.
+{%- endcomment -%}
+
+<div class="section color-{{ section.settings.color_scheme }}" style="{% render 'section-style', st: 64, sb: 96 %}">
+  <div class="page-width">
+    <div class="auth-layout" id="RecoverPassword" style="display: none;">
+      <h1 class="h3">{{ 'customer.recover_password.title' | t }}</h1>
+      <p class="text-caption text-muted">{{ 'customer.recover_password.subtext' | t }}</p>
+
+      {%- form 'recover_customer_password' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form-status" role="status" tabindex="-1" autofocus>
+            {{- 'customer.recover_password.success' | t -}}
+          </p>
+        {%- endif -%}
+
+        <div class="field{% if form.errors %} field--error{% endif %}">
+          <label class="field__label" for="RecoverEmail">{{ 'customer.login_page.email' | t }}</label>
+          <input
+            id="RecoverEmail"
+            class="field__input"
+            type="email"
+            name="email"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+            {% if form.errors %}aria-invalid="true" aria-describedby="RecoverError"{% endif %}
+          >
+          {%- if form.errors -%}
+            <span class="field__error" id="RecoverError" role="alert">
+              {{- form.errors.messages.form -}}
+            </span>
+          {%- endif -%}
+        </div>
+
+        <button type="submit" class="button">{{ 'customer.recover_password.submit' | t }}</button>
+        <div class="auth-layout__links">
+          <button type="button" class="link-mono" data-auth-toggle="login">
+            {{- 'customer.recover_password.cancel' | t -}}
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+
+    <div class="auth-layout" id="CustomerLogin">
+      <h1 class="h3">{{ 'customer.login_page.title' | t }}</h1>
+
+      {%- form 'customer_login', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}
+          <div class="form-status form-status--error" role="alert" tabindex="-1" autofocus>
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="field">
+          <label class="field__label" for="CustomerEmail">{{ 'customer.login_page.email' | t }}</label>
+          <input
+            id="CustomerEmail"
+            class="field__input"
+            type="email"
+            name="customer[email]"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+          >
+        </div>
+
+        {%- if form.password_needed -%}
+          <div class="field">
+            <label class="field__label" for="CustomerPassword">
+              {{- 'customer.login_page.password' | t -}}
+            </label>
+            <input
+              id="CustomerPassword"
+              class="field__input"
+              type="password"
+              name="customer[password]"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+        {%- endif -%}
+
+        <button type="submit" class="button">{{ 'customer.login_page.sign_in' | t }}</button>
+
+        <div class="auth-layout__links">
+          {%- if form.password_needed -%}
+            <button type="button" class="link-mono" data-auth-toggle="recover">
+              {{- 'customer.login_page.forgot_password' | t -}}
+            </button>
+          {%- endif -%}
+          <a class="link-mono" href="{{ routes.account_register_url }}">
+            {{- 'customer.login_page.create_account' | t -}}
+          </a>
+        </div>
+      {%- endform -%}
+    </div>
+
+    {%- if shop.checkout.guest_login -%}
+      <div class="auth-layout account-card" style="margin-top: var(--space-6);">
+        <h2 class="h4 account-card__title">{{ 'customer.login_page.guest_title' | t }}</h2>
+        {%- form 'guest_login' -%}
+          <button type="submit" class="button button--secondary">
+            {{- 'customer.login_page.guest_continue' | t -}}
+          </button>
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script src="{{ 'account.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:customer.login_page.title",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    }
+  ]
+}
+{% endschema %}

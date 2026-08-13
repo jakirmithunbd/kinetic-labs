@@ -1,0 +1,34 @@
+{%- comment -%}
+  Account sidebar navigation.
+
+  Accepts:
+    current {String} 'orders' | 'addresses'
+{%- endcomment -%}
+
+<nav class="account-nav" aria-label="{{ 'customer.account.title' | t }}">
+  <ul class="list-unstyled account-nav__list">
+    <li>
+      <a
+        class="account-nav__link"
+        href="{{ routes.account_url }}"
+        {% if current == 'orders' %}aria-current="page"{% endif %}
+      >
+        {{- 'customer.orders.title' | t -}}
+      </a>
+    </li>
+    <li>
+      <a
+        class="account-nav__link"
+        href="{{ routes.account_addresses_url }}"
+        {% if current == 'addresses' %}aria-current="page"{% endif %}
+      >
+        {{- 'customer.addresses.title' | t -}}
+      </a>
+    </li>
+    <li>
+      <a class="account-nav__link" href="{{ routes.account_logout_url }}">
+        {{- 'customer.log_out' | t -}}
+      </a>
+    </li>
+  </ul>
+</nav>
