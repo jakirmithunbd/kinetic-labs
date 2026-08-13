@@ -1,0 +1,66 @@
+{%- comment -%}
+  Article card. Shared by the home blog section, the blog index and related
+  posts so the three can't drift apart.
+
+  Accepts:
+    article       {Article} required
+    show_image    {Boolean}
+    show_excerpt  {Boolean}
+    show_date     {Boolean}
+    show_category {Boolean}
+    index         {Number}
+{%- endcomment -%}
+
+{%- liquid
+  assign category = article.tags.first
+  assign delay = index | default: 0 | times: 60
+-%}
+
+<li
+  class="article-card{% if settings.animate_on_scroll %} reveal{% endif %}"
+  style="--reveal-delay: {{ delay }}ms;"
+>
+  {%- if show_image and article.image -%}
+    <a class="article-card__media media media--landscape" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
+      <img
+        src="{{ article.image | image_url: width: 800 }}"
+        srcset="
+          {{ article.image | image_url: width: 400 }} 400w,
+          {{ article.image | image_url: width: 800 }} 800w
+        "
+        sizes="(min-width: 750px) 33vw, 90vw"
+        alt=""
+        width="{{ article.image.width }}"
+        height="{{ article.image.height }}"
+        loading="lazy"
+      >
+    </a>
+  {%- endif -%}
+
+  {%- if show_category or show_date -%}
+    <p class="article-card__meta label-micro">
+      {%- if show_category and category != blank -%}
+        <span class="article-card__category">{{ category }}</span>
+      {%- endif -%}
+      {%- if show_category and category != blank and show_date -%}
+        <span aria-hidden="true">&middot;</span>
+      {%- endif -%}
+      {%- if show_date -%}
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+          {{- article.published_at | date: format: 'abbreviated_date' -}}
+        </time>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+
+  <h3 class="article-card__title h4">
+    <a href="{{ article.url }}">{{ article.title }}</a>
+  </h3>
+
+  {%- if show_excerpt -%}
+    {%- assign summary = article.excerpt_or_content | strip_html | truncatewords: 28 -%}
+    {%- if summary != blank -%}
+      <p class="article-card__excerpt">{{ summary }}</p>
+    {%- endif -%}
+  {%- endif -%}
+</li>

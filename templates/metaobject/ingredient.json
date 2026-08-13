@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "ingredient-detail",
+      "settings": {
+        "show_products": true,
+        "padding_top": 48,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

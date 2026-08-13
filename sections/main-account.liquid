@@ -1,0 +1,114 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+
+<div class="section color-{{ section.settings.color_scheme }}" style="{% render 'section-style', st: 48, sb: 96 %}">
+  <div class="page-width">
+    <div class="section-header">
+      <p class="eyebrow">[&nbsp;{{ 'customer.account.title' | t | upcase }}&nbsp;]</p>
+      <h1 class="h2">{{ customer.name | default: customer.email }}</h1>
+    </div>
+
+    <div class="account-layout">
+      {% render 'account-nav', current: 'orders' %}
+
+      <div class="account-main">
+        {%- comment -%}
+          Subscriptions are billed and managed by the subscription app. The
+          theme deliberately links out to that app's portal instead of
+          rebuilding a management screen it cannot keep in sync with real
+          billing state.
+        {%- endcomment -%}
+        {%- if section.settings.subscription_portal_url != blank -%}
+          <div class="account-card">
+            <h2 class="h4 account-card__title">{{ 'customer.account.subscriptions' | t }}</h2>
+            <p class="text-caption text-muted">{{ 'customer.account.subscriptions_text' | t }}</p>
+            <a
+              class="button button--secondary"
+              href="{{ section.settings.subscription_portal_url }}"
+              style="margin-top: var(--space-3);"
+            >
+              {{- 'customer.account.manage_subscriptions' | t -}}
+            </a>
+          </div>
+        {%- endif -%}
+
+        <div class="account-card">
+          <h2 class="h4 account-card__title">{{ 'customer.orders.title' | t }}</h2>
+
+          {%- paginate customer.orders by 12 -%}
+            {%- if customer.orders.size == 0 -%}
+              <p class="text-caption text-muted">{{ 'customer.orders.none' | t }}</p>
+              <a class="button" href="{{ routes.all_products_collection_url }}" style="margin-top: var(--space-3);">
+                {{- 'general.continue_shopping' | t -}}
+              </a>
+            {%- else -%}
+              <table class="order-table">
+                <caption class="visually-hidden">{{ 'customer.orders.title' | t }}</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'customer.orders.order_number' | t }}</th>
+                    <th scope="col">{{ 'customer.orders.date' | t }}</th>
+                    <th scope="col">{{ 'customer.orders.payment_status' | t }}</th>
+                    <th scope="col">{{ 'customer.orders.fulfillment_status' | t }}</th>
+                    <th scope="col">{{ 'customer.orders.total' | t }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {%- for order in customer.orders -%}
+                    <tr>
+                      <td>
+                        <a href="{{ order.customer_url }}" class="data">
+                          <span class="visually-hidden">
+                            {{- 'customer.orders.order_number_link' | t: number: order.name -}}
+                          </span>
+                          <span aria-hidden="true">{{ order.name }}</span>
+                        </a>
+                      </td>
+                      <td>{{ order.created_at | date: format: 'abbreviated_date' }}</td>
+                      <td>{{ order.financial_status_label }}</td>
+                      <td>{{ order.fulfillment_status_label }}</td>
+                      <td class="data">{{ order.total_net_amount | money }}</td>
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+
+              {% render 'pagination', paginate: paginate %}
+            {%- endif -%}
+          {%- endpaginate -%}
+        </div>
+
+        <div class="account-card">
+          <h2 class="h4 account-card__title">{{ 'customer.account.details' | t }}</h2>
+          <div class="text-caption">
+            {{ customer.default_address | format_address }}
+          </div>
+          <a class="link-mono" href="{{ routes.account_addresses_url }}" style="margin-top: var(--space-3);">
+            {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})
+            <span class="arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main_account.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "url",
+      "id": "subscription_portal_url",
+      "label": "t:sections.main_account.subscription_portal_url",
+      "info": "t:sections.main_account.subscription_portal_info"
+    }
+  ]
+}
+{% endschema %}

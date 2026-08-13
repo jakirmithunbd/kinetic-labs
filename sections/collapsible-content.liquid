@@ -1,0 +1,117 @@
+{%- comment -%}
+  Collapsible rows — the generic sibling of the FAQ section, for anything that
+  isn't a question: shipping tables, ingredient sourcing, care instructions.
+{%- endcomment -%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width{% if section.settings.narrow %} page-width--narrow{% endif %}">
+    {% render 'section-header',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading
+    %}
+
+    <kl-accordion-group class="accordion" {% if section.settings.exclusive %}data-exclusive{% endif %}>
+      {%- for block in section.blocks -%}
+        {%- if block.settings.heading != blank -%}
+          <details
+            class="accordion__item"
+            {% if block.settings.open_by_default %}open{% endif %}
+            {{ block.shopify_attributes }}
+          >
+            <summary class="accordion__summary">
+              <span class="accordion__summary-inner">
+                {%- if block.settings.icon != 'none' -%}
+                  {% render 'icon', name: block.settings.icon, size: 18 %}
+                {%- endif -%}
+                {{ block.settings.heading }}
+              </span>
+              <span class="accordion__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="accordion__panel rte">{{ block.settings.content }}</div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+    </kl-accordion-group>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.collapsible_content.name",
+  "tag": "section",
+  "class": "collapsible-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:shared.heading" },
+    {
+      "type": "checkbox",
+      "id": "exclusive",
+      "label": "t:sections.faq.exclusive",
+      "default": false
+    },
+    { "type": "checkbox", "id": "narrow", "label": "t:shared.layout", "default": true },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": false },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "t:sections.collapsible_content.block_row",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "t:shared.heading", "default": "Row" },
+        { "type": "richtext", "id": "content", "label": "t:shared.content" },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:shared.icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "flask", "label": "Flask" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "refresh", "label": "Refresh" }
+          ],
+          "default": "none"
+        },
+        { "type": "checkbox", "id": "open_by_default", "label": "t:shared.show_divider", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collapsible_content.name",
+      "blocks": [{ "type": "row" }, { "type": "row" }, { "type": "row" }]
+    }
+  ]
+}
+{% endschema %}

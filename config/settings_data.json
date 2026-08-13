@@ -1,0 +1,118 @@
+{
+  "current": {
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#FAF8F4",
+          "background_gradient": "",
+          "surface": "#F2EFE9",
+          "hairline": "#E6E1D8",
+          "text": "#1C1C1A",
+          "text_muted": "#706C65",
+          "accent": "#B34E35",
+          "accent_strong": "#94402C",
+          "support": "#64715B",
+          "data": "#2B4FD9",
+          "button": "#B34E35",
+          "button_label": "#FAF8F4",
+          "secondary_button_label": "#1C1C1A",
+          "shadow": "#1C1C1A"
+        }
+      },
+      "scheme-surface": {
+        "settings": {
+          "background": "#F2EFE9",
+          "background_gradient": "",
+          "surface": "#FAF8F4",
+          "hairline": "#E0DAD0",
+          "text": "#1C1C1A",
+          "text_muted": "#706C65",
+          "accent": "#B34E35",
+          "accent_strong": "#94402C",
+          "support": "#64715B",
+          "data": "#2B4FD9",
+          "button": "#B34E35",
+          "button_label": "#FAF8F4",
+          "secondary_button_label": "#1C1C1A",
+          "shadow": "#1C1C1A"
+        }
+      },
+      "scheme-inverse": {
+        "settings": {
+          "background": "#1C1C1A",
+          "background_gradient": "",
+          "surface": "#2A2A27",
+          "hairline": "#3A3A36",
+          "text": "#FAF8F4",
+          "text_muted": "#A8A399",
+          "accent": "#E07A5F",
+          "accent_strong": "#E6E1D8",
+          "support": "#9BAF90",
+          "data": "#7C95F5",
+          "button": "#FAF8F4",
+          "button_label": "#1C1C1A",
+          "secondary_button_label": "#FAF8F4",
+          "shadow": "#000000"
+        }
+      },
+      "scheme-support": {
+        "settings": {
+          "background": "#626F59",
+          "background_gradient": "",
+          "surface": "#55604D",
+          "hairline": "#809075",
+          "text": "#FAF8F4",
+          "text_muted": "#E9EDE6",
+          "accent": "#FAF8F4",
+          "accent_strong": "#E6E1D8",
+          "support": "#FAF8F4",
+          "data": "#FAF8F4",
+          "button": "#FAF8F4",
+          "button_label": "#1C1C1A",
+          "secondary_button_label": "#FAF8F4",
+          "shadow": "#1C1C1A"
+        }
+      }
+    },
+    "use_brand_fonts": true,
+    "font_display": "assistant_n4",
+    "display_scale": 100,
+    "display_weight": "400",
+    "font_body": "assistant_n4",
+    "body_scale": 100,
+    "data_tracking": 14,
+    "page_width": 1280,
+    "gutter_mobile": 20,
+    "gutter_desktop": 20,
+    "spacing_base": 8,
+    "corner_radius": 4,
+    "hairline_width": 1,
+    "animate_on_scroll": true,
+    "motion_duration": 250,
+    "image_hover_zoom": true,
+    "card_image_ratio": "square",
+    "card_hover_image": true,
+    "card_show_rating": true,
+    "card_show_swatches": true,
+    "swatch_option_name": "Flavour",
+    "card_show_price_per_serving": true,
+    "card_quick_add": true,
+    "card_show_sale_badge": true,
+    "cart_type": "drawer",
+    "cart_show_note": true,
+    "cart_show_free_shipping_bar": true,
+    "cart_free_shipping_threshold": "99",
+    "cart_show_recommendations": true,
+    "show_sold_out_badge": true,
+    "low_stock_threshold": 10,
+    "social_instagram_link": "",
+    "social_tiktok_link": "",
+    "social_youtube_link": "",
+    "social_facebook_link": "",
+    "social_x_link": "",
+    "social_strava_link": "",
+    "organization_name": "Kinetic Labs",
+    "enable_structured_data": true,
+    "global_disclaimer": "<p>These statements have not been evaluated by a regulatory authority. This product is not intended to diagnose, treat, cure, or prevent any disease. Always read the label and follow the directions for use.</p>"
+  }
+}

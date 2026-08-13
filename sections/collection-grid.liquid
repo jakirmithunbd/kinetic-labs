@@ -123,7 +123,8 @@
                 </a>
               </div>
             {%- else -%}
-              {% render 'pagination', paginate: paginate, anchor: '#CollectionGrid-' | append: section.id %}
+              {%- assign grid_anchor = '#CollectionGrid-' | append: section.id -%}
+              {% render 'pagination', paginate: paginate, anchor: grid_anchor %}
             {%- endif -%}
           {%- endif -%}
         {%- endpaginate -%}

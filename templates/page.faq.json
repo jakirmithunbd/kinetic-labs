@@ -1,0 +1,42 @@
+{
+  "sections": {
+    "intro": {
+      "type": "main-page",
+      "settings": {
+        "eyebrow": "SUPPORT",
+        "narrow": true,
+        "show_breadcrumbs": true,
+        "padding_top": 48,
+        "padding_bottom": 0
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "eyebrow": "FAQ",
+        "heading": "Questions, answered",
+        "searchable": true,
+        "exclusive": false,
+        "structured_data": true,
+        "narrow": true,
+        "padding_top": 48,
+        "padding_bottom": 96
+      }
+    },
+    "contact": {
+      "type": "contact-form",
+      "settings": {
+        "color_scheme": "scheme-surface",
+        "eyebrow": "STILL STUCK?",
+        "heading": "Ask us directly",
+        "padding_top": 80,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "intro",
+    "faq",
+    "contact"
+  ]
+}

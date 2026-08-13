@@ -1,0 +1,207 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-collection.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Search results across products, pages and articles.
+
+  Product results reuse the collection grid's facets, so the filters a
+  merchant configured in Search & Discovery apply to search as well as to
+  collections.
+{%- endcomment -%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}"
+  id="SearchResults-{{ section.id }}"
+  data-collection-section
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    <div class="section-header">
+      <p class="eyebrow">[&nbsp;{{ 'general.search.search' | t | upcase }}&nbsp;]</p>
+      <h1 class="h2">
+        {%- if search.performed -%}
+          {{ 'general.search.results_for' | t: terms: search.terms }}
+        {%- else -%}
+          {{ 'templates.search.title' | t }}
+        {%- endif -%}
+      </h1>
+    </div>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <label class="visually-hidden" for="SearchPageInput">{{ 'general.search.search' | t }}</label>
+      <div class="search-page__field">
+        {% render 'icon', name: 'search', size: 18 %}
+        <input
+          id="SearchPageInput"
+          class="search-page__input"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'general.search.placeholder' | t }}"
+        >
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" class="button button--small">{{ 'general.search.submit' | t }}</button>
+      </div>
+    </form>
+
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <div class="collection__empty">
+          <p class="h3">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+          <p class="text-sm text-muted">{{ 'general.search.no_results_help' | t }}</p>
+        </div>
+      {%- else -%}
+        <div class="collection{% if section.settings.enable_filtering and search.filters.size > 0 %} collection--sidebar{% endif %}">
+          {%- if section.settings.enable_filtering and search.filters.size > 0 -%}
+            <aside class="collection__sidebar" aria-label="{{ 'sections.collection_grid.filters' | t }}">
+              {% render 'facets',
+                results: search,
+                layout: 'sidebar',
+                enable_sort: false,
+                section_id: section.id
+              %}
+            </aside>
+          {%- endif -%}
+
+          <div class="collection__main">
+            <div class="collection__toolbar">
+              <p class="collection__count label-micro" data-collection-count aria-live="polite">
+                {{- 'general.search.results_with_count' | t: count: search.results_count -}}
+              </p>
+              {%- if section.settings.enable_sorting -%}
+                <div class="collection__sort">
+                  {% render 'facets',
+                    results: search,
+                    layout: 'toolbar',
+                    enable_sort: true,
+                    section_id: section.id
+                  %}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- paginate search.results by section.settings.results_per_page -%}
+              {%- capture product_markup -%}
+                {%- for item in search.results -%}
+                  {%- if item.object_type == 'product' -%}
+                    <li>{% render 'product-card', card_product: item, index: forloop.index0 %}</li>
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endcapture -%}
+
+              {%- if product_markup != blank -%}
+                <ul
+                  class="product-grid list-unstyled"
+                  data-product-grid
+                  style="--cols-mobile: 2; --cols-desktop: {{ section.settings.columns_desktop }};"
+                >
+                  {{ product_markup }}
+                </ul>
+              {%- endif -%}
+
+              {%- capture other_markup -%}
+                {%- for item in search.results -%}
+                  {%- unless item.object_type == 'product' -%}
+                    <li class="search-result">
+                      <p class="search-result__type label-micro">
+                        {%- case item.object_type -%}
+                          {%- when 'article' -%}{{ 'general.search.articles' | t }}
+                          {%- when 'page' -%}{{ 'general.search.pages' | t }}
+                          {%- else -%}{{ item.object_type }}
+                        {%- endcase -%}
+                      </p>
+                      <h2 class="search-result__title h4">
+                        <a href="{{ item.url }}">{{ item.title }}</a>
+                      </h2>
+                      {%- if item.content != blank -%}
+                        <p class="search-result__excerpt">
+                          {{- item.content | strip_html | truncatewords: 30 -}}
+                        </p>
+                      {%- endif -%}
+                    </li>
+                  {%- endunless -%}
+                {%- endfor -%}
+              {%- endcapture -%}
+
+              {%- if other_markup != blank -%}
+                <ul class="search-results list-unstyled">{{ other_markup }}</ul>
+              {%- endif -%}
+
+              {% render 'pagination', paginate: paginate %}
+            {%- endpaginate -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+<script src="{{ 'collection.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:sections.main_search.name",
+  "tag": "section",
+  "class": "main-search-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "t:sections.collection_grid.enable_filtering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "t:sections.collection_grid.enable_sorting",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "label": "t:sections.collection_grid.products_per_page",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "t:shared.columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ]
+}
+{% endschema %}

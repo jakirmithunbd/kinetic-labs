@@ -1,0 +1,235 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign words = article.content | strip_html | split: ' ' | size
+  assign reading_time = words | divided_by: 220 | plus: 1
+-%}
+
+<article
+  class="section color-{{ section.settings.color_scheme }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    {% render 'breadcrumbs' %}
+  </div>
+
+  <header class="article-hero page-width page-width--narrow">
+    <p class="article-hero__meta label-micro">
+      {%- if article.tags.first != blank -%}
+        <span class="article-card__category">{{ article.tags.first }}</span>
+        <span aria-hidden="true">&middot;</span>
+      {%- endif -%}
+      {%- if section.settings.show_date -%}
+        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+          {{- article.published_at | date: format: 'abbreviated_date' -}}
+        </time>
+      {%- endif -%}
+      {%- if section.settings.show_reading_time -%}
+        <span aria-hidden="true">&middot;</span>
+        <span>{{ 'sections.blog.reading_time' | t: minutes: reading_time }}</span>
+      {%- endif -%}
+    </p>
+
+    <h1 class="h1 article-hero__title">{{ article.title }}</h1>
+
+    {%- if article.excerpt != blank -%}
+      <div class="article-hero__excerpt text-body-lg rte">{{ article.excerpt }}</div>
+    {%- endif -%}
+
+    {%- if section.settings.show_author and article.author != blank -%}
+      <p class="article-hero__author text-caption text-muted">
+        {{- 'sections.blog.written_by' | t: author: article.author -}}
+      </p>
+    {%- endif -%}
+  </header>
+
+  {%- if article.image -%}
+    <div class="article-hero__media page-width">
+      <div class="media media--landscape">
+        <img
+          src="{{ article.image | image_url: width: 1600 }}"
+          srcset="
+            {{ article.image | image_url: width: 800 }} 800w,
+            {{ article.image | image_url: width: 1200 }} 1200w,
+            {{ article.image | image_url: width: 1600 }} 1600w
+          "
+          sizes="(min-width: 1280px) 1280px, 100vw"
+          alt="{{ article.image.alt | escape }}"
+          width="{{ article.image.width }}"
+          height="{{ article.image.height }}"
+          fetchpriority="high"
+        >
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="page-width">
+    <div class="article-layout">
+      {%- assign toc_blocks = section.blocks | where: 'type', 'toc' -%}
+      {%- if toc_blocks.size > 0 -%}
+        <aside class="article-toc" aria-labelledby="TocHeading">
+          <h2 class="label-micro" id="TocHeading">{{ 'sections.blog.table_of_contents' | t }}</h2>
+          {%- comment -%}
+            Built from the article's own <h2>s at runtime — the merchant never
+            has to keep a second list of headings in sync with the body copy.
+          {%- endcomment -%}
+          <kl-toc data-source="ArticleBody" data-list="TocList">
+            <ol class="article-toc__list list-unstyled" id="TocList"></ol>
+          </kl-toc>
+        </aside>
+      {%- endif -%}
+
+      <div class="article-body">
+        <div class="rte" id="ArticleBody">{{ article.content }}</div>
+
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'product' -%}
+              {%- if block.settings.product != blank -%}
+                <div class="article-product" {{ block.shopify_attributes }}>
+                  {%- if block.settings.heading != blank -%}
+                    <p class="label-micro">{{ block.settings.heading }}</p>
+                  {%- endif -%}
+                  <ul class="product-grid list-unstyled" style="--cols-mobile: 1; --cols-desktop: 1;">
+                    <li>{% render 'product-card', card_product: block.settings.product %}</li>
+                  </ul>
+                </div>
+              {%- endif -%}
+
+            {%- when 'share' -%}
+              <div class="article-share" {{ block.shopify_attributes }}>
+                <kl-share
+                  class="share"
+                  data-url="{{ shop.url }}{{ article.url }}"
+                  data-title="{{ article.title | escape }}"
+                >
+                  <button type="button" class="link-mono share__button" data-share-trigger>
+                    {% render 'icon', name: 'share', size: 14 %}
+                    {{ 'general.share.label' | t }}
+                  </button>
+                  <span class="share__status label-micro" data-share-status role="status" hidden></span>
+                  <div class="share__fallback" data-share-fallback hidden>
+                    <label class="visually-hidden" for="ArticleShareUrl">
+                      {{- 'general.share.copy_link' | t -}}
+                    </label>
+                    <input
+                      id="ArticleShareUrl"
+                      class="field__input share__input"
+                      type="text"
+                      value="{{ shop.url }}{{ article.url }}"
+                      readonly
+                      onclick="this.select()"
+                    >
+                    <button type="button" class="button button--secondary button--small" data-share-copy>
+                      {{- 'general.share.copy_link' | t -}}
+                    </button>
+                  </div>
+                </kl-share>
+              </div>
+
+            {%- when '@app' -%}
+              <div {{ block.shopify_attributes }}>{% render block %}</div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</article>
+
+<script src="{{ 'product.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'article.js' | asset_url }}" defer="defer"></script>
+
+{%- if settings.enable_structured_data -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": {{ article.title | json }},
+      "articleBody": {{ article.content | strip_html | truncate: 5000 | json }},
+      "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+      {% if article.image %}
+        "image": [{{ article.image | image_url: width: 1600 | prepend: "https:" | json }}],
+      {% endif %}
+      {% if article.author != blank %}
+        "author": { "@type": "Person", "name": {{ article.author | json }} },
+      {% endif %}
+      "publisher": {
+        "@type": "Organization",
+        "name": {{ shop.name | json }}
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": {{ shop.url | append: article.url | json }}
+      }
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.main_article.name",
+  "tag": "section",
+  "class": "main-article-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:sections.main_article.show_author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "t:sections.main_article.show_date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reading_time",
+      "label": "t:sections.main_article.show_reading_time",
+      "default": true
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    { "type": "toc", "name": "t:sections.main_article.block_toc", "limit": 1, "settings": [] },
+    {
+      "type": "product",
+      "name": "t:sections.main_article.block_product",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "t:shared.heading" },
+        { "type": "product", "id": "product", "label": "t:shared.product" }
+      ]
+    },
+    { "type": "share", "name": "t:sections.main_article.block_share", "limit": 1, "settings": [] },
+    { "type": "@app" }
+  ]
+}
+{% endschema %}

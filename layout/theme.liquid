@@ -8,7 +8,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-    <meta name="theme-color" content="{{ settings.color_schemes.scheme-1.settings.background | default: '#FAF8F4' }}">
+    {%- comment -%}
+      Bracket notation: the scheme id contains a hyphen, which Liquid would
+      otherwise parse as a subtraction.
+    {%- endcomment -%}
+    {%- assign default_scheme = settings.color_schemes['scheme-1'] -%}
+    <meta name="theme-color" content="{{ default_scheme.settings.background | default: '#FAF8F4' }}">
 
     <link rel="canonical" href="{{ canonical_url }}">
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
@@ -23,20 +28,8 @@
       not on the LCP path for most templates.
     {%- endcomment -%}
     {%- if settings.use_brand_fonts -%}
-      <link
-        rel="preload"
-        as="font"
-        type="font/woff2"
-        href="{{ 'fraunces-variable.woff2' | asset_url }}"
-        crossorigin
-      >
-      <link
-        rel="preload"
-        as="font"
-        type="font/woff2"
-        href="{{ 'inter-variable.woff2' | asset_url }}"
-        crossorigin
-      >
+      {{ 'fraunces-variable.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+      {{ 'inter-variable.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
     {%- endif -%}
 
     <title>
@@ -174,6 +167,11 @@
         resultsCount: {{ 'general.search.results_with_count.other' | t: count: '%%' | json }},
         noResults: {{ 'general.search.no_results' | t: terms: '' | json }},
         noShippingRates: {{ 'sections.cart.shipping_estimator.no_rates' | t | json }},
+        coaNoResult: {{ 'sections.testing.coa_no_result' | t | json }},
+        coaDownload: {{ 'sections.testing.download_coa' | t | json }},
+        quizStep: {{ 'sections.quiz.step_of' | t: current: '%%current%%', total: '%%total%%' | json }},
+        quizNext: {{ 'sections.quiz.next' | t | json }},
+        quizSeeResults: {{ 'sections.quiz.see_results' | t | json }},
         quantityError: {{ 'products.product.quantity_error' | t: quantity: '%%' | json }}
       };
       window.routes = {

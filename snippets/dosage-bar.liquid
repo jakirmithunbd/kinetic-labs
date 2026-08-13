@@ -20,7 +20,6 @@
     break
   endif
 
-  assign r = record.system.type | default: 'dose_record'
   assign ingredient = record.ingredient.value
   assign name = ingredient.name.value | default: record.ingredient_name.value | default: record.system.handle | replace: '-', ' ' | capitalize
   assign unit = record.unit.value | default: 'g'
@@ -115,7 +114,7 @@
   {%- if show_studied_label and studied > 0 -%}
     <p class="dosage-bar__note data" aria-hidden="true">
       {{- 'products.dosage.clinical_dose' | t }}
-      {% render 'format-dose', value: studied, unit: unit -}}
+      {% render 'format-dose', value: studied, unit: unit %}
       {%- if citation != blank %}
         <span class="dosage-bar__citation">&nbsp;&middot;&nbsp;{{ citation }}</span>
       {%- endif -%}

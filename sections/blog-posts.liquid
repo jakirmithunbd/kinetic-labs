@@ -1,0 +1,136 @@
+{{ 'component-home.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign target_blog = blogs[section.settings.blog]
+  assign articles = target_blog.articles
+  assign limit = section.settings.posts_to_show
+-%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  id="{{ section.settings.anchor_id | default: section.id }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    {%- liquid
+      assign link_url = nil
+      assign link_label = nil
+      if section.settings.show_view_all and target_blog != blank
+        assign link_url = target_blog.url
+        assign link_label = 'sections.blog.all_articles' | t
+      endif
+    -%}
+    {% render 'section-header',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      link_url: link_url,
+      link_label: link_label
+    %}
+
+    {%- if articles.size > 0 -%}
+      <ul class="article-grid list-unstyled" style="--cols-desktop: {{ section.settings.columns_desktop }};">
+        {%- for article in articles limit: limit -%}
+          {% render 'article-card',
+            article: article,
+            show_image: section.settings.show_image,
+            show_excerpt: section.settings.show_excerpt,
+            show_date: section.settings.show_date,
+            show_category: section.settings.show_category,
+            index: forloop.index0
+          %}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.blog_posts.name",
+  "tag": "section",
+  "class": "blog-posts-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "blog", "id": "blog", "label": "t:shared.blog" },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:shared.eyebrow",
+      "default": "FROM THE LAB NOTES"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "Read the label, then read us"
+    },
+    { "type": "text", "id": "anchor_id", "label": "t:shared.link", "default": "blog" },
+    {
+      "type": "range",
+      "id": "posts_to_show",
+      "label": "t:shared.posts_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "t:shared.columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    { "type": "checkbox", "id": "show_image", "label": "t:shared.image", "default": true },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "t:sections.blog_posts.show_excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "t:sections.blog_posts.show_date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_category",
+      "label": "t:sections.blog_posts.show_category",
+      "default": true
+    },
+    { "type": "checkbox", "id": "show_view_all", "label": "t:shared.view_all", "default": true },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 112
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 112
+    }
+  ],
+  "presets": [{ "name": "t:sections.blog_posts.name" }]
+}
+{% endschema %}

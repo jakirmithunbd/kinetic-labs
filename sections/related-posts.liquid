@@ -1,0 +1,122 @@
+{{ 'component-home.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Related posts: other articles from the same blog, preferring ones that share
+  a tag with the current article.
+{%- endcomment -%}
+
+{%- liquid
+  assign limit = section.settings.posts_to_show
+  assign current_tag = article.tags.first
+-%}
+
+{%- if blog.articles.size > 1 -%}
+  <div
+    class="section color-{{ section.settings.color_scheme }} section--hairline-top"
+    style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+  >
+    <div class="page-width">
+      {%- assign all_articles_label = 'sections.blog.all_articles' | t -%}
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        link_url: blog.url,
+        link_label: all_articles_label
+      %}
+
+      <ul class="article-grid list-unstyled" style="--cols-desktop: {{ limit }};">
+        {%- assign shown = 0 -%}
+
+        {%- comment -%} Same-tag articles first. {%- endcomment -%}
+        {%- for related in blog.articles -%}
+          {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+          {%- if related.id == article.id -%}{%- continue -%}{%- endif -%}
+          {%- unless current_tag != blank and related.tags contains current_tag -%}
+            {%- continue -%}
+          {%- endunless -%}
+          {% render 'article-card',
+            article: related,
+            show_image: true,
+            show_excerpt: false,
+            show_date: true,
+            show_category: true,
+            index: forloop.index0
+          %}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+
+        {%- comment -%} Then fill any remaining slots with recent posts. {%- endcomment -%}
+        {%- for related in blog.articles -%}
+          {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+          {%- if related.id == article.id -%}{%- continue -%}{%- endif -%}
+          {%- if current_tag != blank and related.tags contains current_tag -%}
+            {%- continue -%}
+          {%- endif -%}
+          {% render 'article-card',
+            article: related,
+            show_image: true,
+            show_excerpt: false,
+            show_date: true,
+            show_category: true,
+            index: forloop.index0
+          %}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.related_posts.name",
+  "tag": "section",
+  "class": "related-posts-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow", "default": "KEEP READING" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "More from the lab notes"
+    },
+    {
+      "type": "range",
+      "id": "posts_to_show",
+      "label": "t:shared.posts_to_show",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.related_posts.name" }]
+}
+{% endschema %}

@@ -56,7 +56,8 @@
     "required": "Required",
     "optional": "Optional",
     "on_sale": "Sale",
-    "sold_out": "Sold out"
+    "sold_out": "Sold out",
+    "verified": "Verified"
   },
   "accessibility": {
     "skip_to_text": "Skip to content",
@@ -240,6 +241,12 @@
     },
     "apps": {
       "empty": "This section is for an app block. Add one in the theme editor."
+    },
+    "dosage_panel": {
+      "info": "Choose a product with a custom.dose_comparison metafield to render the dosage bars."
+    },
+    "ingredients_index": {
+      "info": "No ingredient metaobjects found yet. Add entries under Content → Metaobjects → Ingredient."
     }
   },
   "products": {

@@ -116,7 +116,6 @@
       "global_disclaimer": "Regulatory disclaimer"
     }
   },
-
   "shared": {
     "colour_scheme": "Colour scheme",
     "heading": "Heading",
@@ -173,7 +172,6 @@
     "open_in_new_tab": "Open in a new tab",
     "app_block_info": "Add an app block here for reviews, subscriptions or back-in-stock alerts."
   },
-
   "sections": {
     "announcement_bar": {
       "name": "Announcement bar",
@@ -453,7 +451,7 @@
       "info": "Rendered from the custom.how_to_use metafield."
     },
     "allergens": {
-      "name": "Allergens & certifications",
+      "name": "Allergens & certs",
       "info": "Renders only when the allergen or certification metafields are populated."
     },
     "product_faq": {
@@ -543,12 +541,54 @@
       "name": "Account",
       "subscription_portal_url": "Subscription portal URL",
       "subscription_portal_info": "Your subscription app's customer portal. The theme links out to it rather than rebuilding it."
+    },
+    "contact": {
+      "phone": "Ask for a phone number",
+      "message": "Message field"
+    },
+    "quick_add": {
+      "title": "Quick add"
     }
   },
-
   "blocks": {
     "app": {
       "name": "App block"
+    }
+  },
+  "general": {
+    "required": "Required field"
+  },
+  "products": {
+    "product": {
+      "vendor": "Show vendor",
+      "add_to_cart_with_price": "Show price in the button"
+    },
+    "allergens": {
+      "banned_substance_tested": "Show banned-substance tested"
+    },
+    "how_to_use": {
+      "timing": "Timing",
+      "stacking": "Stacking"
+    }
+  },
+  "customer": {
+    "login_page": {
+      "title": "Login"
+    },
+    "register": {
+      "title": "Create account"
+    },
+    "orders": {
+      "title": "Order"
+    },
+    "addresses": {
+      "title": "Addresses"
+    },
+    "reset_password": {
+      "title": "Reset password"
+    },
+    "activate_account": {
+      "title": "Activate account"
     }
   }
 }

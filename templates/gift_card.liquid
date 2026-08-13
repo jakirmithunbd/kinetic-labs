@@ -1,0 +1,107 @@
+{%- comment -%}
+  Gift card. Rendered without a layout so it prints cleanly and carries none
+  of the store chrome — the whole document is defined here.
+{%- endcomment -%}
+{% layout none %}
+
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {%- assign gift_card_value = gift_card.initial_value | money -%}
+    <title>{{ 'gift_cards.issued.title' | t: value: gift_card_value, shop: shop.name }}</title>
+
+    {%- if settings.use_brand_fonts -%}
+      {{ 'fraunces-variable.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endif -%}
+
+    <style data-theme-tokens>
+      {%- assign s = settings.color_schemes['scheme-1'].settings -%}
+      :root {
+        --color-background-rgb: {{ s.background.red }} {{ s.background.green }} {{ s.background.blue }};
+        --color-surface-rgb: {{ s.surface.red }} {{ s.surface.green }} {{ s.surface.blue }};
+        --color-hairline-rgb: {{ s.hairline.red }} {{ s.hairline.green }} {{ s.hairline.blue }};
+        --color-text-rgb: {{ s.text.red }} {{ s.text.green }} {{ s.text.blue }};
+        --color-text-muted-rgb: {{ s.text_muted.red }} {{ s.text_muted.green }} {{ s.text_muted.blue }};
+        --color-accent-rgb: {{ s.accent.red }} {{ s.accent.green }} {{ s.accent.blue }};
+        --color-accent-strong-rgb: {{ s.accent_strong.red }} {{ s.accent_strong.green }} {{ s.accent_strong.blue }};
+        --color-support-rgb: {{ s.support.red }} {{ s.support.green }} {{ s.support.blue }};
+        --color-data-rgb: {{ s.data.red }} {{ s.data.green }} {{ s.data.blue }};
+        --color-button-rgb: {{ s.button.red }} {{ s.button.green }} {{ s.button.blue }};
+        --color-button-label-rgb: {{ s.button_label.red }} {{ s.button_label.green }} {{ s.button_label.blue }};
+        --color-shadow-rgb: {{ s.shadow.red }} {{ s.shadow.green }} {{ s.shadow.blue }};
+        {%- if settings.use_brand_fonts %}
+        --font-display: 'Fraunces', ui-serif, Georgia, serif;
+        --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        --font-data: 'JetBrains Mono', ui-monospace, monospace;
+        {%- endif %}
+      }
+    </style>
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'component-content.css' | asset_url | stylesheet_tag }}
+  </head>
+
+  <body class="template-gift-card">
+    <main class="page-width" role="main">
+      <div class="gift-card">
+        <p class="eyebrow">[&nbsp;{{ 'gift_cards.issued.subtext' | t | upcase }}&nbsp;]</p>
+        <h1 class="h3">{{ shop.name }}</h1>
+
+        <p class="gift-card__value data">{{ gift_card.initial_value | money_without_trailing_zeros }}</p>
+
+        {%- if gift_card.balance != gift_card.initial_value -%}
+          <p class="label-micro">
+            {{ 'sections.cart.subtotal' | t }}: {{ gift_card.balance | money }}
+          </p>
+        {%- endif -%}
+
+        {%- if gift_card.expired -%}
+          <p class="form-status form-status--error">{{ 'gift_cards.issued.expired' | t }}</p>
+        {%- elsif gift_card.expires_on -%}
+          <p class="label-micro">
+            {{- 'gift_cards.issued.expires_on' | t: expiry: gift_card.expires_on | date: format: 'date' -}}
+          </p>
+        {%- endif -%}
+
+        <div class="gift-card__qr" id="QrCode" aria-hidden="true"></div>
+
+        <p class="text-caption text-muted">{{ 'gift_cards.issued.redeem' | t }}</p>
+        <p class="gift-card__code">{{ gift_card.code | format_code }}</p>
+
+        <div class="cluster" style="justify-content: center;">
+          <a class="button" href="{{ shop.url }}">{{ 'gift_cards.issued.shop_link' | t }}</a>
+          <button type="button" class="button button--secondary no-print" onclick="window.print()">
+            {{- 'gift_cards.issued.print' | t -}}
+          </button>
+        </div>
+
+        {%- if gift_card.pass_url -%}
+          <a class="gift-card__wallet" href="{{ gift_card.pass_url }}">
+            <img
+              src="{{ 'gift-card/add-to-apple-wallet.svg' | shopify_asset_url }}"
+              width="120"
+              height="40"
+              alt="{{ 'gift_cards.issued.add_to_apple_wallet' | t }}"
+              loading="lazy"
+            >
+          </a>
+        {%- endif -%}
+      </div>
+    </main>
+
+    <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer="defer"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof QRCode === 'undefined') return;
+        new QRCode(document.getElementById('QrCode'), {
+          text: {{ gift_card.qr_identifier | json }},
+          width: 180,
+          height: 180,
+          imageAltText: {{ 'gift_cards.issued.qr_image_alt' | t | json }}
+        });
+      });
+    </script>
+  </body>
+</html>

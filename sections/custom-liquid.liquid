@@ -1,0 +1,62 @@
+{%- comment -%}
+  Escape hatch for app snippets and one-off Liquid.
+
+  Anything typed here bypasses the theme's translation and styling systems, so
+  it's the last resort rather than the first — but it means a merchant is
+  never blocked waiting on a developer for a small addition.
+{%- endcomment -%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="{% if section.settings.full_width %}page-width--full{% else %}page-width{% endif %}">
+    {{ section.settings.custom_liquid }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.custom_liquid.name",
+  "tag": "section",
+  "class": "custom-liquid-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "t:sections.custom_liquid.liquid",
+      "info": "t:sections.custom_liquid.liquid_info"
+    },
+    { "type": "checkbox", "id": "full_width", "label": "t:shared.full_width", "default": false },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": false },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [{ "name": "t:sections.custom_liquid.name" }]
+}
+{% endschema %}

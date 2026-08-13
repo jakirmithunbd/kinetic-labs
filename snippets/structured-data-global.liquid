@@ -7,7 +7,6 @@
 {%- if settings.enable_structured_data -%}
   {%- liquid
     assign org_name = settings.organization_name | default: shop.name
-    assign social_links = ''
     assign links = settings.social_instagram_link | append: ',' | append: settings.social_tiktok_link | append: ',' | append: settings.social_youtube_link | append: ',' | append: settings.social_facebook_link | append: ',' | append: settings.social_x_link | append: ',' | append: settings.social_strava_link
     assign links_array = links | split: ','
   -%}

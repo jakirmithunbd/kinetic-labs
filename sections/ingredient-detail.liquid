@@ -1,0 +1,133 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Ingredient detail, rendered for templates/metaobject/ingredient.json.
+
+  "Products containing it" uses the metaobject's reverse reference to
+  products — no tag hack, no duplicated list to maintain.
+{%- endcomment -%}
+
+{%- liquid
+  assign ing = metaobject
+  assign related = ing.system.reverse_references.products.value
+-%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">{{ 'products.product.breadcrumb_home' | t }}</a>
+      <span class="breadcrumbs__separator" aria-hidden="true">/</span>
+      {%- if section.settings.index_page != blank -%}
+        <a href="{{ section.settings.index_page.url }}">{{ section.settings.index_page.title }}</a>
+        <span class="breadcrumbs__separator" aria-hidden="true">/</span>
+      {%- endif -%}
+      <span aria-current="page">{{ ing.name.value }}</span>
+    </nav>
+
+    <div class="ingredient-detail">
+      <div class="ingredient-detail__main">
+        <p class="eyebrow">[&nbsp;{{ 'sections.ingredients.heading' | t | upcase }}&nbsp;]</p>
+        <h1 class="h1 ingredient-detail__title">{{ ing.name.value }}</h1>
+
+        {%- if ing.clinical_dose.value != blank -%}
+          <p class="ingredient-detail__dose dose">
+            {{ 'sections.ingredients.clinical_dose' | t }}:
+            {% render 'format-dose', value: ing.clinical_dose.value, unit: ing.unit.value %}
+          </p>
+        {%- endif -%}
+
+        {%- if ing.mechanism.value != blank -%}
+          <div class="ingredient-detail__section">
+            <h2 class="label-micro">{{ 'sections.ingredients.mechanism' | t }}</h2>
+            <div class="rte text-body-lg">{{ ing.mechanism | metafield_tag }}</div>
+          </div>
+        {%- endif -%}
+
+        {%- if ing.references.value != blank -%}
+          <div class="ingredient-detail__section">
+            <h2 class="label-micro">{{ 'sections.ingredients.references' | t }}</h2>
+            <div class="rte text-caption ingredient-detail__references">
+              {{ ing.references | metafield_tag }}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if ing.image.value != blank -%}
+        <div class="ingredient-detail__media media media--square">
+          <img
+            src="{{ ing.image.value | image_url: width: 800 }}"
+            srcset="
+              {{ ing.image.value | image_url: width: 400 }} 400w,
+              {{ ing.image.value | image_url: width: 800 }} 800w
+            "
+            sizes="(min-width: 990px) 33vw, 100vw"
+            alt="{{ ing.name.value | escape }}"
+            width="{{ ing.image.value.width }}"
+            height="{{ ing.image.value.height }}"
+            fetchpriority="high"
+          >
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_products and related != blank and related.size > 0 -%}
+      <div class="ingredient-detail__products">
+        <h2 class="h3">{{ 'sections.ingredients.found_in' | t }}</h2>
+        <ul class="product-grid list-unstyled" style="--cols-mobile: 2; --cols-desktop: 4;">
+          {%- for product in related limit: 8 -%}
+            <li>{% render 'product-card', card_product: product, index: forloop.index0 %}</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.ingredient_detail.name",
+  "tag": "section",
+  "class": "ingredient-detail-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "page", "id": "index_page", "label": "t:shared.page" },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "t:sections.ingredient_detail.show_products",
+      "default": true
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ]
+}
+{% endschema %}
