@@ -1,0 +1,114 @@
+{{ 'component-product.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign ingredients = product.metafields.custom.key_ingredients.value
+-%}
+
+{%- if ingredients != blank and ingredients.size > 0 -%}
+  <div
+    class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+    style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+  >
+    <div class="page-width">
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        text: section.settings.text
+      %}
+
+      <ul class="key-ingredients list-unstyled">
+        {%- for ingredient in ingredients -%}
+          {%- liquid
+            assign name = ingredient.name.value
+            assign mechanism = ingredient.mechanism.value
+            assign dose = ingredient.clinical_dose.value
+            assign unit = ingredient.unit.value | default: 'g'
+            assign ingredient_url = ingredient.system.url
+          -%}
+          <li
+            class="key-ingredient{% if settings.animate_on_scroll %} reveal{% endif %}"
+            style="--reveal-delay: {{ forloop.index0 | times: 60 }}ms;"
+          >
+            <div class="key-ingredient__head">
+              <h3 class="key-ingredient__name h4">
+                {%- if section.settings.show_link and ingredient_url -%}
+                  <a href="{{ ingredient_url }}">{{ name }}</a>
+                {%- else -%}
+                  {{ name }}
+                {%- endif -%}
+              </h3>
+              {%- if dose != blank -%}
+                <p class="key-ingredient__dose dose">
+                  [&nbsp;{% render 'format-dose', value: dose, unit: unit %}&nbsp;]
+                </p>
+              {%- endif -%}
+            </div>
+
+            {%- if mechanism != blank -%}
+              <p class="key-ingredient__mechanism">{{ mechanism }}</p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.key_ingredients.name",
+  "tag": "section",
+  "class": "key-ingredients-section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.key_ingredients.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:shared.eyebrow",
+      "default": "KEY INGREDIENTS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "What's in it, and why"
+    },
+    { "type": "richtext", "id": "text", "label": "t:shared.text" },
+    {
+      "type": "checkbox",
+      "id": "show_link",
+      "label": "t:sections.key_ingredients.show_link",
+      "default": true
+    },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.key_ingredients.name" }]
+}
+{% endschema %}

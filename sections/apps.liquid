@@ -1,0 +1,90 @@
+{%- comment -%}
+  A section that holds nothing but app blocks.
+
+  This is the slot for reviews, subscription widgets, back-in-stock forms,
+  loyalty panels and UGC feeds. The theme renders them and gets out of the
+  way — it does not reimplement any of them.
+{%- endcomment -%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  id="{{ section.settings.anchor_id | default: section.id }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="{% if section.settings.include_margins %}page-width{% endif %}">
+    {%- if section.settings.heading != blank or section.settings.eyebrow != blank -%}
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading
+      %}
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      {%- for block in section.blocks -%}
+        <div class="apps__block" {{ block.shopify_attributes }}>
+          {% render block %}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {%- comment -%} Editor-only hint; never shown to shoppers. {%- endcomment -%}
+      {%- if request.design_mode -%}
+        <p class="apps__empty text-caption text-muted">{{ 'sections.apps.empty' | t }}</p>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.apps.name",
+  "tag": "section",
+  "class": "apps-section",
+  "blocks": [{ "type": "@app" }],
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.apps.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:shared.heading" },
+    {
+      "type": "text",
+      "id": "anchor_id",
+      "label": "t:shared.link",
+      "info": "t:shared.app_block_info"
+    },
+    {
+      "type": "checkbox",
+      "id": "include_margins",
+      "label": "t:sections.apps.include_margins",
+      "default": true
+    },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.apps.name" }]
+}
+{% endschema %}

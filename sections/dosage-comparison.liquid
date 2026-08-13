@@ -1,0 +1,110 @@
+{{ 'component-dosage.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  The dosage panel bound to the current product. Same component as the home
+  page section — one implementation, two entry points.
+{%- endcomment -%}
+
+{%- liquid
+  assign records = product.metafields.custom.dose_comparison.value
+-%}
+
+{%- if records != blank and records.size > 0 -%}
+  <div
+    class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+    style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+  >
+    <div class="page-width">
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        text: section.settings.text
+      %}
+
+      <div class="dosage-panel">
+        {%- for record in records -%}
+          {% render 'dosage-bar',
+            record: record,
+            show_studied: section.settings.show_studied,
+            bar_style: section.settings.bar_style,
+            index: forloop.index0
+          %}
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.footnote != blank -%}
+        <p class="dosage-panel__footnote">{{ section.settings.footnote }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.dosage_panel.name",
+  "tag": "section",
+  "class": "dosage-comparison-section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.dosage_panel.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:shared.eyebrow",
+      "default": "THE DOSAGE BREAKDOWN"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "Our dose vs. the clinical dose"
+    },
+    { "type": "richtext", "id": "text", "label": "t:shared.text" },
+    {
+      "type": "select",
+      "id": "bar_style",
+      "label": "t:sections.dosage_panel.bar_style",
+      "options": [
+        { "value": "bars", "label": "t:sections.dosage_panel.style_bars" },
+        { "value": "minimal", "label": "t:sections.dosage_panel.style_minimal" }
+      ],
+      "default": "bars"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_studied",
+      "label": "t:sections.dosage_panel.show_studied",
+      "default": true
+    },
+    { "type": "text", "id": "footnote", "label": "t:sections.dosage_panel.footnote" },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.dosage_panel.name" }]
+}
+{% endschema %}

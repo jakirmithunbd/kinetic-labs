@@ -1,0 +1,25 @@
+{%- if product.description != blank -%}
+  <div class="product-block product-block--description" {{ block.shopify_attributes }}>
+    {%- if block.settings.collapsible -%}
+      <details class="accordion__item">
+        <summary class="accordion__summary">
+          <span>{{ block.settings.heading | default: product.title }}</span>
+          <span class="accordion__icon" aria-hidden="true"></span>
+        </summary>
+        <div class="accordion__panel rte">{{ product.description }}</div>
+      </details>
+    {%- else -%}
+      <div class="rte product-description">{{ product.description }}</div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_description",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "t:shared.heading" },
+    { "type": "checkbox", "id": "collapsible", "label": "t:shared.show_divider", "default": false }
+  ]
+}
+{% endschema %}

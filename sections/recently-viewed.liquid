@@ -1,0 +1,99 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Recently viewed products.
+
+  The list of handles lives in the visitor's own localStorage — nothing about
+  browsing history is sent to or stored on the server. The section re-requests
+  itself with those handles as a search query, which is why the grid below is
+  empty on first paint.
+{%- endcomment -%}
+
+{%- if search.performed -%}
+  {%- comment -%} Second pass: rendering the fetched results. {%- endcomment -%}
+  <div data-recently-viewed-grid>
+    {%- for item in search.results -%}
+      {%- if item.object_type == 'product' -%}
+        <li>{% render 'product-card', card_product: item, show_quick_add: false %}</li>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- else -%}
+  <kl-recently-viewed
+    class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+    data-section-id="{{ section.id }}"
+    data-limit="{{ section.settings.products_to_show }}"
+    data-exclude="{{ product.handle }}"
+    style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+    hidden
+  >
+    <div class="page-width">
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading
+      %}
+
+      <ul
+        class="product-grid list-unstyled"
+        data-recently-viewed-grid
+        style="--cols-mobile: 2; --cols-desktop: {{ section.settings.products_to_show }};"
+      ></ul>
+    </div>
+  </kl-recently-viewed>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.recently_viewed.name",
+  "tag": "section",
+  "class": "recently-viewed-section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.recently_viewed.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow", "default": "PICK UP WHERE YOU LEFT OFF" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "Recently viewed"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "t:shared.products_to_show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.recently_viewed.name" }]
+}
+{% endschema %}

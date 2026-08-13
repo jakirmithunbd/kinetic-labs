@@ -128,10 +128,9 @@
 
         const link = document.querySelector('.header__cart');
         if (link) {
-          link.setAttribute(
-            'aria-label',
-            `${cart.item_count} ${cart.item_count === 1 ? 'item' : 'items'} in cart`
-          );
+          const strings = window.themeStrings || {};
+          const template = cart.item_count === 1 ? strings.cartItemOne : strings.cartItemOther;
+          link.setAttribute('aria-label', (template || '%%').replace('%%', cart.item_count));
         }
       })
       .catch(() => {});
@@ -195,7 +194,7 @@
       KL.cart
         .add(items)
         .then(() => {
-          KL.announce(this.getAttribute('data-added-message') || 'Added to cart');
+          KL.announce(this.getAttribute('data-added-message') || (window.themeStrings || {}).added);
           if (!openCartDrawer()) {
             window.location = routes.cart_url;
           }
@@ -250,11 +249,8 @@
       KL.cart
         .change({ line: Number(line), quantity: quantity })
         .then((cart) => {
-          KL.announce(
-            quantity === 0
-              ? 'Item removed'
-              : `Cart updated, ${cart.item_count} items`
-          );
+          const strings = window.themeStrings || {};
+          KL.announce(quantity === 0 ? strings.cartRemoved : strings.cartUpdated);
         })
         .catch((error) => KL.announce(error.message))
         .finally(() => {
@@ -313,7 +309,7 @@
       KL.cart
         .add({ id: id, quantity: 1 })
         .then(() => {
-          KL.announce('Added to cart');
+          KL.announce((window.themeStrings || {}).added);
           openCartDrawer();
         })
         .catch((error) => KL.announce(error.message))

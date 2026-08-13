@@ -429,9 +429,10 @@
 
           const count = this.results.querySelectorAll('[data-predictive-item]').length;
           if (this.status) {
+            const strings = window.themeStrings || {};
             this.status.textContent = count
-              ? `${count} results`
-              : this.getAttribute('data-no-results') || 'No results';
+              ? (strings.resultsCount || '%%').replace('%%', count)
+              : strings.noResults || '';
           }
         })
         .catch((err) => {
@@ -579,7 +580,8 @@
       });
 
       if (this.empty) this.empty.hidden = matches > 0;
-      KL.announce(`${matches} results`);
+      const strings = window.themeStrings || {};
+      KL.announce((strings.resultsCount || '%%').replace('%%', matches));
     }
   }
   customElements.define('kl-faq-search', KLFaqSearch);

@@ -1,0 +1,193 @@
+{
+  "sections": {
+    "gallery": {
+      "type": "product-gallery",
+      "settings": {
+        "sticky": true,
+        "thumbnails": "below",
+        "image_ratio": "square",
+        "enable_zoom": true,
+        "group_by_variant": true
+      }
+    },
+    "info": {
+      "type": "product-info",
+      "blocks": {
+        "breadcrumb": { "type": "breadcrumb", "settings": {} },
+        "title": {
+          "type": "product-title",
+          "settings": { "size": "h2", "heading_tag": "h1", "show_vendor": false }
+        },
+        "rating": { "type": "product-rating", "settings": { "link_to_reviews": true } },
+        "positioning": { "type": "product-positioning", "settings": {} },
+        "flavour": {
+          "type": "flavour-picker",
+          "settings": { "option_name": "Flavour", "swatch_style": "swatch" }
+        },
+        "size": {
+          "type": "size-picker",
+          "settings": { "option_name": "Size", "show_price_per_serving": true }
+        },
+        "purchase": { "type": "purchase-options", "settings": { "show_selling_plans": true } },
+        "quantity": { "type": "quantity-selector", "settings": {} },
+        "buy": {
+          "type": "buy-buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_price_in_button": true,
+            "sticky_mobile": true
+          }
+        },
+        "trust": {
+          "type": "trust-row",
+          "blocks": {
+            "t1": { "type": "trust-item", "settings": { "icon": "shield", "text": "Third-party tested" } },
+            "t2": { "type": "trust-item", "settings": { "icon": "truck", "text": "Ships same day" } },
+            "t3": { "type": "trust-item", "settings": { "icon": "refresh", "text": "60-day guarantee" } }
+          },
+          "block_order": ["t1", "t2", "t3"],
+          "settings": { "show_banned_substance": true }
+        },
+        "inventory": { "type": "inventory-status", "settings": {} },
+        "share": { "type": "share", "settings": {} }
+      },
+      "block_order": [
+        "breadcrumb",
+        "title",
+        "rating",
+        "positioning",
+        "flavour",
+        "size",
+        "purchase",
+        "quantity",
+        "buy",
+        "trust",
+        "inventory",
+        "share"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "sticky_mobile": true,
+        "padding_top": 0,
+        "padding_bottom": 40
+      }
+    },
+    "key-ingredients": {
+      "type": "key-ingredients",
+      "settings": {
+        "eyebrow": "KEY INGREDIENTS",
+        "heading": "What's in it, and why",
+        "show_link": true,
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "dosage": {
+      "type": "dosage-comparison",
+      "settings": {
+        "eyebrow": "THE DOSAGE BREAKDOWN",
+        "heading": "Our dose vs. the clinical dose",
+        "bar_style": "bars",
+        "show_studied": true,
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "supplement-facts": {
+      "type": "supplement-facts",
+      "settings": {
+        "color_scheme": "scheme-surface",
+        "eyebrow": "SUPPLEMENT FACTS",
+        "heading": "The full panel",
+        "show_daily_value": true,
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "how-to-use": {
+      "type": "how-to-use",
+      "settings": {
+        "eyebrow": "HOW TO USE",
+        "heading": "Timing & stacking",
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "allergens": {
+      "type": "allergens-certifications",
+      "settings": {
+        "eyebrow": "THE SMALL PRINT",
+        "heading": "Allergens & certifications",
+        "divider_top": true,
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
+    },
+    "faq": {
+      "type": "product-faq",
+      "settings": {
+        "eyebrow": "FAQ",
+        "heading": "Questions, answered",
+        "exclusive": false,
+        "structured_data": true,
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "reviews": {
+      "type": "apps",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "eyebrow": "REVIEWS",
+        "heading": "What buyers say",
+        "anchor_id": "Reviews",
+        "include_margins": true,
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "complementary": {
+      "type": "complementary-products",
+      "settings": {
+        "eyebrow": "COMPLETE THE STACK",
+        "heading": "Pairs well with",
+        "intent": "complementary",
+        "products_to_show": 3,
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "eyebrow": "PICK UP WHERE YOU LEFT OFF",
+        "heading": "Recently viewed",
+        "products_to_show": 4,
+        "divider_top": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "gallery",
+    "info",
+    "key-ingredients",
+    "dosage",
+    "supplement-facts",
+    "how-to-use",
+    "allergens",
+    "faq",
+    "reviews",
+    "complementary",
+    "recently-viewed"
+  ]
+}

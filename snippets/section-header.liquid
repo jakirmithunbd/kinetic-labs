@@ -1,0 +1,41 @@
+{%- comment -%}
+  The eyebrow + heading pattern the prototype uses at the top of every band:
+
+      [ THE DOSAGE PANEL ]
+      5.00g of creatine. Not a "blend".
+
+  Accepts:
+    eyebrow    {String}
+    heading    {String}
+    text       {String} rich text
+    link_url   {String}
+    link_label {String}
+    size       {String} heading class, default h2
+    align      {String} left | center
+{%- endcomment -%}
+
+{%- if eyebrow != blank or heading != blank or text != blank -%}
+  <div class="section-header section-header--{{ align | default: 'left' }}">
+    <div class="section-header__row">
+      <div class="section-header__main">
+        {%- if eyebrow != blank -%}
+          <p class="eyebrow">[&nbsp;{{ eyebrow }}&nbsp;]</p>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h2 class="{{ size | default: 'h2' }}">{{ heading }}</h2>
+        {%- endif -%}
+      </div>
+
+      {%- if link_url != blank and link_label != blank -%}
+        <a class="link-mono section-header__link" href="{{ link_url }}">
+          {{ link_label }}
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if text != blank -%}
+      <div class="section-header__text rte">{{ text }}</div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

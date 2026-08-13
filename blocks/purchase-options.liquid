@@ -92,7 +92,11 @@
               {{- 'products.purchase_options.cancel_anytime' | t -}}
             </span>
             {%- if saving_amount > 0 -%}
-              <span class="purchase-options__saving badge badge--support" data-plan-saving>
+              <span
+                class="purchase-options__saving badge badge--support"
+                data-plan-saving
+                data-saving-template="{{ 'products.purchase_options.save_amount' | t: amount: '%%' | escape }}"
+              >
                 {{- 'products.purchase_options.save_amount' | t: amount: saving_amount_money -}}
               </span>
             {%- endif -%}
