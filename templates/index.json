@@ -1,0 +1,291 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "b1": { "type": "button", "settings": { "label": "Shop creatine", "style": "primary" } },
+        "b2": {
+          "type": "button",
+          "settings": { "label": "Read the dosage panel", "link": "#dosage", "style": "secondary" }
+        },
+        "t1": { "type": "trust", "settings": { "text": "4.9", "show_stars": true } },
+        "t2": { "type": "trust", "settings": { "text": "2,100+ verified reviews" } },
+        "t3": { "type": "trust", "settings": { "text": "Ships same day" } }
+      },
+      "block_order": ["b1", "b2", "t1", "t2", "t3"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "CLINICALLY DOSED · NO PROPRIETARY BLENDS",
+        "heading": "5.00g of creatine monohydrate.",
+        "heading_light": "Not 5g of a blend containing creatine.",
+        "subheading": "<p>Every active, dosed to the literature, printed on the label in milligrams you can read. This is what honest sports nutrition looks like.</p>",
+        "media_type": "image",
+        "media_position": "below",
+        "overlay_opacity": 30,
+        "height": "medium",
+        "text_position": "left",
+        "padding_top": 96,
+        "padding_bottom": 0
+      }
+    },
+    "certifications": {
+      "type": "certification-strip",
+      "blocks": {
+        "c1": { "type": "certification", "settings": { "text": "Informed Sport" } },
+        "c2": { "type": "certification", "settings": { "text": "GMP Certified" } },
+        "c3": { "type": "certification", "settings": { "text": "Third-party tested" } },
+        "c4": { "type": "certification", "settings": { "text": "Made in Australia" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_batch_lookup": true,
+        "batch_placeholder": "Verify your batch #",
+        "divider_top": true,
+        "divider_bottom": true,
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    },
+    "goals": {
+      "type": "goal-grid",
+      "blocks": {
+        "g1": {
+          "type": "goal",
+          "settings": {
+            "title": "Muscle & Strength",
+            "text": "Creatine, leucine-rich protein, dosed for hypertrophy."
+          }
+        },
+        "g2": {
+          "type": "goal",
+          "settings": {
+            "title": "Endurance",
+            "text": "Citrulline, beta-alanine, electrolytes for the long work."
+          }
+        },
+        "g3": {
+          "type": "goal",
+          "settings": {
+            "title": "Recovery",
+            "text": "Magnesium, protein, sleep support to come back faster."
+          }
+        },
+        "g4": {
+          "type": "goal",
+          "settings": {
+            "title": "Sleep",
+            "text": "Chelated magnesium and theanine — no melatonin hangover."
+          }
+        },
+        "g5": {
+          "type": "goal",
+          "settings": {
+            "title": "Daily Health",
+            "text": "Greens, electrolytes, and the fundamentals, daily."
+          }
+        }
+      },
+      "block_order": ["g1", "g2", "g3", "g4", "g5"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "SHOP BY GOAL",
+        "heading": "What are you training for?",
+        "anchor_id": "goals",
+        "image_ratio": "portrait",
+        "columns_desktop": 5,
+        "columns_mobile": "2",
+        "show_count": true,
+        "divider_top": false,
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
+    "best-sellers": {
+      "type": "featured-collection",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "BEST SELLERS",
+        "heading": "The six people come back for",
+        "display": "grid",
+        "products_to_show": 6,
+        "columns_desktop": 3,
+        "columns_mobile": "2",
+        "show_view_all": true,
+        "divider_top": true,
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
+    "dosage": {
+      "type": "dosage-panel",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "THE DOSAGE PANEL",
+        "heading": "5.00g of creatine. Not a \"blend\".",
+        "text": "<p>Pre-Workout. Six actives, dosed to the literature. Here's our gram-for-gram next to the industry average.</p>",
+        "anchor_id": "dosage",
+        "bar_style": "bars",
+        "show_studied": false,
+        "footnote": "Industry averages from a 2024 audit of 32 best-selling pre-workouts. Clinical dose = minimum effective in published trials.",
+        "divider_top": true,
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
+    "philosophy": {
+      "type": "ingredient-philosophy",
+      "blocks": {
+        "p1": {
+          "type": "point",
+          "settings": { "text": "Every active listed by name and exact milligram dose" }
+        },
+        "p2": {
+          "type": "point",
+          "settings": { "text": "No \"matrix\", \"complex\", or \"blend\" filler lines" }
+        },
+        "p3": {
+          "type": "point",
+          "settings": { "text": "Doses matched to published clinical ranges" }
+        }
+      },
+      "block_order": ["p1", "p2", "p3"],
+      "settings": {
+        "color_scheme": "scheme-surface",
+        "eyebrow": "NO PROPRIETARY BLENDS",
+        "heading": "A \"blend\" is a way to hide",
+        "heading_light": "how little of the good stuff is in there.",
+        "text": "<p>When a label says \"Energy Matrix 5000mg\" and lists caffeine last, you have no idea if you're getting 100mg or 300mg. We list every active by weight — in milligrams, ranked by dose, not by what looks impressive.</p>",
+        "anchor_id": "philosophy",
+        "layout": "right",
+        "typical_kicker": "A TYPICAL LABEL",
+        "typical_heading": "Energy & Focus Blend",
+        "typical_total": "5000mg",
+        "typical_rows": "Caffeine Anhydrous | *\nBeta-Alanine | *\nL-Citrulline | *\nL-Tyrosine | *",
+        "typical_footer": "* DOSE NOT DISCLOSED",
+        "our_kicker": "OUR LABEL",
+        "our_heading": "Six actives, named",
+        "our_total": "8.20g total",
+        "our_rows": "L-Citrulline Malate | 8.00g\nBeta-Alanine | 3.20g\nCaffeine | 200mg\nL-Tyrosine | 1.50g",
+        "our_footer": "EVERY MILLIGRAM LISTED",
+        "divider_top": true,
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
+    "reviews": {
+      "type": "review-highlight",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "quote": "I've bought four tubs. The scoop actually weighs 5g on my scale, which is more than I can say for the last brand. Unflavoured mixes into anything.",
+            "author": "Jemma R.",
+            "product_name": "Creatine Monohydrate",
+            "rating": 5,
+            "verified": true
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "quote": "First pre-workout where I didn't have to guess what was in it. The dose panel sold me — 8g citrulline is 8g citrulline. No tingles theatre.",
+            "author": "Daniel K.",
+            "product_name": "Pre-Workout",
+            "rating": 5,
+            "verified": true
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "quote": "Took about a week to notice, but I'm falling asleep faster and not waking at 3am. No groggy mornings like with melatonin.",
+            "author": "Priya S.",
+            "product_name": "Magnesium Sleep",
+            "rating": 5,
+            "verified": true
+          }
+        }
+      },
+      "block_order": ["r1", "r2", "r3"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "VERIFIED REVIEWS",
+        "heading": "4.9 from 2,100+ buyers",
+        "link_label": "READ ALL",
+        "columns_desktop": 3,
+        "divider_top": true,
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
+    "subscribe": {
+      "type": "subscribe-promo",
+      "settings": {
+        "color_scheme": "scheme-inverse",
+        "eyebrow": "SUBSCRIBE & SAVE",
+        "heading": "Save $126 a year on the stack you already take.",
+        "text": "<p>15% off every order, delivered on your schedule. Skip, pause, or swap flavours anytime. No lock-in.</p>",
+        "saving_label": "AVERAGE MEMBER SAVING",
+        "saving_amount": "$126/yr",
+        "button_label": "Start a subscription",
+        "overlay_opacity": 55,
+        "divider_top": false,
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "blog": {
+      "type": "blog-posts",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "blog": "news",
+        "eyebrow": "FROM THE LAB NOTES",
+        "heading": "Read the label, then read us",
+        "anchor_id": "blog",
+        "posts_to_show": 3,
+        "columns_desktop": 3,
+        "show_image": true,
+        "show_excerpt": true,
+        "show_date": true,
+        "show_category": true,
+        "show_view_all": true,
+        "divider_top": true,
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
+    "instagram": {
+      "type": "instagram-grid",
+      "blocks": {
+        "i1": { "type": "post" },
+        "i2": { "type": "post" },
+        "i3": { "type": "post" },
+        "i4": { "type": "post" },
+        "i5": { "type": "post" },
+        "i6": { "type": "post" }
+      },
+      "block_order": ["i1", "i2", "i3", "i4", "i5", "i6"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "handle": "@KINETICLABS",
+        "link_label": "FOLLOW",
+        "divider_top": true,
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "certifications",
+    "goals",
+    "best-sellers",
+    "dosage",
+    "philosophy",
+    "reviews",
+    "subscribe",
+    "blog",
+    "instagram"
+  ]
+}

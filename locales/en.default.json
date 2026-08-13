@@ -56,7 +56,8 @@
     "required": "Required",
     "optional": "Optional",
     "on_sale": "Sale",
-    "sold_out": "Sold out"
+    "sold_out": "Sold out",
+    "verified": "Verified"
   },
   "accessibility": {
     "skip_to_text": "Skip to content",

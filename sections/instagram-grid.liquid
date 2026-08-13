@@ -1,0 +1,142 @@
+{{ 'component-home.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Static image tiles.
+
+  A live Instagram feed needs a UGC app — this section deliberately doesn't
+  pretend to be one. Add the app's block to the Apps section instead and turn
+  this off.
+{%- endcomment -%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    {% render 'section-header',
+      eyebrow: section.settings.handle,
+      heading: section.settings.heading,
+      link_url: section.settings.profile_link,
+      link_label: section.settings.link_label
+    %}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="instagram-grid list-unstyled" style="--cols-desktop: {{ section.blocks.size }};">
+        {%- for block in section.blocks -%}
+          <li class="instagram-grid__item" {{ block.shopify_attributes }}>
+            {%- capture tile -%}
+              <div class="media media--square instagram-grid__media">
+                {%- if block.settings.image != blank -%}
+                  <img
+                    src="{{ block.settings.image | image_url: width: 600 }}"
+                    srcset="
+                      {{ block.settings.image | image_url: width: 300 }} 300w,
+                      {{ block.settings.image | image_url: width: 600 }} 600w
+                    "
+                    sizes="(min-width: 750px) 18vw, 45vw"
+                    alt="{{ block.settings.image.alt | escape }}"
+                    width="{{ block.settings.image.width }}"
+                    height="{{ block.settings.image.height }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
+              </div>
+            {%- endcapture -%}
+
+            {%- if block.settings.link != blank -%}
+              <a
+                class="instagram-grid__link"
+                href="{{ block.settings.link }}"
+                target="_blank"
+                rel="noopener"
+                aria-describedby="a11y-new-window-message"
+              >
+                {{ tile }}
+                {%- if block.settings.caption != blank -%}
+                  <span class="visually-hidden">{{ block.settings.caption }}</span>
+                {%- endif -%}
+              </a>
+            {%- else -%}
+              {{ tile }}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.instagram_grid.name",
+  "tag": "section",
+  "class": "instagram-section",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.instagram_grid.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "t:sections.instagram_grid.handle",
+      "default": "@KINETICLABS"
+    },
+    { "type": "text", "id": "heading", "label": "t:shared.heading" },
+    { "type": "text", "id": "link_label", "label": "t:shared.link_label", "default": "FOLLOW" },
+    { "type": "url", "id": "profile_link", "label": "t:sections.instagram_grid.profile_link" },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "post",
+      "name": "t:sections.instagram_grid.block_post",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:shared.image" },
+        { "type": "url", "id": "link", "label": "t:shared.link" },
+        { "type": "text", "id": "caption", "label": "t:shared.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.instagram_grid.name",
+      "blocks": [
+        { "type": "post" },
+        { "type": "post" },
+        { "type": "post" },
+        { "type": "post" },
+        { "type": "post" },
+        { "type": "post" }
+      ]
+    }
+  ]
+}
+{% endschema %}

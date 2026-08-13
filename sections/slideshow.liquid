@@ -1,0 +1,220 @@
+{{ 'component-home.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Scroll-snap slideshow. The slides are ordinary blocks laid out in a
+  horizontal scroller, so swiping and keyboard scrolling work natively; the
+  arrows and dots are enhancements on top.
+{%- endcomment -%}
+
+<kl-slideshow
+  class="section slideshow color-{{ section.settings.color_scheme }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+  {% if section.settings.autoplay %}data-autoplay="{{ section.settings.autoplay_speed | times: 1000 }}"{% endif %}
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="{{ section.settings.heading | default: 'accessibility.carousel.label' | t | escape }}"
+>
+  <div class="page-width">
+    {% render 'section-header',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading
+    %}
+
+    <div class="slideshow__viewport" data-slideshow-viewport tabindex="0">
+      {%- for block in section.blocks -%}
+        <div
+          class="slideshow__slide"
+          data-slideshow-slide
+          role="group"
+          aria-roledescription="slide"
+          aria-label="{{ 'accessibility.carousel.slide_of' | t: index: forloop.index, total: section.blocks.size }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="slideshow__media media media--{{ section.settings.image_ratio }}">
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 1600 }}"
+                srcset="
+                  {{ block.settings.image | image_url: width: 750 }} 750w,
+                  {{ block.settings.image | image_url: width: 1100 }} 1100w,
+                  {{ block.settings.image | image_url: width: 1600 }} 1600w
+                "
+                sizes="100vw"
+                alt="{{ block.settings.image.alt | escape }}"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              >
+            {%- else -%}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+            <span
+              class="slideshow__overlay"
+              style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+            ></span>
+          </div>
+
+          {%- if block.settings.heading != blank or block.settings.text != blank -%}
+            <div class="slideshow__content">
+              {%- if block.settings.heading != blank -%}
+                <h3 class="h2 slideshow__heading">{{ block.settings.heading }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="rte">{{ block.settings.text }}</div>
+              {%- endif -%}
+              {%- if block.settings.button_label != blank -%}
+                <a class="button" href="{{ block.settings.button_link | default: '#' }}">
+                  {{- block.settings.button_label -}}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.blocks.size > 1 -%}
+      <div class="slideshow__controls">
+        <button
+          type="button"
+          class="slideshow__arrow"
+          data-slideshow-prev
+          aria-label="{{ 'accessibility.carousel.previous' | t }}"
+        >
+          {% render 'icon', name: 'arrow-left', size: 18 %}
+        </button>
+
+        <div class="slideshow__dots" role="tablist" data-slideshow-dots>
+          {%- for block in section.blocks -%}
+            <button
+              type="button"
+              class="slideshow__dot{% if forloop.first %} is-active{% endif %}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-label="{{ 'accessibility.carousel.slide_of' | t: index: forloop.index, total: section.blocks.size }}"
+              data-slideshow-dot="{{ forloop.index0 }}"
+            ></button>
+          {%- endfor -%}
+        </div>
+
+        {%- if section.settings.autoplay -%}
+          <button
+            type="button"
+            class="slideshow__arrow"
+            data-slideshow-toggle
+            aria-label="{{ 'accessibility.carousel.pause' | t }}"
+          >
+            {% render 'icon', name: 'close', size: 16 %}
+          </button>
+        {%- endif -%}
+
+        <button
+          type="button"
+          class="slideshow__arrow"
+          data-slideshow-next
+          aria-label="{{ 'accessibility.carousel.next' | t }}"
+        >
+          {% render 'icon', name: 'arrow-right', size: 18 %}
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+</kl-slideshow>
+
+<script src="{{ 'slideshow.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:sections.slideshow.name",
+  "tag": "section",
+  "class": "slideshow-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:shared.heading" },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:shared.image_ratio",
+      "options": [
+        { "value": "landscape", "label": "t:shared.ratio_landscape" },
+        { "value": "wide", "label": "t:shared.ratio_adapt" },
+        { "value": "square", "label": "t:shared.ratio_square" }
+      ],
+      "default": "landscape"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:sections.hero.overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "t:sections.slideshow.autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "t:sections.slideshow.autoplay_speed",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 6
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "t:sections.slideshow.block_slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:shared.image" },
+        { "type": "text", "id": "heading", "label": "t:shared.heading" },
+        { "type": "richtext", "id": "text", "label": "t:shared.text" },
+        { "type": "text", "id": "button_label", "label": "t:shared.button_label" },
+        { "type": "url", "id": "button_link", "label": "t:shared.button_link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.slideshow.name",
+      "blocks": [{ "type": "slide" }, { "type": "slide" }]
+    }
+  ]
+}
+{% endschema %}

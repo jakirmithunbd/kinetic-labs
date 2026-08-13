@@ -1,0 +1,175 @@
+{%- comment -%}
+  Editorial text band. Blocks are individually reorderable so a merchant can
+  build heading → text → button, or any other order, without a developer.
+{%- endcomment -%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width{% if section.settings.narrow %} page-width--narrow{% endif %}">
+    <div class="rich-text rich-text--{{ section.settings.alignment }}">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'eyebrow' -%}
+            <p class="eyebrow" {{ block.shopify_attributes }}>
+              [&nbsp;{{ block.settings.text }}&nbsp;]
+            </p>
+
+          {%- when 'heading' -%}
+            <h2 class="{{ block.settings.size }}" {{ block.shopify_attributes }}>
+              {{ block.settings.heading }}
+            </h2>
+
+          {%- when 'text' -%}
+            <div class="rte {{ block.settings.size }}" {{ block.shopify_attributes }}>
+              {{ block.settings.text }}
+            </div>
+
+          {%- when 'button' -%}
+            {%- if block.settings.label != blank -%}
+              <div class="rich-text__buttons" {{ block.shopify_attributes }}>
+                <a
+                  class="button {% if block.settings.style == 'secondary' %}button--secondary{% elsif block.settings.style == 'tertiary' %}button--tertiary{% endif %}"
+                  href="{{ block.settings.link | default: '#' }}"
+                >
+                  {{- block.settings.label -}}
+                </a>
+              </div>
+            {%- endif -%}
+
+          {%- when 'caption' -%}
+            <p class="label-micro" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+
+          {%- when '@app' -%}
+            <div {{ block.shopify_attributes }}>{% render block %}</div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.rich_text.name",
+  "tag": "section",
+  "class": "rich-text-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "t:shared.alignment",
+      "options": [
+        { "value": "left", "label": "t:shared.align_left" },
+        { "value": "center", "label": "t:shared.align_center" }
+      ],
+      "default": "left"
+    },
+    { "type": "checkbox", "id": "narrow", "label": "t:shared.layout", "default": true },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": false },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "eyebrow",
+      "name": "t:shared.eyebrow",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "text", "label": "t:shared.text" }]
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.rich_text.block_heading",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "t:shared.heading", "default": "Talk about your brand" },
+        {
+          "type": "select",
+          "id": "size",
+          "label": "t:settings.typography.display_scale",
+          "options": [
+            { "value": "h3", "label": "Small" },
+            { "value": "h2", "label": "Medium" },
+            { "value": "h1", "label": "Large" },
+            { "value": "h-display", "label": "Display" }
+          ],
+          "default": "h2"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.rich_text.block_text",
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "t:shared.text" },
+        {
+          "type": "select",
+          "id": "size",
+          "label": "t:settings.typography.body_scale",
+          "options": [
+            { "value": "text-caption", "label": "Small" },
+            { "value": "", "label": "Medium" },
+            { "value": "text-body-lg", "label": "Large" }
+          ],
+          "default": ""
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:sections.rich_text.block_button",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:shared.button_label" },
+        { "type": "url", "id": "link", "label": "t:shared.button_link" },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "t:shared.button_style",
+          "options": [
+            { "value": "primary", "label": "t:shared.style_primary" },
+            { "value": "secondary", "label": "t:shared.style_secondary" },
+            { "value": "tertiary", "label": "t:shared.style_tertiary" }
+          ],
+          "default": "primary"
+        }
+      ]
+    },
+    {
+      "type": "caption",
+      "name": "t:sections.rich_text.block_caption",
+      "settings": [{ "type": "text", "id": "text", "label": "t:shared.text" }]
+    },
+    { "type": "@app" }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.rich_text.name",
+      "blocks": [{ "type": "heading" }, { "type": "text" }]
+    }
+  ]
+}
+{% endschema %}
