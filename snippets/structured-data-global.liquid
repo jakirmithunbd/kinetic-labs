@@ -16,7 +16,7 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": {{ org_name | json }},
-      "url": {{ shop.url | append: page.url | json }},
+      "url": {{ shop.url | json }},
       {% if settings.share_image %}
         "logo": {{ settings.share_image | image_url: width: 500 | prepend: "https:" | json }},
       {% endif %}

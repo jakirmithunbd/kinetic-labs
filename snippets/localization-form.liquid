@@ -21,10 +21,18 @@
   endif
 -%}
 
+{%- comment -%}
+  The form tag's argument parser does not accept filters, so the ids are built
+  first. Passing `context | append: '…'` inline makes Liquid mis-tokenise the
+  tag and read the appended string as the form *type*.
+{%- endcomment -%}
+{%- assign country_form_id = context | append: '-country-form' -%}
+{%- assign language_form_id = context | append: '-language-form' -%}
+
 {%- if show_country or show_language -%}
   <div class="localization{% if compact %} localization--compact{% endif %}">
     {%- if show_country -%}
-      {%- form 'localization', class: 'localization__form', id: context | append: '-country-form' -%}
+      {%- form 'localization', class: 'localization__form', id: country_form_id -%}
         <div class="field">
           <label class="visually-hidden" for="{{ context }}-country">
             {{- 'localization.country_label' | t -}}
@@ -56,7 +64,7 @@
     {%- endif -%}
 
     {%- if show_language -%}
-      {%- form 'localization', class: 'localization__form', id: context | append: '-language-form' -%}
+      {%- form 'localization', class: 'localization__form', id: language_form_id -%}
         <div class="field">
           <label class="visually-hidden" for="{{ context }}-language">
             {{- 'localization.language_label' | t -}}

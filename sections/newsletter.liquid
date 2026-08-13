@@ -17,7 +17,8 @@
       <div class="newsletter-section__text rte">{{ section.settings.text }}</div>
     {%- endif -%}
 
-    {%- form 'customer', class: 'newsletter-section__form', id: 'Newsletter-' | append: section.id -%}
+    {%- assign newsletter_form_id = 'Newsletter-' | append: section.id -%}
+    {%- form 'customer', class: 'newsletter-section__form', id: newsletter_form_id -%}
       <input type="hidden" name="contact[tags]" value="newsletter">
       <label class="visually-hidden" for="NewsletterEmail-{{ section.id }}">
         {{- 'general.newsletter.label' | t -}}

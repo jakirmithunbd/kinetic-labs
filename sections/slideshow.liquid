@@ -1,5 +1,7 @@
 {{ 'component-home.css' | asset_url | stylesheet_tag }}
 
+{%- assign carousel_label = 'accessibility.carousel.label' | t -%}
+
 {%- comment -%}
   Scroll-snap slideshow. The slides are ordinary blocks laid out in a
   horizontal scroller, so swiping and keyboard scrolling work natively; the
@@ -12,7 +14,7 @@
   {% if section.settings.autoplay %}data-autoplay="{{ section.settings.autoplay_speed | times: 1000 }}"{% endif %}
   role="region"
   aria-roledescription="carousel"
-  aria-label="{{ section.settings.heading | default: 'accessibility.carousel.label' | t | escape }}"
+  aria-label="{{ section.settings.heading | default: carousel_label | escape }}"
 >
   <div class="page-width">
     {% render 'section-header',

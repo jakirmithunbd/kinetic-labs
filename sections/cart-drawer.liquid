@@ -104,8 +104,9 @@
           {%- assign recommended = section.settings.recommendations_collection.products -%}
           {%- if recommended.size > 0 -%}
             <div class="cart-drawer__recommendations">
+              {%- assign default_rec_heading = 'sections.cart.recommendations_heading' | t -%}
               <h3 class="label-micro">
-                {{- section.settings.recommendations_heading | default: 'sections.cart.recommendations_heading' | t -}}
+                {{- section.settings.recommendations_heading | default: default_rec_heading -}}
               </h3>
               <ul class="product-grid list-unstyled" style="--cols-mobile: 2; --cols-desktop: 2;">
                 {%- for product in recommended limit: 2 -%}

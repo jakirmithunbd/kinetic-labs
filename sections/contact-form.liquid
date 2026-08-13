@@ -21,10 +21,12 @@
       text: section.settings.text
     %}
 
-    {%- form 'contact', id: 'ContactForm-' | append: section.id, class: 'contact-form' -%}
+    {%- assign contact_form_id = 'ContactForm-' | append: section.id -%}
+    {%- form 'contact', id: contact_form_id, class: 'contact-form' -%}
       {%- if form.posted_successfully? -%}
+        {%- assign default_success = 'templates.contact.form.post_success' | t -%}
         <p class="form-status" role="status">
-          {{- section.settings.success_message | default: 'templates.contact.form.post_success' | t -}}
+          {{- section.settings.success_message | default: default_success -}}
         </p>
       {%- elsif form.errors -%}
         <div class="form-status form-status--error" role="alert" tabindex="-1" autofocus>
@@ -155,8 +157,9 @@
         </div>
       </div>
 
+      {%- assign default_submit = 'sections.contact.send' | t -%}
       <button type="submit" class="button">
-        {{- section.settings.submit_label | default: 'sections.contact.send' | t -}}
+        {{- section.settings.submit_label | default: default_submit -}}
       </button>
     {%- endform -%}
   </div>

@@ -138,8 +138,9 @@
 
     <div class="footer__bottom">
       <div class="footer__bottom-left">
+        {%- assign copyright_year = 'now' | date: '%Y' -%}
         <p class="footer__copyright text-caption-sm text-muted">
-          {{- 'sections.footer.copyright' | t: year: 'now' | date: '%Y', shop: shop.name -}}
+          {{- 'sections.footer.copyright' | t: year: copyright_year, shop: shop.name -}}
         </p>
         {%- if section.settings.bottom_menu != blank -%}
           <ul class="list-unstyled footer__legal">

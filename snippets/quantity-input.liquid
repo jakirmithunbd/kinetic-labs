@@ -42,8 +42,9 @@
     {% render 'icon', name: 'minus', size: 16 %}
   </button>
 
+  {%- assign default_qty_label = 'products.product.quantity' | t -%}
   <label class="visually-hidden" for="{{ input_id }}">
-    {{- label | default: 'products.product.quantity' | t -}}
+    {{- label | default: default_qty_label -}}
   </label>
   <input
     id="{{ input_id }}"

@@ -10,12 +10,14 @@
       <h1 class="h2" style="margin-top: var(--space-3);">
         {{- 'customer.order.title' | t: name: order.name -}}
       </h1>
+      {%- assign order_date = order.created_at | date: format: 'date_at_time' -%}
       <p class="label-micro">
-        {{- 'customer.order.date_html' | t: date: order.created_at | date: format: 'date_at_time' -}}
+        {{- 'customer.order.date_html' | t: date: order_date -}}
       </p>
       {%- if order.cancelled -%}
         <p class="form-status form-status--error" style="margin-top: var(--space-3);">
-          {{ 'customer.order.cancelled_html' | t: date: order.cancelled_at | date: format: 'date_at_time' }}
+          {%- assign cancelled_date = order.cancelled_at | date: format: 'date_at_time' -%}
+          {{ 'customer.order.cancelled_html' | t: date: cancelled_date }}
           {%- if order.cancel_reason -%}
             &middot; {{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason_label }}
           {%- endif -%}

@@ -66,8 +66,9 @@
         {%- if gift_card.expired -%}
           <p class="form-status form-status--error">{{ 'gift_cards.issued.expired' | t }}</p>
         {%- elsif gift_card.expires_on -%}
+          {%- assign expiry_date = gift_card.expires_on | date: format: 'date' -%}
           <p class="label-micro">
-            {{- 'gift_cards.issued.expires_on' | t: expiry: gift_card.expires_on | date: format: 'date' -}}
+            {{- 'gift_cards.issued.expires_on' | t: expiry: expiry_date -}}
           </p>
         {%- endif -%}
 
