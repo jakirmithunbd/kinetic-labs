@@ -1,0 +1,35 @@
+{%- comment -%}
+  Renders the rating from the standard reviews.* metafields.
+
+  If you use a review app, add its own app block here instead and turn this
+  one off — the app block will render its live widget and link to the review
+  section further down the page.
+{%- endcomment -%}
+
+<div class="product-block product-block--rating" {{ block.shopify_attributes }}>
+  {%- capture rating_markup -%}
+    {% render 'rating', product: product, size: 14 %}
+  {%- endcapture -%}
+
+  {%- if rating_markup != blank -%}
+    {%- if block.settings.link_to_reviews -%}
+      <a class="product-rating__link" href="#Reviews">{{ rating_markup }}</a>
+    {%- else -%}
+      {{ rating_markup }}
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_rating",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "link_to_reviews",
+      "label": "t:shared.link",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

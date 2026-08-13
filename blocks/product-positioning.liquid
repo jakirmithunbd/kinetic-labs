@@ -1,0 +1,21 @@
+{%- liquid
+  assign line = product.metafields.custom.positioning_line.value
+-%}
+
+{%- if line != blank -%}
+  <div class="product-block product-block--positioning" {{ block.shopify_attributes }}>
+    <p class="product-positioning text-body-lg">{{ line }}</p>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_positioning",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.product_info.positioning_info"
+    }
+  ]
+}
+{% endschema %}

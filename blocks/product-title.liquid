@@ -1,0 +1,51 @@
+{%- liquid
+  assign heading_tag = 'h1'
+  if block.settings.heading_tag != blank
+    assign heading_tag = block.settings.heading_tag
+  endif
+-%}
+
+<div class="product-block product-block--title" {{ block.shopify_attributes }}>
+  {%- if block.settings.show_vendor and product.vendor != blank -%}
+    <p class="label-micro product-title__vendor">{{ product.vendor }}</p>
+  {%- endif -%}
+
+  <{{ heading_tag }} class="product-title {{ block.settings.size }}">
+    {{ product.title | escape }}
+  </{{ heading_tag }}>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_title",
+  "settings": [
+    {
+      "type": "select",
+      "id": "size",
+      "label": "t:settings.typography.display_scale",
+      "options": [
+        { "value": "h2", "label": "Large" },
+        { "value": "h1", "label": "Extra large" },
+        { "value": "h3", "label": "Small" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "t:shared.heading",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "t:products.product.vendor",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,111 @@
+{%- comment -%}
+  One product option, rendered as a real radio group.
+
+  Radios rather than a dropdown: the picker stays keyboard-navigable with
+  arrow keys for free, screen readers announce it as a group, and it still
+  works with JavaScript off (the form falls back to a submit-on-change
+  <noscript> select at the bottom of the picker).
+
+  Accepts:
+    product     {Product}
+    option      {ProductOption}
+    style       {String} 'swatch' | 'card' | 'pill'
+    show_per_serving {Boolean} card style only
+    section_id  {String}
+{%- endcomment -%}
+
+{%- liquid
+  assign picker_style = style | default: 'pill'
+  assign option_position = option.position
+  assign selected_value = option.selected_value
+  assign product_servings = product.metafields.custom.servings_per_container.value
+-%}
+
+<fieldset
+  class="option-picker option-picker--{{ picker_style }}"
+  data-option-picker
+  data-option-position="{{ option_position }}"
+>
+  <legend class="option-picker__legend">
+    <span class="field__label">{{ option.name }}</span>
+    <span class="option-picker__selected data" data-option-selected>{{ selected_value }}</span>
+  </legend>
+
+  <div class="option-picker__values">
+    {%- for value in option.values -%}
+      {%- liquid
+        assign input_id = 'Option-' | append: section_id | append: '-' | append: option_position | append: '-' | append: forloop.index
+        assign value_name = value.name | default: value
+        assign option_index = option_position | minus: 1
+
+        assign is_checked = false
+        if value_name == selected_value
+          assign is_checked = true
+        endif
+
+        assign value_available = false
+        assign value_variant = nil
+        for v in product.variants
+          if v.options[option_index] == value_name
+            if value_variant == nil
+              assign value_variant = v
+            endif
+            if v.available
+              assign value_available = true
+              assign value_variant = v
+              break
+            endif
+          endif
+        endfor
+
+        assign value_per_serving = nil
+        if picker_style == 'card' and show_per_serving and value_variant
+          assign servings = value_variant.metafields.custom.servings_per_container.value | default: product_servings
+          if servings != blank and servings > 0
+            assign per_cents = value_variant.price | times: 1.0 | divided_by: servings | round
+            assign per_money = per_cents | money
+            assign value_per_serving = 'products.product.price_per_serving' | t: price: per_money
+          endif
+        endif
+      -%}
+
+      <input
+        type="radio"
+        class="option-picker__input visually-hidden"
+        id="{{ input_id }}"
+        name="{{ option.name | escape }}-{{ section_id }}"
+        value="{{ value_name | escape }}"
+        data-option-value="{{ value_name | escape }}"
+        {% if is_checked %}checked{% endif %}
+        {% unless value_available %}data-unavailable{% endunless %}
+      >
+      <label class="option-picker__label" for="{{ input_id }}">
+        {%- case picker_style -%}
+          {%- when 'swatch' -%}
+            {% render 'swatch', value: value, product: product, option: option, size: 16 %}
+            <span class="option-picker__name">{{ value_name }}</span>
+
+          {%- when 'card' -%}
+            <span class="option-picker__name">{{ value_name }}</span>
+            {%- if value_variant -%}
+              <span class="option-picker__meta">
+                <span class="data option-picker__price">{{ value_variant.price | money }}</span>
+                {%- if value_per_serving -%}
+                  <span class="option-picker__per-serving data">{{ value_per_serving }}</span>
+                {%- endif -%}
+              </span>
+            {%- endif -%}
+
+          {%- else -%}
+            <span class="option-picker__name">{{ value_name }}</span>
+        {%- endcase -%}
+
+        {%- unless value_available -%}
+          <span class="visually-hidden">
+            &nbsp;&mdash; {{ 'products.options.variant_sold_out' | t }}
+          </span>
+        {%- endunless -%}
+      </label>
+    {%- endfor -%}
+  </div>
+</fieldset>
