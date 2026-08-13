@@ -48,6 +48,31 @@
    -------------------------------------------------------------------------- */
 
 :root {
+  /* ---- Colour fallbacks --------------------------------------------------
+     layout/theme.liquid overrides all of these from the merchant's colour
+     schemes. They are declared here as well so the theme still renders in
+     brand colours if that block ever fails to emit — settings_data.json out of
+     sync after a push, a scheme deleted in the editor, or the stylesheet
+     loading before the inline <style>.
+
+     Without these, `rgb(var(--color-text-rgb))` would be an invalid value and
+     every colour in the theme would drop out at once: no button fills, no
+     borders, no surfaces. This turns that cliff into a no-op. */
+  --color-background-rgb: 250 248 244;
+  --color-surface-rgb: 242 239 233;
+  --color-hairline-rgb: 230 225 216;
+  --color-text-rgb: 28 28 26;
+  --color-text-muted-rgb: 112 108 101;
+  --color-accent-rgb: 179 78 53;
+  --color-accent-strong-rgb: 148 64 44;
+  --color-support-rgb: 100 113 91;
+  --color-data-rgb: 43 79 217;
+  --color-button-rgb: 179 78 53;
+  --color-button-label-rgb: 250 248 244;
+  --color-secondary-button-label-rgb: 28 28 26;
+  --color-shadow-rgb: 28 28 26;
+  --gradient-background: none;
+
   /* Spacing — 8px base, overridable via --space-unit from theme settings */
   --space-unit: 8px;
   --space-05: calc(var(--space-unit) * 0.5); /*  4px */
