@@ -102,12 +102,14 @@
 
     {%- capture line_quantity -%}
       <div class="cart-item__quantity">
+        {%- assign qty_label = 'sections.cart.quantity' | t: title: line.title -%}
+        {%- assign qty_id = 'CartQuantity-' | append: layout | append: '-' | append: forloop.index -%}
         {% render 'quantity-input',
           variant: line.variant,
           value: line.quantity,
-          id: 'CartQuantity-' | append: layout | append: '-' | append: forloop.index,
+          id: qty_id,
           line: forloop.index,
-          label: 'sections.cart.quantity' | t: title: line.title
+          label: qty_label
         %}
         <button
           type="button"

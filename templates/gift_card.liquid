@@ -9,10 +9,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>{{ 'gift_cards.issued.title' | t: value: gift_card.initial_value | money, shop: shop.name }}</title>
+    {%- assign gift_card_value = gift_card.initial_value | money -%}
+    <title>{{ 'gift_cards.issued.title' | t: value: gift_card_value, shop: shop.name }}</title>
 
     {%- if settings.use_brand_fonts -%}
-      <link rel="preload" as="font" type="font/woff2" href="{{ 'fraunces-variable.woff2' | asset_url }}" crossorigin>
+      {{ 'fraunces-variable.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
     {%- endif -%}
 
     <style data-theme-tokens>

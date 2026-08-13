@@ -6,10 +6,6 @@
 
 {%- liquid
   assign entries = section.settings.faq_metaobjects.value
-  assign has_blocks = false
-  if section.blocks.size > 0
-    assign has_blocks = true
-  endif
 -%}
 
 <div

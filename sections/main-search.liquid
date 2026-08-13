@@ -82,11 +82,6 @@
             </div>
 
             {%- paginate search.results by section.settings.results_per_page -%}
-              {%- liquid
-                assign product_results = ''
-                assign other_results = ''
-              -%}
-
               {%- capture product_markup -%}
                 {%- for item in search.results -%}
                   {%- if item.object_type == 'product' -%}

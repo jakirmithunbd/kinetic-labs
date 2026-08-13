@@ -16,11 +16,12 @@
     style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
   >
     <div class="page-width">
+      {%- assign all_articles_label = 'sections.blog.all_articles' | t -%}
       {% render 'section-header',
         eyebrow: section.settings.eyebrow,
         heading: section.settings.heading,
         link_url: blog.url,
-        link_label: 'sections.blog.all_articles' | t
+        link_label: all_articles_label
       %}
 
       <ul class="article-grid list-unstyled" style="--cols-desktop: {{ limit }};">

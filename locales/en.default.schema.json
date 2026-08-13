@@ -451,7 +451,7 @@
       "info": "Rendered from the custom.how_to_use metafield."
     },
     "allergens": {
-      "name": "Allergens & certifications",
+      "name": "Allergens & certs",
       "info": "Renders only when the allergen or certification metafields are populated."
     },
     "product_faq": {

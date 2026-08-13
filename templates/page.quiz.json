@@ -69,29 +69,25 @@
         "q3a1": {
           "type": "answer",
           "settings": {
-            "label": "Recovery between sessions",
-            "type_override": "multiple"
+            "label": "Recovery between sessions"
           }
         },
         "q3a2": {
           "type": "answer",
           "settings": {
-            "label": "Energy before training",
-            "type_override": "multiple"
+            "label": "Energy before training"
           }
         },
         "q3a3": {
           "type": "answer",
           "settings": {
-            "label": "Sleep quality",
-            "type_override": "multiple"
+            "label": "Sleep quality"
           }
         },
         "q3a4": {
           "type": "answer",
           "settings": {
-            "label": "Hitting protein targets",
-            "type_override": "multiple"
+            "label": "Hitting protein targets"
           }
         },
         "q4": {
@@ -104,29 +100,25 @@
         "q4a1": {
           "type": "answer",
           "settings": {
-            "label": "Vegan",
-            "type_override": "multiple"
+            "label": "Vegan"
           }
         },
         "q4a2": {
           "type": "answer",
           "settings": {
-            "label": "Dairy-free",
-            "type_override": "multiple"
+            "label": "Dairy-free"
           }
         },
         "q4a3": {
           "type": "answer",
           "settings": {
-            "label": "No stimulants",
-            "type_override": "multiple"
+            "label": "No stimulants"
           }
         },
         "q4a4": {
           "type": "answer",
           "settings": {
-            "label": "No restrictions",
-            "type_override": "multiple"
+            "label": "No restrictions"
           }
         },
         "q5": {

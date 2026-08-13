@@ -23,20 +23,8 @@
       not on the LCP path for most templates.
     {%- endcomment -%}
     {%- if settings.use_brand_fonts -%}
-      <link
-        rel="preload"
-        as="font"
-        type="font/woff2"
-        href="{{ 'fraunces-variable.woff2' | asset_url }}"
-        crossorigin
-      >
-      <link
-        rel="preload"
-        as="font"
-        type="font/woff2"
-        href="{{ 'inter-variable.woff2' | asset_url }}"
-        crossorigin
-      >
+      {{ 'fraunces-variable.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+      {{ 'inter-variable.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
     {%- endif -%}
 
     <title>

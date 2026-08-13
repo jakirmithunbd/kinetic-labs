@@ -49,7 +49,7 @@
             "type": "color",
             "id": "text_muted",
             "label": "t:settings.colors.text_muted",
-            "default": "#8A857C"
+            "default": "#706C65"
           },
           { "type": "header", "content": "t:settings.colors.brand" },
           {
@@ -57,19 +57,19 @@
             "id": "accent",
             "label": "t:settings.colors.accent",
             "info": "t:settings.colors.accent_info",
-            "default": "#C4553A"
+            "default": "#B34E35"
           },
           {
             "type": "color",
             "id": "accent_strong",
             "label": "t:settings.colors.accent_strong",
-            "default": "#B3442A"
+            "default": "#94402C"
           },
           {
             "type": "color",
             "id": "support",
             "label": "t:settings.colors.support",
-            "default": "#7A8B6F"
+            "default": "#626F59"
           },
           {
             "type": "color",
@@ -83,7 +83,7 @@
             "type": "color",
             "id": "button",
             "label": "t:settings.colors.button",
-            "default": "#C4553A"
+            "default": "#B34E35"
           },
           {
             "type": "color",
@@ -111,6 +111,8 @@
           },
           "text": "text",
           "shadow": "shadow",
+          "links": "accent",
+          "icons": "text",
           "primary_button": "button",
           "on_primary_button": "button_label",
           "primary_button_border": "button",

@@ -64,56 +64,63 @@
         </div>
       </div>
 
-      {%- assign question_index = 0 -%}
+      {%- comment -%}
+        Blocks are a flat list, so each question collects the answers that
+        follow it, stopping at the next question. Every HTML tag opens and
+        closes inside the same branch — nothing is left dangling across a
+        Liquid conditional.
+      {%- endcomment -%}
+      {%- assign question_number = 0 -%}
       {%- for block in section.blocks -%}
-        {%- if block.type == 'question' -%}
-          {%- assign question_index = question_index | plus: 1 -%}
-          {%- if question_index > 1 -%}
-            </div>
-            </fieldset>
-          {%- endif -%}
-          <fieldset class="quiz__question" data-quiz-question hidden {{ block.shopify_attributes }}>
-            <legend class="quiz__question-legend">
-              <span class="h3">{{ block.settings.question }}</span>
-              <span class="label-micro quiz__hint">
-                {%- if block.settings.type == 'multiple' -%}
-                  {{ 'sections.quiz.select_multiple' | t }}
-                {%- else -%}
-                  {{ 'sections.quiz.select_one' | t }}
-                {%- endif -%}
-              </span>
-            </legend>
-            <div class="quiz__answers" data-quiz-type="{{ block.settings.type }}">
-        {%- elsif block.type == 'answer' and question_index > 0 -%}
-          <label class="quiz__answer" {{ block.shopify_attributes }}>
-            <input
-              type="{% if block.settings.type_override == 'multiple' %}checkbox{% else %}radio{% endif %}"
-              class="quiz__answer-input visually-hidden"
-              name="quiz-q{{ question_index }}"
-              value="{{ block.id }}"
-              data-products="{{ block.settings.products | escape }}"
-              data-goal="{{ block.settings.goal | escape }}"
-            >
-            <span class="quiz__answer-body">
-              {%- if block.settings.icon != 'none' -%}
-                {% render 'icon', name: block.settings.icon, size: 20 %}
+        {%- unless block.type == 'question' -%}{%- continue -%}{%- endunless -%}
+        {%- assign question_position = forloop.index0 -%}
+        {%- assign question_number = question_number | plus: 1 -%}
+
+        <fieldset class="quiz__question" data-quiz-question hidden {{ block.shopify_attributes }}>
+          <legend class="quiz__question-legend">
+            <span class="h3">{{ block.settings.question }}</span>
+            <span class="label-micro quiz__hint">
+              {%- if block.settings.type == 'multiple' -%}
+                {{ 'sections.quiz.select_multiple' | t }}
+              {%- else -%}
+                {{ 'sections.quiz.select_one' | t }}
               {%- endif -%}
-              <span>
-                <span class="quiz__answer-label">{{ block.settings.label }}</span>
-                {%- if block.settings.description != blank -%}
-                  <span class="quiz__answer-description text-caption text-muted">
-                    {{- block.settings.description -}}
-                  </span>
-                {%- endif -%}
-              </span>
             </span>
-          </label>
-        {%- endif -%}
-      {%- endfor -%}
-      {%- if question_index > 0 -%}
-        </div>
+          </legend>
+
+          <div class="quiz__answers" data-quiz-type="{{ block.settings.type }}">
+            {%- for answer in section.blocks -%}
+              {%- if forloop.index0 <= question_position -%}{%- continue -%}{%- endif -%}
+              {%- if answer.type == 'question' -%}{%- break -%}{%- endif -%}
+              {%- unless answer.type == 'answer' -%}{%- continue -%}{%- endunless -%}
+
+              <label class="quiz__answer" {{ answer.shopify_attributes }}>
+                <input
+                  type="{% if block.settings.type == 'multiple' %}checkbox{% else %}radio{% endif %}"
+                  class="quiz__answer-input visually-hidden"
+                  name="quiz-q{{ question_number }}"
+                  value="{{ answer.id }}"
+                  data-products="{{ answer.settings.products | escape }}"
+                  data-goal="{{ answer.settings.goal | escape }}"
+                >
+                <span class="quiz__answer-body">
+                  {%- if answer.settings.icon != 'none' -%}
+                    {% render 'icon', name: answer.settings.icon, size: 20 %}
+                  {%- endif -%}
+                  <span>
+                    <span class="quiz__answer-label">{{ answer.settings.label }}</span>
+                    {%- if answer.settings.description != blank -%}
+                      <span class="quiz__answer-description text-caption text-muted">
+                        {{- answer.settings.description -}}
+                      </span>
+                    {%- endif -%}
+                  </span>
+                </span>
+              </label>
+            {%- endfor -%}
+          </div>
         </fieldset>
-      {%- endif -%}
+      {%- endfor -%}
 
       <div class="quiz__actions">
         <button type="button" class="button button--secondary" data-quiz-back>
@@ -277,16 +284,6 @@
       "settings": [
         { "type": "text", "id": "label", "label": "t:shared.label" },
         { "type": "text", "id": "description", "label": "t:shared.text" },
-        {
-          "type": "select",
-          "id": "type_override",
-          "label": "t:sections.quiz.question_type",
-          "options": [
-            { "value": "single", "label": "t:sections.quiz.type_single" },
-            { "value": "multiple", "label": "t:sections.quiz.type_multiple" }
-          ],
-          "default": "single"
-        },
         {
           "type": "text",
           "id": "products",
