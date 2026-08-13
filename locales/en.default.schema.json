@@ -478,7 +478,8 @@
     },
     "ingredient_detail": {
       "name": "Ingredient detail",
-      "show_products": "Show products containing this ingredient"
+      "show_products": "Show products containing this ingredient",
+      "fallback_info": "Used only when the ingredient metaobject has no `products` field. Liquid cannot look up which products reference a metaobject, so the list has to be set explicitly."
     },
     "testing_process": {
       "name": "Testing process",

@@ -4,13 +4,24 @@
 {%- comment -%}
   Ingredient detail, rendered for templates/metaobject/ingredient.json.
 
-  "Products containing it" uses the metaobject's reverse reference to
-  products — no tag hack, no duplicated list to maintain.
+  "Products containing it": Liquid has no reverse-reference lookup, so a
+  metaobject cannot ask "which products point at me?". Two supported ways to
+  fill this list, in order of preference:
+
+    1. Add a `products` field (list of product references) to the ingredient
+       metaobject definition and pick the products there.
+    2. Choose a fallback collection in this section's settings — useful when
+       an ingredient maps neatly onto an existing collection.
+
+  If neither is set the block simply doesn't render.
 {%- endcomment -%}
 
 {%- liquid
   assign ing = metaobject
-  assign related = ing.system.reverse_references.products.value
+  assign related = ing.products.value
+  if related == blank and section.settings.fallback_collection != blank
+    assign related = section.settings.fallback_collection.products
+  endif
 -%}
 
 <div
@@ -106,6 +117,12 @@
       "id": "show_products",
       "label": "t:sections.ingredient_detail.show_products",
       "default": true
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "t:shared.collection",
+      "info": "t:sections.ingredient_detail.fallback_info"
     },
     { "type": "header", "content": "t:shared.padding_header" },
     {

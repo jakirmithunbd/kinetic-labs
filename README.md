@@ -143,12 +143,15 @@ The glossary entry. Gets its own storefront URL.
 | `unit` | Single line text (`g`, `mg`, `mcg`, `iu`, `ml`) |
 | `references` | Rich text |
 | `image` | File reference (image) |
+| `products` | List of product references — see note below |
 
 **Storefront access:** on. **Web page template:** `ingredient`.
 
-The ingredient page lists the products that contain it using the metaobject's *reverse
-reference* to products — no tagging, no second list to maintain. This works automatically
-because `custom.key_ingredients` points at these entries.
+**About the `products` field.** Liquid has no reverse-reference lookup: a metaobject cannot ask
+"which products point at me?". So the "Found in" list on an ingredient page has to be set
+explicitly. Add the `products` field above and pick the products, or leave it off and choose a
+**fallback collection** in the Ingredient detail section's settings. If neither is set, the
+block doesn't render.
 
 ### `dose_record`
 
@@ -469,7 +472,12 @@ hundred batches that payload gets heavy. The section has an **External endpoint*
 it in and the form posts the batch number to your own app or COA provider instead, and the
 inline JSON is not rendered at all.
 
-**3. The mega menu matches by title.** The header's mega menu block finds its menu item by
+**3. Ingredient pages can't auto-discover their products.** Covered above under the `products`
+field — worth repeating because it's the one place where the data model needs a list kept in two
+places. If that becomes a maintenance problem, a Shopify Function or a small app could sync
+`products` from `custom.key_ingredients` on product save.
+
+**4. The mega menu matches by title.** The header's mega menu block finds its menu item by
 comparing titles, case-insensitively. Rename the menu item and you must update the block's
 **Top-level menu item** setting to match. This is the trade-off for letting a merchant attach a
 mega menu to any nav item without a code change.

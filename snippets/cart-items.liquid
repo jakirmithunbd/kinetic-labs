@@ -104,9 +104,21 @@
       <div class="cart-item__quantity">
         {%- assign qty_label = 'sections.cart.quantity' | t: title: line.title -%}
         {%- assign qty_id = 'CartQuantity-' | append: layout | append: '-' | append: forloop.index -%}
+        {%- comment -%}
+          On the cart page these inputs sit inside the cart's POST form, so they
+          have to be named updates[] — that is what Shopify reads on submit, and
+          it keeps the page working with JavaScript disabled. In the drawer they
+          are not inside any form, so the name is irrelevant.
+        {%- endcomment -%}
+        {%- if is_page -%}
+          {%- assign qty_name = 'updates[]' -%}
+        {%- else -%}
+          {%- assign qty_name = 'quantity' -%}
+        {%- endif -%}
         {% render 'quantity-input',
           variant: line.variant,
           value: line.quantity,
+          name: qty_name,
           id: qty_id,
           line: forloop.index,
           label: qty_label
