@@ -1,0 +1,77 @@
+{%- comment -%}
+  Quantity. The input carries form="ProductForm-<section>" so it posts to the
+  add-to-cart form no matter where the merchant drags this block.
+{%- endcomment -%}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign rules = variant.quantity_rule
+  assign min = rules.min | default: 1
+  assign step = rules.increment | default: 1
+  assign max = nil
+  if rules.max != blank
+    assign max = rules.max
+  endif
+  if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+    if max == nil or variant.inventory_quantity < max
+      assign max = variant.inventory_quantity
+    endif
+  endif
+-%}
+
+<div class="product-block product-block--quantity" {{ block.shopify_attributes }}>
+  <span class="field__label" id="QuantityLabel-{{ section.id }}">
+    {{- 'products.product.quantity' | t -}}
+  </span>
+
+  <kl-quantity class="quantity" data-quantity-root>
+    <button
+      type="button"
+      class="quantity__button"
+      data-step="-1"
+      aria-label="{{ 'products.product.decrease_quantity' | t }}"
+    >
+      {% render 'icon', name: 'minus', size: 16 %}
+    </button>
+
+    <input
+      id="Quantity-{{ section.id }}"
+      class="quantity__input"
+      type="number"
+      name="quantity"
+      form="ProductForm-{{ section.id }}"
+      value="{{ min }}"
+      min="{{ min }}"
+      step="{{ step }}"
+      {% if max %}max="{{ max }}"{% endif %}
+      inputmode="numeric"
+      autocomplete="off"
+      aria-labelledby="QuantityLabel-{{ section.id }}"
+      data-quantity-input
+    >
+
+    <button
+      type="button"
+      class="quantity__button"
+      data-step="1"
+      aria-label="{{ 'products.product.increase_quantity' | t }}"
+    >
+      {% render 'icon', name: 'plus', size: 16 %}
+    </button>
+  </kl-quantity>
+
+  {%- if step > 1 or min > 1 -%}
+    <p class="label-micro product-quantity__rule">
+      {%- if min > 1 %}Min {{ min }}{% endif -%}
+      {%- if min > 1 and step > 1 %} &middot; {% endif -%}
+      {%- if step > 1 %}In {{ step }}s{% endif -%}
+    </p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_quantity",
+  "settings": []
+}
+{% endschema %}
