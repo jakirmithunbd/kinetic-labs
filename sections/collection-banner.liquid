@@ -1,0 +1,128 @@
+{{ 'component-collection.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="collection-banner section color-{{ section.settings.color_scheme }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    {% render 'breadcrumbs' %}
+
+    <div class="collection-banner__inner{% if section.settings.show_image and collection.image %} collection-banner__inner--with-image{% endif %}">
+      <div class="collection-banner__text">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="eyebrow">[&nbsp;{{ section.settings.eyebrow }}&nbsp;]</p>
+        {%- endif -%}
+
+        <h1 class="h2 collection-banner__title">
+          {{- collection.title | default: 'onboarding.collection_title' | t -}}
+        </h1>
+
+        {%- if section.settings.show_product_count -%}
+          <p class="collection-banner__count label-micro">
+            {{- 'sections.collection_grid.showing_count' | t: count: collection.products_count -}}
+          </p>
+        {%- endif -%}
+
+        {%- if section.settings.show_description and collection.description != blank -%}
+          {%- comment -%}
+            On mobile the SEO copy is collapsed behind a disclosure so it
+            doesn't push the products below the fold — the text is still in
+            the HTML for crawlers either way.
+          {%- endcomment -%}
+          {%- if section.settings.collapse_description -%}
+            <details class="collection-banner__description collection-banner__description--collapsible">
+              <summary class="link-mono">
+                {{ 'general.read_more' | t }}
+                <span class="accordion__icon" aria-hidden="true"></span>
+              </summary>
+              <div class="rte">{{ collection.description }}</div>
+            </details>
+          {%- else -%}
+            <div class="collection-banner__description rte">{{ collection.description }}</div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_image and collection.image -%}
+        <div class="collection-banner__media media media--landscape">
+          <img
+            src="{{ collection.image | image_url: width: 1200 }}"
+            srcset="
+              {{ collection.image | image_url: width: 600 }} 600w,
+              {{ collection.image | image_url: width: 900 }} 900w,
+              {{ collection.image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(min-width: 990px) 40vw, 100vw"
+            alt="{{ collection.image.alt | escape }}"
+            width="{{ collection.image.width }}"
+            height="{{ collection.image.height }}"
+            fetchpriority="high"
+          >
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.collection_banner.name",
+  "tag": "section",
+  "class": "collection-banner-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow" },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "t:sections.collection_banner.show_image",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "t:sections.collection_banner.show_description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "collapse_description",
+      "label": "t:sections.collection_banner.collapse_description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "t:sections.collection_banner.show_product_count",
+      "default": true
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [{ "name": "t:sections.collection_banner.name" }]
+}
+{% endschema %}
