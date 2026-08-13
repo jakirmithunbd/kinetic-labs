@@ -1,0 +1,33 @@
+{%- comment -%}
+  Emits the inline custom properties that drive a section's vertical rhythm.
+  Every section that renders a `.section` wrapper passes its own padding
+  settings through here, which is what makes top/bottom padding editable
+  per section, per breakpoint, without a code change.
+
+  Accepts:
+    st  {Number} desktop padding-top    (px)
+    sb  {Number} desktop padding-bottom (px)
+    stm {Number} mobile padding-top     (px) — falls back to 70% of desktop
+    sbm {Number} mobile padding-bottom  (px) — falls back to 70% of desktop
+
+  Usage:
+    <div class="section" style="{% render 'section-style', st: section.settings.padding_top, ... %}">
+{%- endcomment -%}
+
+{%- liquid
+  assign pt = st | default: 112
+  assign pb = sb | default: 112
+
+  if stm != blank
+    assign pt_m = stm
+  else
+    assign pt_m = pt | times: 0.7 | round
+  endif
+
+  if sbm != blank
+    assign pb_m = sbm
+  else
+    assign pb_m = pb | times: 0.7 | round
+  endif
+-%}
+--section-pt: {{ pt }}px; --section-pb: {{ pb }}px; --section-pt-mobile: {{ pt_m }}px; --section-pb-mobile: {{ pb_m }}px;

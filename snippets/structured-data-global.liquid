@@ -1,0 +1,56 @@
+{%- comment -%}
+  Organization + WebSite JSON-LD, emitted once per page from the layout.
+  Product, Article, FAQPage and BreadcrumbList JSON-LD live with the sections
+  that own that content so the data can never drift from what is rendered.
+{%- endcomment -%}
+
+{%- if settings.enable_structured_data -%}
+  {%- liquid
+    assign org_name = settings.organization_name | default: shop.name
+    assign social_links = ''
+    assign links = settings.social_instagram_link | append: ',' | append: settings.social_tiktok_link | append: ',' | append: settings.social_youtube_link | append: ',' | append: settings.social_facebook_link | append: ',' | append: settings.social_x_link | append: ',' | append: settings.social_strava_link
+    assign links_array = links | split: ','
+  -%}
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ org_name | json }},
+      "url": {{ shop.url | append: page.url | json }},
+      {% if settings.share_image %}
+        "logo": {{ settings.share_image | image_url: width: 500 | prepend: "https:" | json }},
+      {% endif %}
+      "sameAs": [
+        {%- assign printed = 0 -%}
+        {%- for link in links_array -%}
+          {%- assign trimmed = link | strip -%}
+          {%- if trimmed != blank -%}
+            {%- if printed > 0 %},{% endif -%}
+            {{ trimmed | json }}
+            {%- assign printed = printed | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+
+  {%- if template.name == 'index' -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | json }},
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": {{ shop.url | append: routes.search_url | append: "?q={search_term_string}" | json }}
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+  {%- endif -%}
+{%- endif -%}

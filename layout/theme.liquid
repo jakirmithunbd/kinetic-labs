@@ -1,0 +1,213 @@
+<!doctype html>
+<html
+  class="no-js"
+  lang="{{ request.locale.iso_code }}"
+  dir="{% if request.locale.iso_code == 'ar' or request.locale.iso_code == 'he' %}rtl{% else %}ltr{% endif %}"
+>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_schemes.scheme-1.settings.background | default: '#FAF8F4' }}">
+
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- endif -%}
+
+    {%- comment -%}
+      Preload the display face only. Body and data faces load with swap and are
+      not on the LCP path for most templates.
+    {%- endcomment -%}
+    {%- if settings.use_brand_fonts -%}
+      <link
+        rel="preload"
+        as="font"
+        type="font/woff2"
+        href="{{ 'fraunces-variable.woff2' | asset_url }}"
+        crossorigin
+      >
+      <link
+        rel="preload"
+        as="font"
+        type="font/woff2"
+        href="{{ 'inter-variable.woff2' | asset_url }}"
+        crossorigin
+      >
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {{ content_for_header }}
+
+    {%- liquid
+      assign body_font = settings.font_body
+      assign display_font = settings.font_display
+      assign body_font_bold = body_font | font_modify: 'weight', 'bold'
+      assign body_font_italic = body_font | font_modify: 'style', 'italic'
+    -%}
+
+    {%- unless settings.use_brand_fonts -%}
+      {{ body_font | font_face: font_display: 'swap' }}
+      {{ body_font_bold | font_face: font_display: 'swap' }}
+      {{ body_font_italic | font_face: font_display: 'swap' }}
+      {{ display_font | font_face: font_display: 'swap' }}
+    {%- endunless -%}
+
+    <style data-theme-tokens>
+      {%- comment -%} Colour schemes — one class per scheme, assignable per section. {%- endcomment -%}
+      {% for scheme in settings.color_schemes -%}
+        {%- assign s = scheme.settings -%}
+        {% if forloop.index == 1 %}:root,{% endif %}.color-{{ scheme.id }} {
+          --color-background-rgb: {{ s.background.red }} {{ s.background.green }} {{ s.background.blue }};
+          --color-surface-rgb: {{ s.surface.red }} {{ s.surface.green }} {{ s.surface.blue }};
+          --color-hairline-rgb: {{ s.hairline.red }} {{ s.hairline.green }} {{ s.hairline.blue }};
+          --color-text-rgb: {{ s.text.red }} {{ s.text.green }} {{ s.text.blue }};
+          --color-text-muted-rgb: {{ s.text_muted.red }} {{ s.text_muted.green }} {{ s.text_muted.blue }};
+          --color-accent-rgb: {{ s.accent.red }} {{ s.accent.green }} {{ s.accent.blue }};
+          --color-accent-strong-rgb: {{ s.accent_strong.red }} {{ s.accent_strong.green }} {{ s.accent_strong.blue }};
+          --color-support-rgb: {{ s.support.red }} {{ s.support.green }} {{ s.support.blue }};
+          --color-data-rgb: {{ s.data.red }} {{ s.data.green }} {{ s.data.blue }};
+          --color-button-rgb: {{ s.button.red }} {{ s.button.green }} {{ s.button.blue }};
+          --color-button-label-rgb: {{ s.button_label.red }} {{ s.button_label.green }} {{ s.button_label.blue }};
+          --color-secondary-button-label-rgb: {{ s.secondary_button_label.red }} {{ s.secondary_button_label.green }} {{ s.secondary_button_label.blue }};
+          --color-shadow-rgb: {{ s.shadow.red }} {{ s.shadow.green }} {{ s.shadow.blue }};
+          {%- if s.background_gradient != blank %}
+          --gradient-background: {{ s.background_gradient }};
+          {%- else %}
+          --gradient-background: none;
+          {%- endif %}
+        }
+      {%- endfor %}
+
+      .color-scheme,
+      body {
+        color: rgb(var(--color-text-rgb));
+        background-color: rgb(var(--color-background-rgb));
+      }
+
+      :root {
+        {%- if settings.use_brand_fonts %}
+        --font-display: 'Fraunces', ui-serif, Georgia, serif;
+        --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        --font-data: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        {%- else %}
+        --font-display: {{ display_font.family }}, {{ display_font.fallback_families }};
+        --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+        --font-data: ui-monospace, SFMono-Regular, Menlo, monospace;
+        {%- endif %}
+
+        --fw-display: {{ settings.display_weight }};
+        --font-scale-display: {{ settings.display_scale | divided_by: 100.0 }};
+        --font-scale-body: {{ settings.body_scale | divided_by: 100.0 }};
+        --ls-eyebrow: {{ settings.data_tracking | divided_by: 100.0 }}em;
+
+        --page-width: {{ settings.page_width }}px;
+        --gutter: {{ settings.gutter_mobile }}px;
+        --space-unit: {{ settings.spacing_base }}px;
+        --radius: {{ settings.corner_radius }}px;
+        --radius-sm: {{ settings.corner_radius | divided_by: 2 }}px;
+        --hairline-width: {{ settings.hairline_width }}px;
+        --duration: {{ settings.motion_duration }}ms;
+        --duration-fast: {{ settings.motion_duration | times: 0.6 | round }}ms;
+      }
+
+      @media screen and (min-width: 750px) {
+        :root {
+          --gutter: {{ settings.gutter_desktop }}px;
+        }
+      }
+
+      {%- comment -%}
+        The scale multipliers ride on top of the fluid clamps so a merchant can
+        nudge the whole system without breaking the responsive behaviour.
+      {%- endcomment -%}
+      {%- if settings.display_scale != 100 %}
+      .h-display, .h1, .h2, .h3, .h4 { font-size: calc(var(--fs-step) * var(--font-scale-display)); }
+      .h-display { --fs-step: var(--fs-display); }
+      .h1 { --fs-step: var(--fs-h1); }
+      .h2 { --fs-step: var(--fs-h2); }
+      .h3 { --fs-step: var(--fs-h3); }
+      .h4 { --fs-step: var(--fs-h4); }
+      {%- endif %}
+      {%- if settings.body_scale != 100 %}
+      body { font-size: calc(var(--fs-body) * var(--font-scale-body)); }
+      {%- endif %}
+    </style>
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      window.themeStrings = {
+        addToCart: {{ 'products.product.add_to_cart' | t | json }},
+        soldOut: {{ 'products.product.sold_out' | t | json }},
+        unavailable: {{ 'products.product.unavailable' | t | json }},
+        preOrder: {{ 'products.product.pre_order' | t | json }},
+        cartError: {{ 'sections.cart.error' | t | json }},
+        quantityError: {{ 'products.product.quantity_error' | t | json }}
+      };
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}',
+        product_recommendations_url: '{{ routes.product_recommendations_url }}'
+      };
+      window.shopSettings = {
+        moneyFormat: {{ shop.money_format | json }},
+        cartType: {{ settings.cart_type | json }},
+        animateOnScroll: {{ settings.animate_on_scroll | json }}
+      };
+    </script>
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+  </head>
+
+  <body class="template-{{ template.name | handle }} {% if template.suffix %}template-suffix-{{ template.suffix | handle }}{% endif %}">
+    <a class="skip-to-content" href="#MainContent">{{ 'accessibility.skip_to_text' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    {% render 'structured-data-global' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    <div
+      class="visually-hidden"
+      id="LiveRegion"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+  </body>
+</html>

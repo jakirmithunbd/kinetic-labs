@@ -1,0 +1,48 @@
+{%- comment -%}
+  Price per serving, in the data typeface.
+
+  Always computed — never stored — so it cannot drift from the price the
+  customer actually pays:
+
+      price ÷ custom.servings_per_container
+
+  The serving count is read from the variant first (a 2kg tub has more
+  servings than a 1kg tub of the same product) and falls back to the product
+  metafield when only one size exists.
+
+  Accepts:
+    product  {Product}  required
+    variant  {Variant}  optional — preferred source of both price and servings
+    price    {Number}   optional override, in cents
+    class    {String}   extra classes
+{%- endcomment -%}
+
+{%- liquid
+  assign servings = nil
+
+  if variant and variant.metafields.custom.servings_per_container.value != blank
+    assign servings = variant.metafields.custom.servings_per_container.value
+  elsif product.selected_or_first_available_variant.metafields.custom.servings_per_container.value != blank and variant == nil
+    assign servings = product.selected_or_first_available_variant.metafields.custom.servings_per_container.value
+  elsif product.metafields.custom.servings_per_container.value != blank
+    assign servings = product.metafields.custom.servings_per_container.value
+  endif
+
+  if price != blank
+    assign source_price = price
+  elsif variant
+    assign source_price = variant.price
+  else
+    assign source_price = product.price
+  endif
+-%}
+
+{%- if servings != nil and servings > 0 and source_price > 0 -%}
+  {%- liquid
+    assign per_serving = source_price | times: 1.0 | divided_by: servings | round
+    assign per_serving_money = per_serving | money
+  -%}
+  <span class="price-per-serving data {{ class }}">
+    {{- 'products.product.price_per_serving' | t: price: per_serving_money -}}
+  </span>
+{%- endif -%}

@@ -1,0 +1,47 @@
+{%- comment -%}
+  Star rating from the standard `reviews.rating` / `reviews.rating_count`
+  metafields that Judge.me, Okendo and Loox all write to.
+
+  Renders nothing when the metafields are absent, so the layout does not
+  reserve space for a rating that will never arrive.
+
+  Accepts:
+    product   {Product} required
+    show_count {Boolean} default true
+    size      {Number}  star px, default 13
+{%- endcomment -%}
+
+{%- liquid
+  assign rating = product.metafields.reviews.rating.value
+  assign rating_count = product.metafields.reviews.rating_count.value
+  assign star_size = size | default: 13
+  assign display_count = show_count | default: true, allow_false: true
+-%}
+
+{%- if rating != blank and rating.rating > 0 -%}
+  {%- liquid
+    assign rounded = rating.rating | round
+    assign scale = rating.scale_max | default: 5
+  -%}
+  <div
+    class="rating"
+    role="img"
+    aria-label="{{ 'products.product.rating_aria' | t: rating: rating.rating, scale: scale, count: rating_count }}"
+  >
+    <span class="rating__stars" aria-hidden="true">
+      {%- for i in (1..scale) -%}
+        {%- if i <= rounded -%}
+          {% render 'icon', name: 'star', size: star_size, class: 'rating__star rating__star--on' %}
+        {%- else -%}
+          {% render 'icon', name: 'star-outline', size: star_size, class: 'rating__star' %}
+        {%- endif -%}
+      {%- endfor -%}
+    </span>
+    <span class="rating__value data" aria-hidden="true">{{ rating.rating }}</span>
+    {%- if display_count and rating_count > 0 -%}
+      <span class="rating__count data" aria-hidden="true">
+        &middot; {{ rating_count }}
+      </span>
+    {%- endif -%}
+  </div>
+{%- endif -%}

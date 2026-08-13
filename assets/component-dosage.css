@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Dosage bars — the signature component.
+   Used by section-dosage-panel (home) and section-dosage-comparison (product).
+   ========================================================================== */
+
+.dosage-bar {
+  padding: var(--space-4) 0;
+  border-bottom: var(--hairline-width) solid rgb(var(--color-hairline-rgb));
+}
+
+.dosage-bar:last-child {
+  border-bottom: 0;
+}
+
+.dosage-bar__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.dosage-bar__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h4);
+  line-height: var(--lh-heading-tight);
+  letter-spacing: var(--ls-heading);
+}
+
+.dosage-bar__name a {
+  text-decoration: none;
+}
+
+.dosage-bar__name a:hover {
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--color-accent-rgb));
+}
+
+/* The dose figure — electric blue, tabular, always real text. */
+.dosage-bar__dose {
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.dosage-bar__row {
+  display: grid;
+  grid-template-columns: 62px 1fr 40px;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: 6px;
+}
+
+.dosage-bar__label {
+  font-size: var(--fs-micro);
+  line-height: 1;
+}
+
+.dosage-bar__track {
+  position: relative;
+  display: block;
+  height: 6px;
+  border-radius: 1px;
+  background: rgb(var(--color-hairline-rgb));
+  overflow: hidden;
+}
+
+.dosage-bar__fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 1px;
+  transition: width 900ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.dosage-bar__fill--industry {
+  background: rgb(var(--color-text-muted-rgb) / 0.45);
+}
+
+.dosage-bar__fill--ours {
+  background: rgb(var(--color-data-rgb));
+}
+
+/* Fill on reveal; if the section isn't set to animate, the bar is simply
+   drawn at full width on first paint. */
+.dosage-bar.is-visible .dosage-bar__fill,
+.dosage-bar:not(.reveal) .dosage-bar__fill {
+  width: var(--bar-width);
+}
+
+.dosage-bar__pct {
+  font-size: var(--fs-micro);
+  text-align: right;
+  color: rgb(var(--color-text-muted-rgb));
+  line-height: 1;
+}
+
+.dosage-bar__row:has(.dosage-bar__fill--ours) .dosage-bar__pct {
+  color: rgb(var(--color-data-rgb));
+}
+
+.dosage-bar__note {
+  margin-top: var(--space-2);
+  font-size: var(--fs-micro);
+  color: rgb(var(--color-text-muted-rgb));
+  letter-spacing: 0.02em;
+}
+
+.dosage-bar__citation {
+  opacity: 0.75;
+}
+
+.dosage-panel__footnote {
+  margin-top: var(--space-5);
+  font-size: var(--fs-caption-sm);
+  color: rgb(var(--color-text-muted-rgb));
+  max-width: 68ch;
+}
+
+/* Minimal style: drop the industry comparison row's chrome for a tighter,
+   editorial treatment. */
+.dosage-bar--minimal .dosage-bar__track {
+  height: 3px;
+  background: rgb(var(--color-hairline-rgb) / 0.6);
+}
+
+.dosage-bar--minimal {
+  border-bottom: 0;
+  padding-block: var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dosage-bar__fill {
+    width: var(--bar-width) !important;
+    transition: none;
+  }
+}
+
+@media screen and (max-width: 599px) {
+  .dosage-bar__row {
+    grid-template-columns: 56px 1fr 38px;
+  }
+
+  .dosage-bar__name {
+    font-size: var(--fs-body-sm);
+  }
+}

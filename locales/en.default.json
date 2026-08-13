@@ -1,0 +1,542 @@
+{
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "search": {
+      "search": "Search",
+      "placeholder": "Search products, ingredients, articles",
+      "submit": "Search",
+      "reset": "Clear search term",
+      "results_with_count": {
+        "one": "{{ count }} result",
+        "other": "{{ count }} results"
+      },
+      "no_results": "No results for “{{ terms }}”.",
+      "no_results_help": "Check the spelling, or try a broader term such as an ingredient name.",
+      "results_for": "Results for “{{ terms }}”",
+      "products": "Products",
+      "collections": "Collections",
+      "pages": "Pages",
+      "articles": "Articles",
+      "view_all": "View all results",
+      "predictive_label": "Search suggestions"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {{ number }}",
+      "load_more": "Load more",
+      "loading": "Loading…",
+      "showing": "Showing {{ shown }} of {{ total }}"
+    },
+    "share": {
+      "label": "Share",
+      "copy_link": "Copy link",
+      "copied": "Link copied",
+      "share_on": "Share on {{ network }}"
+    },
+    "newsletter": {
+      "label": "Email",
+      "placeholder": "you@email.com",
+      "submit": "Subscribe",
+      "success": "Thanks — check your inbox to confirm.",
+      "error": "That email doesn’t look right. Try again?"
+    },
+    "continue_shopping": "Continue shopping",
+    "close": "Close",
+    "back": "Back",
+    "menu": "Menu",
+    "loading": "Loading",
+    "read_more": "Read more",
+    "view_all": "View all",
+    "learn_more": "Learn more",
+    "required": "Required",
+    "optional": "Optional",
+    "on_sale": "Sale",
+    "sold_out": "Sold out"
+  },
+
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "refresh_page": "Choosing a selection results in a full page refresh.",
+    "close": "Close",
+    "unit_price_separator": "per",
+    "link_messages": {
+      "new_window": "Opens in a new window.",
+      "external": "Opens external website."
+    },
+    "carousel": {
+      "label": "Carousel",
+      "previous": "Previous slide",
+      "next": "Next slide",
+      "slide_of": "Slide {{ index }} of {{ total }}",
+      "pause": "Pause slideshow",
+      "play": "Play slideshow"
+    },
+    "star_rating": "{{ rating }} out of {{ scale }} stars",
+    "loading_media": "Loading media"
+  },
+
+  "sections": {
+    "announcements": {
+      "label": "Announcement",
+      "dismiss": "Dismiss announcement",
+      "previous": "Previous announcement",
+      "next": "Next announcement"
+    },
+    "header": {
+      "menu": "Menu",
+      "close_menu": "Close menu",
+      "cart_count": {
+        "one": "{{ count }} item in cart",
+        "other": "{{ count }} items in cart"
+      },
+      "account": "Account",
+      "log_in": "Log in",
+      "search": "Search",
+      "close_search": "Close search",
+      "back_to_menu": "Back to {{ title }}"
+    },
+    "footer": {
+      "newsletter_heading": "Lab notes, occasionally",
+      "newsletter_text": "New research, new batches, and the occasional restock. No daily email.",
+      "follow_us": "Follow us",
+      "payment_methods": "Payment methods we accept",
+      "copyright": "© {{ year }} {{ shop }}",
+      "disclaimer_label": "Regulatory information"
+    },
+    "cart": {
+      "title": "Your cart",
+      "empty": "Your cart is empty",
+      "empty_text": "Nothing in here yet. Start with the clinically dosed basics.",
+      "checkout": "Checkout",
+      "view_cart": "View cart",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "taxes_and_shipping_at_checkout": "Tax and shipping calculated at checkout",
+      "note": "Order note",
+      "note_placeholder": "Delivery instructions, gift message…",
+      "add_note": "Add an order note",
+      "remove": "Remove {{ title }}",
+      "quantity": "Quantity for {{ title }}",
+      "update": "Update",
+      "discount": "Discount",
+      "discounts": "Discounts",
+      "savings": "You save {{ amount }}",
+      "error": "Something went wrong updating your cart. Please try again.",
+      "quantity_error": "Only {{ quantity }} of this are available.",
+      "free_shipping_progress": "You’re {{ amount }} away from free shipping",
+      "free_shipping_reached": "Free shipping unlocked",
+      "free_shipping_label": "Free shipping at {{ threshold }}",
+      "recommendations_heading": "Pairs well with",
+      "selling_plan": "Delivery",
+      "one_time": "One-time",
+      "items_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      },
+      "shipping_estimator": {
+        "heading": "Estimate shipping",
+        "country": "Country",
+        "province": "State / province",
+        "zip": "Postcode",
+        "calculate": "Calculate",
+        "no_rates": "No shipping rates found for that address.",
+        "rates_found": {
+          "one": "1 shipping rate available:",
+          "other": "{{ count }} shipping rates available:"
+        }
+      }
+    },
+    "quick_add": {
+      "title": "Quick add",
+      "choose_flavour": "Choose a flavour",
+      "view_details": "View full details"
+    },
+    "collection_grid": {
+      "filter_and_sort": "Filter and sort",
+      "filters": "Filters",
+      "sort_by": "Sort by",
+      "apply": "Apply",
+      "clear": "Clear",
+      "clear_all": "Clear all",
+      "remove_filter": "Remove filter {{ name }}",
+      "price_from": "From",
+      "price_to": "To",
+      "max_price": "The highest price is {{ price }}",
+      "showing_count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      },
+      "empty": "No products match those filters.",
+      "empty_action": "Clear the filters and start again.",
+      "filter_count": "{{ count }}",
+      "close_filters": "Close filters"
+    },
+    "blog": {
+      "read_article": "Read article",
+      "all_articles": "All articles",
+      "posted_in": "Posted in",
+      "written_by": "By {{ author }}",
+      "reading_time": "{{ minutes }} min read",
+      "table_of_contents": "In this article",
+      "related_heading": "Keep reading",
+      "back_to_blog": "Back to {{ title }}",
+      "comments": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "quiz": {
+      "step_of": "Step {{ current }} of {{ total }}",
+      "next": "Next",
+      "back": "Back",
+      "start": "Start the quiz",
+      "restart": "Start again",
+      "see_results": "See my stack",
+      "results_heading": "Your stack",
+      "add_stack_to_cart": "Add the stack to cart",
+      "shop_matches": "Shop the matches",
+      "progress_label": "Quiz progress",
+      "select_one": "Choose one",
+      "select_multiple": "Choose all that apply"
+    },
+    "testing": {
+      "coa_heading": "Find a certificate of analysis",
+      "coa_label": "Batch number",
+      "coa_placeholder": "e.g. KL-2411-A",
+      "coa_submit": "Look up batch",
+      "coa_help": "The batch number is printed on the base of the tub, under the best-before date.",
+      "coa_no_result": "We couldn’t find that batch. Check the number and try again, or contact us.",
+      "download_coa": "Download certificate",
+      "tested_on": "Tested {{ date }}"
+    },
+    "ingredients": {
+      "heading": "Ingredient glossary",
+      "clinical_dose": "Clinical dose",
+      "mechanism": "How it works",
+      "references": "Research",
+      "found_in": "Found in",
+      "view_ingredient": "View {{ name }}"
+    },
+    "contact": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message",
+      "send": "Send message",
+      "success": "Thanks — we’ll come back to you within one business day.",
+      "error": "Please check the highlighted fields."
+    },
+    "wholesale": {
+      "company": "Company",
+      "abn": "ABN / business number",
+      "role": "Your role",
+      "volume": "Estimated monthly volume",
+      "submit": "Request wholesale access"
+    },
+    "apps": {
+      "empty": "This section is for an app block. Add one in the theme editor."
+    }
+  },
+
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "add_to_cart_with_price": "Add to cart — {{ price }}",
+      "adding": "Adding…",
+      "added": "Added to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "pre_order": "Pre-order",
+      "notify_me": "Email me when back in stock",
+      "quantity": "Quantity",
+      "quantity_error": "You can only add {{ quantity }} of this to the cart.",
+      "decrease_quantity": "Decrease quantity",
+      "increase_quantity": "Increase quantity",
+      "view_details": "View full details",
+      "vendor": "Vendor",
+      "sku": "SKU",
+      "on_sale_save": "Save {{ amount }}",
+      "price_per_serving": "{{ price }}/serve",
+      "rating_aria": "Rated {{ rating }} out of {{ scale }} from {{ count }} reviews",
+      "media": {
+        "gallery_viewer": "Gallery viewer",
+        "thumbnail": "Load image {{ index }} into gallery view",
+        "thumbnail_of": "Thumbnail {{ index }} of {{ total }}",
+        "play_video": "Play video",
+        "view_model": "View in 3D",
+        "zoom": "Zoom image",
+        "close_zoom": "Close zoom"
+      },
+      "price": {
+        "regular_price": "Regular price",
+        "sale_price": "Sale price",
+        "unit_price": "Unit price",
+        "from_price": "From {{ price }}"
+      },
+      "inventory": {
+        "in_stock": "In stock",
+        "low_stock": "Low stock — {{ count }} left",
+        "out_of_stock": "Out of stock",
+        "backorder": "Ships when back in stock"
+      },
+      "share": "Share this product",
+      "breadcrumb_home": "Home"
+    },
+
+    "options": {
+      "flavour": "Flavour",
+      "size": "Size",
+      "select_option": "Select {{ option }}",
+      "unavailable_with": "{{ value }} — unavailable",
+      "variant_sold_out": "Sold out"
+    },
+
+    "purchase_options": {
+      "heading": "Purchase options",
+      "one_time": "One-time purchase",
+      "subscribe": "Subscribe & save {{ percent }}",
+      "subscribe_plain": "Subscribe & save",
+      "save_amount": "Save {{ amount }}",
+      "save_amount_and_percent": "Save {{ amount }} ({{ percent }})",
+      "cancel_anytime": "Skip or cancel anytime",
+      "delivery_frequency": "Delivery every",
+      "selling_plan_label": "Delivery schedule",
+      "subscription_note": "Managed in your account after checkout."
+    },
+
+    "dosage": {
+      "industry": "Industry",
+      "ours": "Ours",
+      "clinical_dose": "Clinical dose:",
+      "studied_dose": "Studied dose",
+      "summary": "{{ ingredient }}: our dose is {{ our_dose }}{{ unit }}, which is {{ our_percent }} percent of the clinically studied dose of {{ studied_dose }}{{ unit }}.",
+      "summary_industry": " The industry average is {{ industry_percent }} percent of the studied dose.",
+      "heading_default": "Our dose vs. the clinical dose"
+    },
+
+    "ingredients": {
+      "heading": "What’s in it, and why",
+      "dose": "Dose",
+      "read_more": "Read about {{ name }}"
+    },
+
+    "supplement_facts": {
+      "heading": "Supplement facts",
+      "serving_size": "Serving size",
+      "servings_per_container": "Servings per container",
+      "amount_per_serving": "Amount per serving",
+      "daily_value": "% Daily value",
+      "nutrient": "Nutrient",
+      "not_established": "† Daily value not established.",
+      "caption": "Nutrition information per serving"
+    },
+
+    "how_to_use": {
+      "heading": "Timing & stacking",
+      "timing": "Timing",
+      "stacking": "Stacking"
+    },
+
+    "allergens": {
+      "heading": "Allergens & certifications",
+      "allergens": "Allergens",
+      "certifications": "Certifications",
+      "banned_substance_tested": "Banned-substance tested"
+    },
+
+    "faq": {
+      "heading": "Questions, answered"
+    },
+
+    "recommendations": {
+      "complementary": "Pairs well with",
+      "related": "You might also like",
+      "recently_viewed": "Recently viewed"
+    },
+
+    "trust": {
+      "third_party_tested": "Third-party tested",
+      "ships_same_day": "Ships same day",
+      "guarantee": "60-day guarantee",
+      "free_shipping": "Free shipping over {{ amount }}"
+    }
+  },
+
+  "customer": {
+    "account": {
+      "title": "Account",
+      "details": "Account details",
+      "view_addresses": "View addresses",
+      "return": "Return to account details",
+      "subscriptions": "Subscriptions",
+      "subscriptions_text": "Your deliveries are managed in the subscription portal.",
+      "manage_subscriptions": "Manage subscriptions",
+      "no_orders": "You haven’t placed an order yet."
+    },
+    "activate_account": {
+      "title": "Activate account",
+      "subtext": "Create your password to activate your account.",
+      "password": "Password",
+      "password_confirm": "Confirm password",
+      "submit": "Activate account",
+      "cancel": "Decline invitation"
+    },
+    "addresses": {
+      "title": "Addresses",
+      "default": "Default address",
+      "add_new": "Add a new address",
+      "edit_address": "Edit address",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "company": "Company",
+      "address1": "Address",
+      "address2": "Apartment, suite, etc.",
+      "city": "City",
+      "country": "Country/region",
+      "province": "State/province",
+      "zip": "Postal/ZIP code",
+      "phone": "Phone",
+      "set_default": "Set as default address",
+      "add": "Add address",
+      "update": "Update address",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "delete_confirm": "Are you sure you want to delete this address?"
+    },
+    "login_page": {
+      "title": "Log in",
+      "email": "Email",
+      "password": "Password",
+      "forgot_password": "Forgot your password?",
+      "sign_in": "Sign in",
+      "create_account": "Create account",
+      "guest_title": "Continue as a guest",
+      "guest_continue": "Continue"
+    },
+    "recover_password": {
+      "title": "Reset your password",
+      "subtext": "We’ll email you a link to reset it.",
+      "submit": "Send reset link",
+      "success": "We’ve sent you an email with a link to update your password.",
+      "cancel": "Cancel"
+    },
+    "register": {
+      "title": "Create account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create account"
+    },
+    "reset_password": {
+      "title": "Reset account password",
+      "subtext": "Enter a new password.",
+      "password": "Password",
+      "password_confirm": "Confirm password",
+      "submit": "Reset password"
+    },
+    "orders": {
+      "title": "Order history",
+      "order_number": "Order",
+      "order_number_link": "Order number {{ number }}",
+      "date": "Date",
+      "payment_status": "Payment status",
+      "fulfillment_status": "Fulfillment status",
+      "total": "Total",
+      "none": "You haven’t placed any orders yet."
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "date_html": "Placed on {{ date }}",
+      "cancelled_html": "Order cancelled on {{ date }}",
+      "cancelled_reason": "Reason: {{ reason }}",
+      "billing_address": "Billing address",
+      "shipping_address": "Shipping address",
+      "payment_status": "Payment status",
+      "fulfillment_status": "Fulfillment status",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "quantity": "Quantity",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "discount": "Discount",
+      "track_shipment": "Track shipment"
+    },
+    "log_out": "Log out",
+    "log_in": "Log in"
+  },
+
+  "gift_cards": {
+    "issued": {
+      "title": "Here’s your {{ value }} gift card for {{ shop }}",
+      "subtext": "Your gift card",
+      "expired": "Expired",
+      "expires_on": "Expires on {{ expiry }}",
+      "redeem": "Use this code at checkout to redeem your gift card",
+      "shop_link": "Start shopping",
+      "print": "Print",
+      "add_to_apple_wallet": "Add to Apple Wallet",
+      "qr_image_alt": "QR code — scan to redeem gift card",
+      "copy_code": "Copy code",
+      "copied": "Code copied"
+    }
+  },
+
+  "templates": {
+    "404": {
+      "title": "Page not found",
+      "subtext": "That page doesn’t exist — it may have moved, or the link may be wrong.",
+      "action": "Back to the shop"
+    },
+    "password": {
+      "login_heading": "Enter using password",
+      "login_password": "Password",
+      "login_submit": "Enter",
+      "login_error": "Wrong password. Try again.",
+      "opens_soon": "Opening soon",
+      "powered_by": "This shop will be powered by {{ shopify }}",
+      "admin_link": "Are you the store owner? Log in here",
+      "close": "Close"
+    },
+    "contact": {
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "message": "Message",
+        "send": "Send",
+        "post_success": "Thanks for getting in touch. We’ll reply within one business day.",
+        "error_heading": "Please fix the following:"
+      }
+    },
+    "cart": {
+      "cart": "Cart"
+    },
+    "search": {
+      "title": "Search"
+    }
+  },
+
+  "localization": {
+    "country_label": "Country/region",
+    "language_label": "Language",
+    "update_language": "Update language",
+    "update_country": "Update country/region"
+  },
+
+  "onboarding": {
+    "product_title": "Example product title",
+    "collection_title": "Example collection",
+    "article_title": "Example article title",
+    "article_excerpt": "Write an excerpt for this article, or the theme will use the first lines of the body copy."
+  }
+}

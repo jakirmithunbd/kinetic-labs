@@ -1,0 +1,173 @@
+{%- comment -%}
+  Product card.
+
+  Accepts:
+    card_product   {Product} required
+    image_ratio    {String}  square | portrait | adapt — defaults to theme setting
+    show_rating    {Boolean}
+    show_swatches  {Boolean}
+    show_quick_add {Boolean}
+    show_per_serving {Boolean}
+    sizes          {String}  the `sizes` attribute for the responsive image
+    lazy           {Boolean} default true — pass false for above-the-fold cards
+    index          {Number}  for staggered reveal
+{%- endcomment -%}
+
+{%- liquid
+  assign ratio = image_ratio | default: settings.card_image_ratio
+  assign with_rating = show_rating | default: settings.card_show_rating, allow_false: true
+  assign with_swatches = show_swatches | default: settings.card_show_swatches, allow_false: true
+  assign with_quick_add = show_quick_add | default: settings.card_quick_add, allow_false: true
+  assign with_per_serving = show_per_serving | default: settings.card_show_price_per_serving, allow_false: true
+  assign image_sizes = sizes | default: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign loading = 'lazy'
+  if lazy == false
+    assign loading = 'eager'
+  endif
+  assign delay = index | default: 0 | times: 50
+-%}
+
+{%- if card_product == blank or card_product.empty? -%}
+  {%- comment -%} Onboarding placeholder so an unpopulated grid still lays out. {%- endcomment -%}
+  <div class="card card--placeholder">
+    <div class="card__media media media--{{ ratio }}">
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+    <div class="card__body">
+      <p class="card__title h4">{{ 'onboarding.product_title' | t }}</p>
+      <div class="price"><span class="price__regular">{{ 1999 | money }}</span></div>
+    </div>
+  </div>
+{%- else -%}
+  {%- liquid
+    assign featured = card_product.featured_media
+    assign second = nil
+    if settings.card_hover_image and card_product.media.size > 1
+      assign second = card_product.media[1]
+    endif
+
+    assign on_sale = false
+    if card_product.compare_at_price > card_product.price
+      assign on_sale = true
+    endif
+
+    assign swatch_option = nil
+    if with_swatches
+      for option in card_product.options_with_values
+        if option.name == settings.swatch_option_name
+          assign swatch_option = option
+          break
+        endif
+      endfor
+    endif
+  -%}
+
+  <div
+    class="card{% if settings.animate_on_scroll %} reveal{% endif %}"
+    style="--reveal-delay: {{ delay }}ms;"
+  >
+    <div class="card__media media media--{{ ratio }}">
+      <a
+        class="card__media-link"
+        href="{{ card_product.url }}"
+        aria-label="{{ card_product.title | escape }}"
+        tabindex="-1"
+      >
+        {%- if featured -%}
+          <img
+            src="{{ featured | image_url: width: 600 }}"
+            srcset="
+              {{ featured | image_url: width: 300 }} 300w,
+              {{ featured | image_url: width: 450 }} 450w,
+              {{ featured | image_url: width: 600 }} 600w,
+              {{ featured | image_url: width: 900 }} 900w
+            "
+            sizes="{{ image_sizes }}"
+            alt="{{ featured.alt | escape }}"
+            width="{{ featured.width }}"
+            height="{{ featured.height }}"
+            loading="{{ loading }}"
+            {% if loading == 'eager' %}fetchpriority="high"{% endif %}
+            class="card__image card__image--primary"
+          >
+          {%- if second -%}
+            <img
+              src="{{ second | image_url: width: 600 }}"
+              srcset="
+                {{ second | image_url: width: 300 }} 300w,
+                {{ second | image_url: width: 600 }} 600w
+              "
+              sizes="{{ image_sizes }}"
+              alt=""
+              width="{{ second.width }}"
+              height="{{ second.height }}"
+              loading="lazy"
+              aria-hidden="true"
+              class="card__image card__image--secondary"
+            >
+          {%- endif -%}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </a>
+
+      <div class="card__badges">
+        {%- if card_product.available == false and settings.show_sold_out_badge -%}
+          <span class="badge badge--sold-out">{{ 'general.sold_out' | t }}</span>
+        {%- elsif on_sale and settings.card_show_sale_badge -%}
+          <span class="badge badge--sale">{{ 'general.on_sale' | t }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if with_quick_add and card_product.available -%}
+        <kl-quick-add
+          class="card__quick-add"
+          {% if card_product.variants.size == 1 %}
+            data-variant-id="{{ card_product.selected_or_first_available_variant.id }}"
+          {% endif %}
+          data-product-url="{{ card_product.url }}"
+        >
+          <button type="button" class="button button--secondary button--small">
+            {%- if card_product.variants.size == 1 -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- else -%}
+              {{ 'sections.quick_add.title' | t }}
+            {%- endif -%}
+            <span class="visually-hidden">&nbsp;— {{ card_product.title }}</span>
+          </button>
+        </kl-quick-add>
+      {%- endif -%}
+    </div>
+
+    <div class="card__body">
+      <h3 class="card__title h4">
+        <a class="card__title-link" href="{{ card_product.url }}">{{ card_product.title }}</a>
+      </h3>
+
+      {%- if with_rating -%}
+        {% render 'rating', product: card_product %}
+      {%- endif -%}
+
+      {%- comment -%} App block slot: review apps render their star widget here. {%- endcomment -%}
+
+      {%- if swatch_option and swatch_option.values.size > 0 -%}
+        <div class="card__swatches" aria-hidden="true">
+          {%- for value in swatch_option.values limit: 5 -%}
+            {% render 'swatch', value: value, product: card_product, size: 14 %}
+          {%- endfor -%}
+          <span class="card__swatch-count label-micro">
+            {{- swatch_option.values.size }} {{ swatch_option.name | downcase -}}
+            {%- if swatch_option.values.size != 1 -%}s{%- endif -%}
+          </span>
+        </div>
+      {%- endif -%}
+
+      <div class="card__price">
+        {% render 'price', target: card_product %}
+        {%- if with_per_serving -%}
+          {% render 'price-per-serving', product: card_product %}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}

@@ -1,0 +1,90 @@
+{%- comment -%}
+  Country/region and language selectors.
+
+  Native <select> inside a real form: it submits and works with JavaScript
+  disabled, and theme.js only upgrades it to auto-submit on change.
+
+  Accepts:
+    context {String}  unique id prefix — required when the form appears more
+                      than once on a page (header, footer, announcement bar)
+    compact {Boolean} tighter styling for the announcement bar
+{%- endcomment -%}
+
+{%- liquid
+  assign show_country = false
+  assign show_language = false
+  if localization.available_countries.size > 1
+    assign show_country = true
+  endif
+  if localization.available_languages.size > 1
+    assign show_language = true
+  endif
+-%}
+
+{%- if show_country or show_language -%}
+  <div class="localization{% if compact %} localization--compact{% endif %}">
+    {%- if show_country -%}
+      {%- form 'localization', class: 'localization__form', id: context | append: '-country-form' -%}
+        <div class="field">
+          <label class="visually-hidden" for="{{ context }}-country">
+            {{- 'localization.country_label' | t -}}
+          </label>
+          <select
+            id="{{ context }}-country"
+            class="field__select localization__select"
+            name="country_code_select"
+            data-localization-select="country_code"
+          >
+            {%- for country in localization.available_countries -%}
+              <option
+                value="{{ country.iso_code }}"
+                {% if country.iso_code == localization.country.iso_code %}selected{% endif %}
+              >
+                {{ country.name }} ({{ country.currency.iso_code }}
+                {{ country.currency.symbol }})
+              </option>
+            {%- endfor -%}
+          </select>
+          <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+        </div>
+        <noscript>
+          <button type="submit" class="button button--small button--secondary">
+            {{- 'localization.update_country' | t -}}
+          </button>
+        </noscript>
+      {%- endform -%}
+    {%- endif -%}
+
+    {%- if show_language -%}
+      {%- form 'localization', class: 'localization__form', id: context | append: '-language-form' -%}
+        <div class="field">
+          <label class="visually-hidden" for="{{ context }}-language">
+            {{- 'localization.language_label' | t -}}
+          </label>
+          <select
+            id="{{ context }}-language"
+            class="field__select localization__select"
+            name="locale_code_select"
+            data-localization-select="locale_code"
+          >
+            {%- for language in localization.available_languages -%}
+              <option
+                value="{{ language.iso_code }}"
+                lang="{{ language.iso_code }}"
+                {% if language.iso_code == localization.language.iso_code %}selected{% endif %}
+              >
+                {{ language.endonym_name | capitalize }}
+              </option>
+            {%- endfor -%}
+          </select>
+          <input type="hidden" name="locale_code" value="{{ localization.language.iso_code }}">
+        </div>
+        <noscript>
+          <button type="submit" class="button button--small button--secondary">
+            {{- 'localization.update_language' | t -}}
+          </button>
+        </noscript>
+      {%- endform -%}
+    {%- endif -%}
+  </div>
+{%- endif -%}

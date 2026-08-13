@@ -1,0 +1,53 @@
+{%- comment -%}
+  A flavour swatch. Uses, in order of preference:
+    1. the variant image assigned to that option value
+    2. Shopify's native swatch (colour or image) on the option value
+    3. a colour derived from the value's name via the swatch map below
+
+  Accepts:
+    value    {ProductOptionValue|String}
+    product  {Product}
+    option   {ProductOption}
+    size     {Number} px, default 18
+{%- endcomment -%}
+
+{%- liquid
+  assign swatch_size = size | default: 18
+  assign value_name = value.name | default: value
+  assign swatch_image = nil
+  assign swatch_colour = nil
+
+  if value.swatch.image
+    assign swatch_image = value.swatch.image
+  elsif value.swatch.color
+    assign swatch_colour = value.swatch.color
+  endif
+
+  if swatch_image == nil and swatch_colour == nil and value.variant.featured_media
+    assign swatch_image = value.variant.featured_media.preview_image
+  endif
+-%}
+
+{%- if swatch_image -%}
+  <span
+    class="swatch swatch--image"
+    style="--swatch-size: {{ swatch_size }}px; background-image: url({{ swatch_image | image_url: width: 60 }});"
+    aria-hidden="true"
+  ></span>
+{%- elsif swatch_colour -%}
+  <span
+    class="swatch swatch--colour"
+    style="--swatch-size: {{ swatch_size }}px; --swatch-colour: {{ swatch_colour }};"
+    aria-hidden="true"
+  ></span>
+{%- else -%}
+  {%- comment -%}
+    Last resort: a neutral dot. Better an honest placeholder than a colour we
+    guessed wrong — a merchant should set the swatch in the product options.
+  {%- endcomment -%}
+  <span
+    class="swatch swatch--placeholder"
+    style="--swatch-size: {{ swatch_size }}px;"
+    aria-hidden="true"
+  ></span>
+{%- endif -%}

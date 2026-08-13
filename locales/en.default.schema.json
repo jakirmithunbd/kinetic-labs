@@ -1,0 +1,554 @@
+{
+  "settings": {
+    "colors": {
+      "name": "Colours",
+      "surfaces": "Surfaces",
+      "background": "Background",
+      "background_gradient": "Background gradient",
+      "surface": "Raised surface",
+      "hairline": "Hairline / border",
+      "text": "Text",
+      "text_color": "Body text",
+      "text_muted": "Muted text",
+      "brand": "Brand",
+      "accent": "Accent",
+      "accent_info": "Clay orange. Primary buttons and links.",
+      "accent_strong": "Accent (pressed)",
+      "support": "Support",
+      "data": "Data",
+      "data_info": "Electric blue. Reserved for dosage figures — never buttons, links or decoration.",
+      "buttons": "Buttons",
+      "button": "Primary button background",
+      "button_label": "Primary button label",
+      "secondary_button_label": "Secondary button label",
+      "shadow": "Shadow"
+    },
+    "typography": {
+      "name": "Typography",
+      "self_hosted_info": "Three roles: a display face for headings, a body face for reading, and a monospaced data face for every price, dose and nutrition value.",
+      "use_brand_fonts": "Use the Kinetic Labs brand fonts",
+      "use_brand_fonts_info": "Fraunces, Inter and JetBrains Mono, self-hosted in the theme. Turn this off to pick fonts from the Shopify font library instead.",
+      "display_header": "Display face",
+      "display_font": "Display font",
+      "display_scale": "Heading scale",
+      "display_weight": "Heading weight",
+      "weight_light": "Light",
+      "weight_regular": "Regular",
+      "weight_medium": "Medium",
+      "body_header": "Body face",
+      "body_font": "Body font",
+      "body_scale": "Body scale",
+      "data_header": "Data face",
+      "data_info": "The monospaced face is fixed so that columns of figures always align. You can still adjust its letter spacing.",
+      "data_tracking": "Data letter spacing",
+      "tracking_unit": "/100 em"
+    },
+    "layout": {
+      "name": "Layout",
+      "page_width": "Page width",
+      "gutter_mobile": "Side padding (mobile)",
+      "gutter_desktop": "Side padding (desktop)",
+      "spacing_base": "Spacing base unit",
+      "spacing_base_info": "Every gap in the theme is a multiple of this. 8px is the design default.",
+      "corner_radius": "Corner radius",
+      "hairline_width": "Border thickness"
+    },
+    "motion": {
+      "name": "Motion",
+      "reduced_motion_info": "All motion is switched off automatically for visitors who ask their device to reduce motion.",
+      "animate_on_scroll": "Reveal sections on scroll",
+      "duration": "Transition duration",
+      "image_hover_zoom": "Zoom images on hover"
+    },
+    "product_card": {
+      "name": "Product cards",
+      "image_ratio": "Image shape",
+      "ratio_square": "Square",
+      "ratio_portrait": "Portrait",
+      "ratio_adapt": "Adapt to image",
+      "hover_image": "Show second image on hover",
+      "show_rating": "Show rating",
+      "show_rating_info": "Requires a review app that writes to the reviews.rating metafield.",
+      "show_swatches": "Show flavour swatches",
+      "swatch_option_name": "Swatch option name",
+      "swatch_option_name_info": "The product option to render as swatches. Must match the option name on your products exactly.",
+      "price_per_serving": "Show price per serving",
+      "price_per_serving_info": "Calculated from the custom.servings_per_container metafield.",
+      "quick_add": "Enable quick add",
+      "sale_badge": "Show sale badge"
+    },
+    "cart": {
+      "name": "Cart",
+      "type": "Cart type",
+      "type_drawer": "Drawer",
+      "type_page": "Page",
+      "show_note": "Enable order notes",
+      "free_shipping_bar": "Show free shipping progress bar",
+      "free_shipping_threshold": "Free shipping threshold",
+      "free_shipping_threshold_info": "In your store currency, without a symbol. Leave blank to hide the bar.",
+      "show_recommendations": "Show recommendations in the cart"
+    },
+    "badges": {
+      "name": "Badges & inventory",
+      "sold_out": "Show sold out badge",
+      "low_stock_threshold": "Low stock threshold"
+    },
+    "social": {
+      "name": "Social accounts",
+      "instagram": "Instagram",
+      "tiktok": "TikTok",
+      "youtube": "YouTube",
+      "facebook": "Facebook",
+      "x": "X",
+      "strava": "Strava"
+    },
+    "seo": {
+      "name": "Search & sharing",
+      "favicon": "Favicon",
+      "favicon_info": "Square image, at least 180 × 180px.",
+      "share_image": "Default social share image",
+      "organization_name": "Organisation name",
+      "structured_data": "Output structured data (JSON-LD)"
+    },
+    "compliance": {
+      "name": "Compliance",
+      "info": "This text appears in the footer on every page. It is translatable per market — edit it under each market's language in Settings → Languages.",
+      "global_disclaimer": "Regulatory disclaimer"
+    }
+  },
+
+  "shared": {
+    "colour_scheme": "Colour scheme",
+    "heading": "Heading",
+    "subheading": "Subheading",
+    "eyebrow": "Eyebrow label",
+    "text": "Text",
+    "link": "Link",
+    "link_label": "Link label",
+    "image": "Image",
+    "image_mobile": "Mobile image",
+    "video": "Video",
+    "icon": "Icon",
+    "product": "Product",
+    "collection": "Collection",
+    "blog": "Blog",
+    "menu": "Menu",
+    "page": "Page",
+    "title": "Title",
+    "label": "Label",
+    "content": "Content",
+    "button_label": "Button label",
+    "button_link": "Button link",
+    "button_style": "Button style",
+    "style_primary": "Primary",
+    "style_secondary": "Secondary",
+    "style_tertiary": "Text link",
+    "layout": "Layout",
+    "alignment": "Alignment",
+    "align_left": "Left",
+    "align_center": "Centre",
+    "align_right": "Right",
+    "position": "Position",
+    "columns_desktop": "Columns on desktop",
+    "columns_mobile": "Columns on mobile",
+    "one_column": "1 column",
+    "two_columns": "2 columns",
+    "image_ratio": "Image shape",
+    "ratio_square": "Square",
+    "ratio_portrait": "Portrait",
+    "ratio_landscape": "Landscape",
+    "ratio_adapt": "Adapt to image",
+    "full_width": "Make section full width",
+    "show_divider": "Show divider line",
+    "divider_top": "Show top border",
+    "divider_bottom": "Show bottom border",
+    "padding_header": "Section padding",
+    "padding_top": "Top padding (desktop)",
+    "padding_bottom": "Bottom padding (desktop)",
+    "padding_top_mobile": "Top padding (mobile)",
+    "padding_bottom_mobile": "Bottom padding (mobile)",
+    "products_to_show": "Products to show",
+    "posts_to_show": "Posts to show",
+    "view_all": "Show a “view all” link",
+    "open_in_new_tab": "Open in a new tab",
+    "app_block_info": "Add an app block here for reviews, subscriptions or back-in-stock alerts."
+  },
+
+  "sections": {
+    "announcement_bar": {
+      "name": "Announcement bar",
+      "rotate": "Rotate messages",
+      "interval": "Rotation interval",
+      "dismissible": "Let visitors dismiss the bar",
+      "show_localization": "Show country and language selectors",
+      "block_message": "Message",
+      "block_text": "Text",
+      "market_visibility": "Show in market",
+      "market_all": "All markets",
+      "market_info": "Enter a comma-separated list of market handles, or leave blank to show everywhere."
+    },
+    "header": {
+      "name": "Header",
+      "logo": "Logo",
+      "logo_height": "Logo height",
+      "logo_position": "Logo position",
+      "sticky": "Stick to top on scroll",
+      "transparent": "Transparent over the first section",
+      "transparent_info": "Only applies when the first section on the page is a hero or slideshow.",
+      "show_search": "Show search",
+      "predictive_search": "Enable predictive search",
+      "show_account": "Show account link",
+      "show_localization": "Show country and language selectors",
+      "menu_layout": "Desktop menu layout",
+      "layout_inline": "Inline",
+      "layout_drawer": "Drawer only",
+      "mega_menu": "Mega menu",
+      "mega_menu_item": "Top-level menu item",
+      "mega_menu_item_info": "Must match a top-level item in your main menu, exactly.",
+      "column_menu": "Column menu",
+      "feature_image": "Feature image",
+      "feature_heading": "Feature heading",
+      "feature_link": "Feature link"
+    },
+    "footer": {
+      "name": "Footer",
+      "link_list": "Link list",
+      "newsletter": "Newsletter",
+      "show_social": "Show social icons",
+      "show_payment": "Show payment icons",
+      "show_localization": "Show country and language selectors",
+      "disclaimer": "Regulatory disclaimer",
+      "disclaimer_info": "Required. Editable per market under Settings → Languages.",
+      "use_global_disclaimer": "Use the disclaimer from theme settings",
+      "bottom_menu": "Legal menu"
+    },
+    "cart_drawer": {
+      "name": "Cart drawer",
+      "recommendations_heading": "Recommendations heading",
+      "show_recommendations": "Show recommendations when the cart is empty"
+    },
+    "hero": {
+      "name": "Hero",
+      "media_type": "Background",
+      "media_none": "None",
+      "media_image": "Image",
+      "media_video": "Video",
+      "overlay_opacity": "Overlay opacity",
+      "height": "Height",
+      "height_small": "Small",
+      "height_medium": "Medium",
+      "height_large": "Large",
+      "height_full": "Full screen",
+      "text_position": "Text position",
+      "media_position": "Media position",
+      "media_below": "Below the text",
+      "media_background": "Behind the text",
+      "trust_line": "Trust line",
+      "trust_line_info": "Short proof points shown under the buttons.",
+      "block_button": "Button",
+      "block_trust": "Trust item"
+    },
+    "certification_strip": {
+      "name": "Certification strip",
+      "block_logo": "Certification",
+      "tooltip": "Tooltip",
+      "show_batch_lookup": "Show batch lookup field",
+      "batch_placeholder": "Batch field placeholder"
+    },
+    "goal_grid": {
+      "name": "Goal grid",
+      "block_goal": "Goal",
+      "show_count": "Show product count"
+    },
+    "featured_collection": {
+      "name": "Featured collection",
+      "display": "Display",
+      "display_grid": "Grid",
+      "display_carousel": "Carousel"
+    },
+    "dosage_panel": {
+      "name": "Dosage panel",
+      "info": "Renders the selected product's custom.dose_comparison metafield as comparison bars. Figures use the data typeface and the data colour.",
+      "bar_style": "Bar style",
+      "style_bars": "Full bars",
+      "style_minimal": "Minimal",
+      "show_studied": "Show the clinical dose label",
+      "footnote": "Footnote"
+    },
+    "ingredient_philosophy": {
+      "name": "Ingredient philosophy",
+      "block_point": "Proof point",
+      "block_label_compare": "Label comparison",
+      "typical_heading": "Typical label heading",
+      "typical_rows": "Typical label rows",
+      "typical_rows_info": "One per line, formatted as “Name | Amount”.",
+      "our_heading": "Our label heading",
+      "our_rows": "Our label rows",
+      "our_rows_info": "One per line, formatted as “Name | Amount”. Amounts render in the data typeface.",
+      "footer_label": "Footer label"
+    },
+    "review_highlight": {
+      "name": "Review highlight",
+      "summary_rating": "Summary rating",
+      "summary_count": "Review count",
+      "block_review": "Review",
+      "quote": "Quote",
+      "author": "Name",
+      "rating": "Star rating",
+      "verified": "Show verified badge",
+      "app_slot_info": "Add your review app's block here to replace these placeholders with live reviews."
+    },
+    "subscribe_promo": {
+      "name": "Subscribe promo",
+      "saving_label": "Saving label",
+      "saving_amount": "Saving amount",
+      "saving_amount_info": "State the saving in currency, e.g. $126/yr."
+    },
+    "blog_posts": {
+      "name": "Blog posts",
+      "show_excerpt": "Show excerpt",
+      "show_date": "Show date",
+      "show_category": "Show category"
+    },
+    "instagram_grid": {
+      "name": "Instagram grid",
+      "info": "Static images. A live feed needs a UGC app — add its block to the app section instead.",
+      "handle": "Handle",
+      "profile_link": "Profile link",
+      "block_post": "Post"
+    },
+    "rich_text": {
+      "name": "Rich text",
+      "block_heading": "Heading",
+      "block_text": "Text",
+      "block_button": "Button",
+      "block_caption": "Caption"
+    },
+    "image_with_text": {
+      "name": "Image with text",
+      "image_position": "Image position",
+      "image_width": "Image width",
+      "width_small": "Small",
+      "width_medium": "Medium",
+      "width_large": "Large"
+    },
+    "multicolumn": {
+      "name": "Multi-column",
+      "block_column": "Column"
+    },
+    "slideshow": {
+      "name": "Slideshow",
+      "autoplay": "Auto-rotate slides",
+      "autoplay_speed": "Change slides every",
+      "block_slide": "Slide"
+    },
+    "video": {
+      "name": "Video",
+      "video_url": "Video URL",
+      "video_url_info": "YouTube or Vimeo. Use the Video field above for a hosted file.",
+      "cover_image": "Cover image",
+      "autoplay": "Play automatically",
+      "autoplay_info": "Muted and looped, as browsers require.",
+      "description": "Video description",
+      "description_info": "Describe the video for screen readers."
+    },
+    "newsletter": {
+      "name": "Newsletter",
+      "disclaimer": "Small print"
+    },
+    "faq": {
+      "name": "FAQ accordion",
+      "block_question": "Question",
+      "question": "Question",
+      "answer": "Answer",
+      "exclusive": "Only keep one answer open at a time",
+      "searchable": "Show a search field",
+      "structured_data": "Output FAQ structured data"
+    },
+    "collapsible_content": {
+      "name": "Collapsible content",
+      "block_row": "Row"
+    },
+    "custom_liquid": {
+      "name": "Custom Liquid",
+      "liquid": "Liquid",
+      "liquid_info": "Add app snippets or Liquid code. Content here is not translatable."
+    },
+    "apps": {
+      "name": "Apps",
+      "info": "Add an app block to this section.",
+      "include_margins": "Make section margins the same as theme"
+    },
+    "collection_banner": {
+      "name": "Collection banner",
+      "show_image": "Show collection image",
+      "show_description": "Show collection description",
+      "collapse_description": "Collapse description on mobile",
+      "show_product_count": "Show product count"
+    },
+    "collection_grid": {
+      "name": "Product grid",
+      "info": "Filters and sort options come from Shopify's Search & Discovery app. Configure them there, not here.",
+      "enable_filtering": "Enable filtering",
+      "filter_layout": "Filter layout on desktop",
+      "filter_sidebar": "Sidebar",
+      "filter_horizontal": "Horizontal",
+      "enable_sorting": "Enable sorting",
+      "pagination_type": "Pagination",
+      "pagination_paged": "Numbered pages",
+      "pagination_load_more": "Load more button",
+      "products_per_page": "Products per page"
+    },
+    "product_gallery": {
+      "name": "Product gallery",
+      "sticky": "Stick to the top on desktop",
+      "thumbnails": "Thumbnail position",
+      "thumbs_below": "Below",
+      "thumbs_left": "Left",
+      "thumbs_hidden": "Hidden",
+      "enable_zoom": "Enable hover zoom",
+      "group_by_variant": "Group media by variant",
+      "group_by_variant_info": "Shows only the media assigned to the selected flavour."
+    },
+    "product_info": {
+      "name": "Product information",
+      "block_breadcrumb": "Breadcrumb",
+      "block_title": "Title",
+      "block_rating": "Rating",
+      "block_positioning": "Positioning line",
+      "block_flavour": "Flavour picker",
+      "block_size": "Size picker",
+      "block_purchase_options": "Purchase options",
+      "block_quantity": "Quantity",
+      "block_buy_buttons": "Add to cart",
+      "block_trust": "Trust row",
+      "block_inventory": "Inventory status",
+      "block_share": "Share",
+      "block_description": "Description",
+      "block_text": "Text",
+      "option_name": "Option name",
+      "option_name_info": "Must match the product option name exactly.",
+      "swatch_style": "Swatch style",
+      "swatch_image": "Variant image",
+      "swatch_colour": "Colour from name",
+      "show_price_per_serving": "Show price per serving under each size",
+      "show_dynamic_checkout": "Show dynamic checkout buttons",
+      "sticky_mobile": "Show a sticky bar on mobile",
+      "show_selling_plans": "Show subscription options",
+      "positioning_info": "Pulled from the custom.positioning_line metafield.",
+      "inventory_info": "Uses the low stock threshold in theme settings."
+    },
+    "key_ingredients": {
+      "name": "Key ingredients",
+      "info": "Renders the custom.key_ingredients metafield — a list of ingredient metaobjects.",
+      "show_link": "Link each ingredient to its page"
+    },
+    "supplement_facts": {
+      "name": "Supplement facts",
+      "info": "Rendered as a real HTML table from custom.supplement_facts. Never upload a panel as an image — an image cannot be indexed, translated, or read by a screen reader.",
+      "show_daily_value": "Show % daily value column"
+    },
+    "how_to_use": {
+      "name": "How to use",
+      "info": "Rendered from the custom.how_to_use metafield."
+    },
+    "allergens": {
+      "name": "Allergens & certifications",
+      "info": "Renders only when the allergen or certification metafields are populated."
+    },
+    "product_faq": {
+      "name": "Product FAQ",
+      "info": "Rendered from the custom.product_faq metafield."
+    },
+    "complementary": {
+      "name": "Complementary products",
+      "info": "Uses the Product Recommendations API with complementary intent. Set the pairings in the Search & Discovery app."
+    },
+    "recently_viewed": {
+      "name": "Recently viewed",
+      "info": "Reads from the visitor's own browser. Nothing is stored on the server."
+    },
+    "main_cart": {
+      "name": "Cart",
+      "show_shipping_estimator": "Show shipping estimator"
+    },
+    "ingredients_index": {
+      "name": "Ingredient index",
+      "info": "Lists every entry in the ingredient metaobject.",
+      "show_dose": "Show clinical dose",
+      "enable_search": "Show a search field"
+    },
+    "ingredient_detail": {
+      "name": "Ingredient detail",
+      "show_products": "Show products containing this ingredient"
+    },
+    "testing_process": {
+      "name": "Testing process",
+      "block_step": "Step",
+      "step_number": "Step number"
+    },
+    "coa_lookup": {
+      "name": "COA lookup",
+      "info": "Searches the coa_batch metaobject by batch number."
+    },
+    "quiz": {
+      "name": "Product quiz",
+      "info": "A client-side quiz. Results build a cart permalink for the recommended stack — no backend needed.",
+      "intro_heading": "Intro heading",
+      "intro_text": "Intro text",
+      "results_heading": "Results heading",
+      "results_text": "Results text",
+      "outcome_mode": "What happens at the end",
+      "outcome_cart": "Build a cart with the recommended stack",
+      "outcome_collection": "Send them to a filtered collection",
+      "block_question": "Question",
+      "block_answer": "Answer",
+      "answer_products": "Recommended products",
+      "answer_products_info": "Comma-separated product handles. Each match adds a point.",
+      "answer_goal": "Goal tag",
+      "question_type": "Answer type",
+      "type_single": "Choose one",
+      "type_multiple": "Choose several"
+    },
+    "wholesale_form": {
+      "name": "Wholesale enquiry form",
+      "info": "Posts to Shopify's native contact form. Enquiries arrive at your store's customer email address."
+    },
+    "main_blog": {
+      "name": "Blog posts",
+      "show_featured": "Feature the first post"
+    },
+    "main_article": {
+      "name": "Article",
+      "block_toc": "Table of contents",
+      "block_product": "Product card",
+      "block_share": "Share",
+      "show_author": "Show author",
+      "show_date": "Show date",
+      "show_reading_time": "Show reading time"
+    },
+    "related_posts": {
+      "name": "Related posts"
+    },
+    "main_search": {
+      "name": "Search results"
+    },
+    "main_404": {
+      "name": "404 page"
+    },
+    "main_password": {
+      "name": "Password page"
+    },
+    "main_account": {
+      "name": "Account",
+      "subscription_portal_url": "Subscription portal URL",
+      "subscription_portal_info": "Your subscription app's customer portal. The theme links out to it rather than rebuilding it."
+    }
+  },
+
+  "blocks": {
+    "app": {
+      "name": "App block"
+    }
+  }
+}

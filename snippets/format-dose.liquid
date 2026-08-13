@@ -1,0 +1,35 @@
+{%- comment -%}
+  Formats a numeric dose the way the label prints it: grams to two decimals
+  ("8.00g", "3.20g"), milligrams and micrograms as whole numbers ("200mg").
+
+  Liquid has no printf, so the fractional part is built by hand rather than
+  storing a second, drift-prone "display dose" field on the metaobject.
+
+  Accepts:
+    value {Number} required
+    unit  {String} g | mg | mcg | iu | ml — default g
+{%- endcomment -%}
+
+{%- liquid
+  assign u = unit | default: 'g' | strip | downcase
+
+  if u == 'g' or u == 'ml'
+    assign whole = value | floor
+    assign frac = value | minus: whole | times: 100 | round
+
+    if frac >= 100
+      assign whole = whole | plus: 1
+      assign frac = 0
+    endif
+
+    if frac < 10
+      assign frac_str = frac | prepend: '0'
+    else
+      assign frac_str = frac
+    endif
+
+    echo whole | append: '.' | append: frac_str | append: u
+  else
+    echo value | round | append: u
+  endif
+-%}

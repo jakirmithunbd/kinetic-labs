@@ -1,0 +1,66 @@
+{%- comment -%}
+  Price display in the data typeface, with sale and unit-price handling.
+
+  Accepts:
+    target            {Product|Variant} required
+    use_variant       {Boolean} price the selected/first available variant rather than the product
+    show_compare      {Boolean} show the struck-through compare-at price (default true)
+    price_class       {String}  extra classes
+    show_per_serving  {Boolean} append price-per-serving beneath
+{%- endcomment -%}
+
+{%- liquid
+  if target == null
+    break
+  endif
+
+  if use_variant and target.selected_or_first_available_variant
+    assign source = target.selected_or_first_available_variant
+  else
+    assign source = target
+  endif
+
+  assign compare_at = source.compare_at_price
+  assign price = source.price
+
+  assign on_sale = false
+  if compare_at > price
+    assign on_sale = true
+  endif
+
+  assign show_compare_at = show_compare | default: true, allow_false: true
+
+  assign money_price = price | money
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+  endif
+-%}
+
+<div class="price {{ price_class }}{% if on_sale %} price--on-sale{% endif %}">
+  {%- if on_sale -%}
+    <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+    <span class="price__sale">{{ money_price }}</span>
+    {%- if show_compare_at -%}
+      <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+      <s class="price__regular--on-sale">{{ compare_at | money }}</s>
+    {%- endif -%}
+  {%- else -%}
+    <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+    <span class="price__regular">{{ money_price }}</span>
+  {%- endif -%}
+
+  {%- if source.unit_price_measurement -%}
+    <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+    <span class="price__unit">
+      {{- source.unit_price | money }}/
+      {%- if source.unit_price_measurement.reference_value != 1 -%}
+        {{- source.unit_price_measurement.reference_value -}}
+      {%- endif -%}
+      {{ source.unit_price_measurement.reference_unit -}}
+    </span>
+  {%- endif -%}
+</div>
+
+{%- if show_per_serving -%}
+  {% render 'price-per-serving', product: target, price: price %}
+{%- endif -%}

@@ -1,0 +1,124 @@
+{%- comment -%}
+  The signature component: one ingredient's dose rendered as horizontal
+  comparison bars — the industry average against ours, both measured as a
+  percentage of the clinically studied dose.
+
+  Figures are real text in the data typeface and --color-data. Never an image:
+  these numbers are the product's whole argument, so they have to be
+  indexable, translatable and readable by a screen reader.
+
+  Accepts:
+    record        {Metaobject} a `dose_record` — ingredient, our_dose,
+                  studied_dose, industry_average, unit, citation
+    show_studied  {Boolean} render the "Clinical dose: 8g" caption (default true)
+    bar_style     {String}  'bars' | 'minimal'
+    index         {Number}  used to stagger the reveal
+{%- endcomment -%}
+
+{%- liquid
+  if record == blank
+    break
+  endif
+
+  assign r = record.system.type | default: 'dose_record'
+  assign ingredient = record.ingredient.value
+  assign name = ingredient.name.value | default: record.ingredient_name.value | default: record.system.handle | replace: '-', ' ' | capitalize
+  assign unit = record.unit.value | default: 'g'
+  assign our_dose = record.our_dose.value | default: 0
+  assign studied = record.studied_dose.value | default: 0
+  assign industry = record.industry_average.value
+  assign citation = record.citation.value
+  assign show_studied_label = show_studied | default: true, allow_false: true
+  assign delay = index | default: 0 | times: 60
+
+  assign our_pct = 0
+  if studied > 0
+    assign our_pct = our_dose | times: 100.0 | divided_by: studied | round
+  endif
+
+  assign industry_pct = nil
+  if industry != blank and studied > 0
+    assign industry_pct = industry | times: 100.0 | divided_by: studied | round
+  endif
+
+  assign our_width = our_pct
+  if our_width > 100
+    assign our_width = 100
+  endif
+
+  assign industry_width = industry_pct
+  if industry_width > 100
+    assign industry_width = 100
+  endif
+-%}
+
+<div
+  class="dosage-bar {% if settings.animate_on_scroll %}reveal{% endif %}"
+  style="--reveal-delay: {{ delay }}ms;"
+>
+  <div class="dosage-bar__head">
+    <span class="dosage-bar__name">
+      {%- if ingredient != blank and ingredient.system.url -%}
+        <a href="{{ ingredient.system.url }}">{{ name }}</a>
+      {%- else -%}
+        {{ name }}
+      {%- endif -%}
+    </span>
+    <span class="dosage-bar__dose dose">
+      [&nbsp;{% render 'format-dose', value: our_dose, unit: unit %}&nbsp;]
+    </span>
+  </div>
+
+  {%- if industry_pct != nil -%}
+    <div class="dosage-bar__row">
+      <span class="dosage-bar__label label-micro">{{ 'products.dosage.industry' | t }}</span>
+      <span class="dosage-bar__track">
+        <span
+          class="dosage-bar__fill dosage-bar__fill--industry"
+          style="--bar-width: {{ industry_width }}%;"
+        ></span>
+      </span>
+      <span class="dosage-bar__pct data">{{ industry_pct }}%</span>
+    </div>
+  {%- endif -%}
+
+  <div class="dosage-bar__row">
+    <span class="dosage-bar__label label-micro">{{ 'products.dosage.ours' | t }}</span>
+    <span class="dosage-bar__track">
+      <span
+        class="dosage-bar__fill dosage-bar__fill--ours"
+        style="--bar-width: {{ our_width }}%;"
+      ></span>
+    </span>
+    <span class="dosage-bar__pct data">{{ our_pct }}%</span>
+  </div>
+
+  {%- comment -%}
+    The bars are decoration over the top of this sentence — the sentence is
+    what a screen reader and a search engine actually get.
+  {%- endcomment -%}
+  <p class="visually-hidden">
+    {{-
+      'products.dosage.summary'
+      | t:
+        ingredient: name,
+        our_dose: our_dose,
+        unit: unit,
+        our_percent: our_pct,
+        studied_dose: studied
+    -}}
+    {%- if industry_pct != nil %}
+      {{- 'products.dosage.summary_industry' | t: industry_percent: industry_pct -}}
+    {%- endif -%}
+  </p>
+
+  {%- if show_studied_label and studied > 0 -%}
+    <p class="dosage-bar__note data" aria-hidden="true">
+      {{- 'products.dosage.clinical_dose' | t }}
+      {% render 'format-dose', value: studied, unit: unit -}}
+      {%- if citation != blank %}
+        <span class="dosage-bar__citation">&nbsp;&middot;&nbsp;{{ citation }}</span>
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+</div>

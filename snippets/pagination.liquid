@@ -1,0 +1,57 @@
+{%- comment -%}
+  Numbered pagination. Always rendered as real links so the catalogue is
+  crawlable and works without JavaScript, even when the section is set to
+  "load more" (the button progressively enhances these links).
+
+  Accepts:
+    paginate {Paginate} required
+    anchor   {String}   optional fragment appended to each link
+{%- endcomment -%}
+
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+    {%- if paginate.previous -%}
+      <a
+        class="pagination__item pagination__item--nav"
+        href="{{ paginate.previous.url }}{{ anchor }}"
+        rel="prev"
+        aria-label="{{ 'general.pagination.previous' | t }}"
+      >
+        {% render 'icon', name: 'chevron-left', size: 16 %}
+      </a>
+    {%- endif -%}
+
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+        <a
+          class="pagination__item"
+          href="{{ part.url }}{{ anchor }}"
+          aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+        >
+          {{- part.title -}}
+        </a>
+      {%- elsif part.title == hellip -%}
+        <span class="pagination__item pagination__item--gap" aria-hidden="true">{{ part.title }}</span>
+      {%- else -%}
+        <span
+          class="pagination__item"
+          aria-current="page"
+          aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+        >
+          {{- part.title -}}
+        </span>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if paginate.next -%}
+      <a
+        class="pagination__item pagination__item--nav"
+        href="{{ paginate.next.url }}{{ anchor }}"
+        rel="next"
+        aria-label="{{ 'general.pagination.next' | t }}"
+      >
+        {% render 'icon', name: 'chevron-right', size: 16 %}
+      </a>
+    {%- endif -%}
+  </nav>
+{%- endif -%}

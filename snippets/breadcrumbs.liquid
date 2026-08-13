@@ -1,0 +1,83 @@
+{%- comment -%}
+  Breadcrumbs with matching BreadcrumbList JSON-LD, so the trail a visitor
+  sees and the trail Google indexes are generated from the same data.
+{%- endcomment -%}
+
+{%- liquid
+  assign crumbs = ''
+
+  case template.name
+    when 'product'
+      if collection.url
+        assign crumbs = collection.title | append: '|' | append: collection.url
+      endif
+      assign crumbs = crumbs | append: '||' | append: product.title | append: '|'
+    when 'collection'
+      if collection.handle
+        assign crumbs = collection.title | append: '|'
+      endif
+    when 'blog'
+      assign crumbs = blog.title | append: '|'
+    when 'article'
+      assign crumbs = blog.title | append: '|' | append: blog.url | append: '||' | append: article.title | append: '|'
+    when 'page'
+      assign crumbs = page.title | append: '|'
+    when 'search'
+      assign crumbs = 'templates.search.title' | t | append: '|'
+    when 'cart'
+      assign crumbs = 'templates.cart.cart' | t | append: '|'
+  endcase
+
+  assign crumb_list = crumbs | split: '||'
+-%}
+
+{%- if crumbs != blank -%}
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">{{ 'products.product.breadcrumb_home' | t }}</a>
+    {%- for crumb in crumb_list -%}
+      {%- assign parts = crumb | split: '|' -%}
+      {%- assign crumb_title = parts[0] | strip -%}
+      {%- assign crumb_url = parts[1] | strip -%}
+      {%- if crumb_title == blank -%}{%- continue -%}{%- endif -%}
+      <span class="breadcrumbs__separator" aria-hidden="true">/</span>
+      {%- if crumb_url != blank and forloop.last == false -%}
+        <a href="{{ crumb_url }}">{{ crumb_title }}</a>
+      {%- else -%}
+        <span aria-current="page">{{ crumb_title }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+  </nav>
+
+  {%- if settings.enable_structured_data -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": {{ 'products.product.breadcrumb_home' | t | json }},
+            "item": {{ shop.url | json }}
+          }
+          {%- assign position = 1 -%}
+          {%- for crumb in crumb_list -%}
+            {%- assign parts = crumb | split: '|' -%}
+            {%- assign crumb_title = parts[0] | strip -%}
+            {%- assign crumb_url = parts[1] | strip -%}
+            {%- if crumb_title == blank -%}{%- continue -%}{%- endif -%}
+            {%- assign position = position | plus: 1 -%}
+            ,{
+              "@type": "ListItem",
+              "position": {{ position }},
+              "name": {{ crumb_title | json }}
+              {%- if crumb_url != blank -%}
+                ,"item": {{ shop.url | append: crumb_url | json }}
+              {%- endif -%}
+            }
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  {%- endif -%}
+{%- endif -%}

@@ -1,0 +1,507 @@
+{{ 'component-header.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign transparent = false
+  if section.settings.transparent and template.name == 'index'
+    assign transparent = true
+  endif
+-%}
+
+<kl-header
+  class="header color-{{ section.settings.color_scheme }}{% if transparent %} header--transparent{% endif %} header--{{ section.settings.menu_layout }}"
+  {% if section.settings.sticky %}data-sticky{% endif %}
+>
+  <div class="header__inner page-width">
+    {%- comment -%} Left: drawer trigger on mobile, inline nav on desktop {%- endcomment -%}
+    <div class="header__left">
+      <button
+        type="button"
+        class="header__icon header__menu-toggle"
+        data-drawer-open="MenuDrawer"
+        aria-label="{{ 'sections.header.menu' | t }}"
+        aria-haspopup="dialog"
+      >
+        {% render 'icon', name: 'menu', size: 22 %}
+      </button>
+
+      {%- if section.settings.menu_layout == 'inline' and menu != blank -%}
+        <nav class="header__nav" aria-label="{{ 'sections.header.menu' | t }}">
+          <ul class="header__nav-list list-unstyled">
+            {%- for link in menu.links -%}
+              {%- liquid
+                assign mega = nil
+                for block in section.blocks
+                  if block.type == 'mega_menu'
+                    assign target = block.settings.menu_item | strip | downcase
+                    assign this_title = link.title | strip | downcase
+                    if target == this_title
+                      assign mega = block
+                      break
+                    endif
+                  endif
+                endfor
+              -%}
+
+              {%- if mega -%}
+                <li class="header__nav-item header__nav-item--mega">
+                  <kl-menu data-hover>
+                    <button
+                      type="button"
+                      class="header__nav-link"
+                      aria-expanded="false"
+                      aria-controls="MegaMenu-{{ mega.id }}"
+                    >
+                      {{ link.title }}
+                      {% render 'icon', name: 'chevron-down', size: 14 %}
+                    </button>
+
+                    <div
+                      class="mega-menu"
+                      id="MegaMenu-{{ mega.id }}"
+                      data-menu-panel
+                      {{ mega.shopify_attributes }}
+                    >
+                      <div class="mega-menu__inner page-width">
+                        {%- for i in (1..4) -%}
+                          {%- liquid
+                            case i
+                              when 1
+                                assign col = mega.settings.column_1
+                                assign col_title = mega.settings.column_1_title
+                              when 2
+                                assign col = mega.settings.column_2
+                                assign col_title = mega.settings.column_2_title
+                              when 3
+                                assign col = mega.settings.column_3
+                                assign col_title = mega.settings.column_3_title
+                              when 4
+                                assign col = mega.settings.column_4
+                                assign col_title = mega.settings.column_4_title
+                            endcase
+                          -%}
+                          {%- if col != blank -%}
+                            <div class="mega-menu__column">
+                              <p class="mega-menu__column-title label-micro">
+                                {{- col_title | default: col.title -}}
+                              </p>
+                              <ul class="list-unstyled">
+                                {%- for child in col.links -%}
+                                  <li>
+                                    <a class="mega-menu__link" href="{{ child.url }}">{{ child.title }}</a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            </div>
+                          {%- endif -%}
+                        {%- endfor -%}
+
+                        {%- if mega.settings.image != blank or mega.settings.feature_heading != blank -%}
+                          <a
+                            class="mega-menu__feature"
+                            href="{{ mega.settings.feature_link | default: link.url }}"
+                          >
+                            {%- if mega.settings.image != blank -%}
+                              <div class="media media--landscape">
+                                <img
+                                  src="{{ mega.settings.image | image_url: width: 600 }}"
+                                  srcset="
+                                    {{ mega.settings.image | image_url: width: 400 }} 400w,
+                                    {{ mega.settings.image | image_url: width: 600 }} 600w
+                                  "
+                                  sizes="300px"
+                                  alt="{{ mega.settings.image.alt | escape }}"
+                                  width="{{ mega.settings.image.width }}"
+                                  height="{{ mega.settings.image.height }}"
+                                  loading="lazy"
+                                >
+                              </div>
+                            {%- endif -%}
+                            {%- if mega.settings.feature_heading != blank -%}
+                              <p class="mega-menu__feature-heading h4">
+                                {{- mega.settings.feature_heading -}}
+                              </p>
+                            {%- endif -%}
+                          </a>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  </kl-menu>
+                </li>
+              {%- elsif link.links.size > 0 -%}
+                <li class="header__nav-item">
+                  <kl-menu data-hover>
+                    <button
+                      type="button"
+                      class="header__nav-link"
+                      aria-expanded="false"
+                      aria-controls="Dropdown-{{ forloop.index }}"
+                    >
+                      {{ link.title }}
+                      {% render 'icon', name: 'chevron-down', size: 14 %}
+                    </button>
+                    <ul
+                      class="header__dropdown list-unstyled"
+                      id="Dropdown-{{ forloop.index }}"
+                      data-menu-panel
+                    >
+                      {%- for child in link.links -%}
+                        <li><a class="header__dropdown-link" href="{{ child.url }}">{{ child.title }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  </kl-menu>
+                </li>
+              {%- else -%}
+                <li class="header__nav-item">
+                  <a
+                    class="header__nav-link"
+                    href="{{ link.url }}"
+                    {% if link.current %}aria-current="page"{% endif %}
+                  >
+                    {{ link.title }}
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Centre: logo {%- endcomment -%}
+    {%- capture logo_markup -%}
+      {%- if section.settings.logo != blank -%}
+        {%- assign logo_width = section.settings.logo_height | times: section.settings.logo.aspect_ratio | round -%}
+        <img
+          src="{{ section.settings.logo | image_url: width: logo_width, height: section.settings.logo_height }}"
+          srcset="
+            {{ section.settings.logo | image_url: width: logo_width }} 1x,
+            {{ section.settings.logo | image_url: width: logo_width | times: 2 }} 2x
+          "
+          alt="{{ shop.name | escape }}"
+          width="{{ logo_width }}"
+          height="{{ section.settings.logo_height }}"
+          class="header__logo-image"
+          fetchpriority="high"
+        >
+      {%- else -%}
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    {%- endcapture -%}
+
+    <div class="header__centre">
+      {%- if request.page_type == 'index' -%}
+        <h1 class="header__logo">
+          <a href="{{ routes.root_url }}" class="header__logo-link">{{ logo_markup }}</a>
+        </h1>
+      {%- else -%}
+        <div class="header__logo">
+          <a href="{{ routes.root_url }}" class="header__logo-link">{{ logo_markup }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Right: search, account, cart {%- endcomment -%}
+    <div class="header__right header__actions">
+      {%- if section.settings.show_localization -%}
+        <div class="header__localization">
+          {% render 'localization-form', context: 'header', compact: true %}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_search -%}
+        <button
+          type="button"
+          class="header__icon"
+          data-drawer-open="SearchDrawer"
+          aria-label="{{ 'sections.header.search' | t }}"
+          aria-haspopup="dialog"
+        >
+          {% render 'icon', name: 'search', size: 20 %}
+        </button>
+      {%- endif -%}
+
+      {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
+        <a
+          class="header__icon"
+          href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+          aria-label="{% if customer %}{{ 'sections.header.account' | t }}{% else %}{{ 'sections.header.log_in' | t }}{% endif %}"
+        >
+          {% render 'icon', name: 'account', size: 20 %}
+        </a>
+      {%- endif -%}
+
+      <a
+        class="header__icon header__cart"
+        href="{{ routes.cart_url }}"
+        {% if settings.cart_type == 'drawer' %}
+          data-drawer-open="CartDrawer"
+          role="button"
+          aria-haspopup="dialog"
+        {% endif %}
+        aria-label="{{ 'sections.header.cart_count' | t: count: cart.item_count }}"
+      >
+        {% render 'icon', name: 'cart', size: 20 %}
+        <span class="header__cart-count data" data-cart-count aria-hidden="true">
+          {{- cart.item_count -}}
+        </span>
+      </a>
+    </div>
+  </div>
+</kl-header>
+
+{%- comment -%} ---------- Mobile / drawer navigation ---------- {%- endcomment -%}
+
+<kl-drawer class="drawer drawer--left menu-drawer" id="MenuDrawer" role="dialog" aria-modal="true" aria-label="{{ 'sections.header.menu' | t }}" aria-hidden="true">
+  <div class="drawer__overlay" tabindex="-1"></div>
+  <div class="drawer__panel">
+    <div class="drawer__header">
+      <span class="label-micro">{{ 'sections.header.menu' | t }}</span>
+      <button
+        type="button"
+        class="drawer__close"
+        data-drawer-close
+        aria-label="{{ 'sections.header.close_menu' | t }}"
+      >
+        {% render 'icon', name: 'close', size: 20 %}
+      </button>
+    </div>
+
+    <div class="drawer__body">
+      {%- if menu != blank -%}
+        <ul class="menu-drawer__list list-unstyled">
+          {%- for link in menu.links -%}
+            <li class="menu-drawer__item">
+              {%- if link.links.size > 0 -%}
+                <details class="menu-drawer__details">
+                  <summary class="menu-drawer__summary">
+                    <span>{{ link.title }}</span>
+                    <span class="accordion__icon" aria-hidden="true"></span>
+                  </summary>
+                  <ul class="menu-drawer__sublist list-unstyled">
+                    <li>
+                      <a class="menu-drawer__sublink" href="{{ link.url }}">
+                        {{- 'general.view_all' | t }} {{ link.title | downcase -}}
+                      </a>
+                    </li>
+                    {%- for child in link.links -%}
+                      <li>
+                        {%- if child.links.size > 0 -%}
+                          <details class="menu-drawer__details menu-drawer__details--nested">
+                            <summary class="menu-drawer__summary menu-drawer__summary--nested">
+                              <span>{{ child.title }}</span>
+                              <span class="accordion__icon" aria-hidden="true"></span>
+                            </summary>
+                            <ul class="menu-drawer__sublist list-unstyled">
+                              {%- for grandchild in child.links -%}
+                                <li>
+                                  <a class="menu-drawer__sublink" href="{{ grandchild.url }}">
+                                    {{- grandchild.title -}}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          </details>
+                        {%- else -%}
+                          <a class="menu-drawer__sublink" href="{{ child.url }}">{{ child.title }}</a>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a
+                  class="menu-drawer__link"
+                  href="{{ link.url }}"
+                  {% if link.current %}aria-current="page"{% endif %}
+                >
+                  {{ link.title }}
+                </a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="drawer__footer menu-drawer__footer">
+      {%- if shop.customer_accounts_enabled -%}
+        <a
+          class="menu-drawer__account link-mono"
+          href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}"
+        >
+          {% render 'icon', name: 'account', size: 16 %}
+          {% if customer %}{{ 'sections.header.account' | t }}{% else %}{{ 'sections.header.log_in' | t }}{% endif %}
+        </a>
+      {%- endif -%}
+      {% render 'localization-form', context: 'drawer' %}
+    </div>
+  </div>
+</kl-drawer>
+
+{%- comment -%} ---------- Search drawer with predictive results ---------- {%- endcomment -%}
+
+{%- if section.settings.show_search -%}
+  <kl-drawer class="drawer search-drawer" id="SearchDrawer" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}" aria-hidden="true">
+    <div class="drawer__overlay" tabindex="-1"></div>
+    <div class="drawer__panel">
+      <div class="drawer__header">
+        <span class="label-micro">{{ 'general.search.search' | t }}</span>
+        <button
+          type="button"
+          class="drawer__close"
+          data-drawer-close
+          aria-label="{{ 'sections.header.close_search' | t }}"
+        >
+          {% render 'icon', name: 'close', size: 20 %}
+        </button>
+      </div>
+
+      <div class="drawer__body">
+        <kl-predictive-search
+          {% unless section.settings.predictive_search %}data-disabled{% endunless %}
+          data-limit="5"
+          data-no-results="{{ 'general.search.no_results' | t: terms: '' | escape }}"
+          role="combobox"
+          aria-expanded="false"
+          aria-owns="PredictiveResults"
+          aria-haspopup="listbox"
+        >
+          <form action="{{ routes.search_url }}" method="get" role="search" class="search-drawer__form">
+            <label class="visually-hidden" for="SearchInput">{{ 'general.search.search' | t }}</label>
+            <div class="search-drawer__field">
+              {% render 'icon', name: 'search', size: 18 %}
+              <input
+                id="SearchInput"
+                class="search-drawer__input"
+                type="search"
+                name="q"
+                value="{{ search.terms | escape }}"
+                placeholder="{{ 'general.search.placeholder' | t }}"
+                autocomplete="off"
+                data-drawer-autofocus
+                aria-describedby="PredictiveStatus"
+              >
+              <input type="hidden" name="options[prefix]" value="last">
+              <button type="submit" class="visually-hidden">{{ 'general.search.submit' | t }}</button>
+            </div>
+          </form>
+
+          <span class="visually-hidden" id="PredictiveStatus" data-predictive-status role="status"></span>
+          <div id="PredictiveResults" data-predictive-results class="search-drawer__results"></div>
+        </kl-predictive-search>
+      </div>
+    </div>
+  </kl-drawer>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "tag": "header",
+  "class": "header-section",
+  "enabled_on": { "groups": ["header"] },
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "t:sections.header.logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "t:sections.header.logo_height",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:shared.menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_layout",
+      "label": "t:sections.header.menu_layout",
+      "options": [
+        { "value": "inline", "label": "t:sections.header.layout_inline" },
+        { "value": "drawer", "label": "t:sections.header.layout_drawer" }
+      ],
+      "default": "inline"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "t:sections.header.sticky",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent",
+      "label": "t:sections.header.transparent",
+      "info": "t:sections.header.transparent_info",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "t:sections.header.show_search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "predictive_search",
+      "label": "t:sections.header.predictive_search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "t:sections.header.show_account",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_localization",
+      "label": "t:sections.header.show_localization",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "t:sections.header.mega_menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "t:sections.header.mega_menu_item",
+          "info": "t:sections.header.mega_menu_item_info"
+        },
+        { "type": "text", "id": "column_1_title", "label": "t:shared.title" },
+        { "type": "link_list", "id": "column_1", "label": "t:sections.header.column_menu" },
+        { "type": "text", "id": "column_2_title", "label": "t:shared.title" },
+        { "type": "link_list", "id": "column_2", "label": "t:sections.header.column_menu" },
+        { "type": "text", "id": "column_3_title", "label": "t:shared.title" },
+        { "type": "link_list", "id": "column_3", "label": "t:sections.header.column_menu" },
+        { "type": "text", "id": "column_4_title", "label": "t:shared.title" },
+        { "type": "link_list", "id": "column_4", "label": "t:sections.header.column_menu" },
+        { "type": "image_picker", "id": "image", "label": "t:sections.header.feature_image" },
+        { "type": "text", "id": "feature_heading", "label": "t:sections.header.feature_heading" },
+        { "type": "url", "id": "feature_link", "label": "t:sections.header.feature_link" }
+      ]
+    }
+  ]
+}
+{% endschema %}
