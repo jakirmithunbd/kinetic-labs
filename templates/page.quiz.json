@@ -1,0 +1,198 @@
+{
+  "sections": {
+    "quiz": {
+      "type": "product-quiz",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "What are you training for?",
+            "type": "single"
+          }
+        },
+        "q1a1": {
+          "type": "answer",
+          "settings": {
+            "label": "Muscle & strength",
+            "goal": "Muscle & Strength",
+            "icon": "shield"
+          }
+        },
+        "q1a2": {
+          "type": "answer",
+          "settings": {
+            "label": "Endurance",
+            "goal": "Endurance",
+            "icon": "flask"
+          }
+        },
+        "q1a3": {
+          "type": "answer",
+          "settings": {
+            "label": "General health",
+            "goal": "Daily Health",
+            "icon": "leaf"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "How often do you train?",
+            "type": "single"
+          }
+        },
+        "q2a1": {
+          "type": "answer",
+          "settings": {
+            "label": "1–2 times a week"
+          }
+        },
+        "q2a2": {
+          "type": "answer",
+          "settings": {
+            "label": "3–4 times a week"
+          }
+        },
+        "q2a3": {
+          "type": "answer",
+          "settings": {
+            "label": "5+ times a week"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Where do you struggle most?",
+            "type": "multiple"
+          }
+        },
+        "q3a1": {
+          "type": "answer",
+          "settings": {
+            "label": "Recovery between sessions",
+            "type_override": "multiple"
+          }
+        },
+        "q3a2": {
+          "type": "answer",
+          "settings": {
+            "label": "Energy before training",
+            "type_override": "multiple"
+          }
+        },
+        "q3a3": {
+          "type": "answer",
+          "settings": {
+            "label": "Sleep quality",
+            "type_override": "multiple"
+          }
+        },
+        "q3a4": {
+          "type": "answer",
+          "settings": {
+            "label": "Hitting protein targets",
+            "type_override": "multiple"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Any dietary requirements?",
+            "type": "multiple"
+          }
+        },
+        "q4a1": {
+          "type": "answer",
+          "settings": {
+            "label": "Vegan",
+            "type_override": "multiple"
+          }
+        },
+        "q4a2": {
+          "type": "answer",
+          "settings": {
+            "label": "Dairy-free",
+            "type_override": "multiple"
+          }
+        },
+        "q4a3": {
+          "type": "answer",
+          "settings": {
+            "label": "No stimulants",
+            "type_override": "multiple"
+          }
+        },
+        "q4a4": {
+          "type": "answer",
+          "settings": {
+            "label": "No restrictions",
+            "type_override": "multiple"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "How many products do you want to take?",
+            "type": "single"
+          }
+        },
+        "q5a1": {
+          "type": "answer",
+          "settings": {
+            "label": "Just the essentials"
+          }
+        },
+        "q5a2": {
+          "type": "answer",
+          "settings": {
+            "label": "A small stack"
+          }
+        },
+        "q5a3": {
+          "type": "answer",
+          "settings": {
+            "label": "The full protocol"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q1a1",
+        "q1a2",
+        "q1a3",
+        "q2",
+        "q2a1",
+        "q2a2",
+        "q2a3",
+        "q3",
+        "q3a1",
+        "q3a2",
+        "q3a3",
+        "q3a4",
+        "q4",
+        "q4a1",
+        "q4a2",
+        "q4a3",
+        "q4a4",
+        "q5",
+        "q5a1",
+        "q5a2",
+        "q5a3"
+      ],
+      "settings": {
+        "eyebrow": "FIND YOUR STACK",
+        "intro_heading": "Five questions. One honest recommendation.",
+        "intro_text": "<p>No upsell logic, no personality quiz. We match what you're training for to the actives that have evidence behind them.</p>",
+        "results_eyebrow": "YOUR RESULT",
+        "results_heading": "Your stack",
+        "outcome_mode": "cart",
+        "recommend_count": 3,
+        "padding_top": 80,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "quiz"
+  ]
+}

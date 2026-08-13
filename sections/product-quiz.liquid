@@ -1,0 +1,328 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Five-step product finder.
+
+  Entirely client-side: no backend, no app. Answers carry product handles;
+  the result tallies them and builds a cart permalink
+  (/cart/{variant_id}:{qty},…) so the recommended stack lands in the cart in
+  one click. Alternatively it redirects to a goal-filtered collection.
+
+  Blocks are a flat list of questions and answers — each answer belongs to the
+  question above it. That keeps every question and every answer independently
+  reorderable and removable in the editor.
+{%- endcomment -%}
+
+{%- liquid
+  assign referenced = ''
+  for block in section.blocks
+    if block.type == 'answer' and block.settings.products != blank
+      assign referenced = referenced | append: ',' | append: block.settings.products
+    endif
+  endfor
+  assign handles = referenced | split: ',' | uniq
+-%}
+
+<kl-quiz
+  class="section quiz color-{{ section.settings.color_scheme }}"
+  data-outcome="{{ section.settings.outcome_mode }}"
+  data-collection-url="{{ section.settings.collection.url }}"
+  data-recommend-count="{{ section.settings.recommend_count }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width page-width--narrow">
+    {%- comment -%} ---------- Intro ---------- {%- endcomment -%}
+    <div class="quiz__panel quiz__intro" data-quiz-intro>
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.intro_heading,
+        text: section.settings.intro_text,
+        align: 'center'
+      %}
+      <div class="quiz__actions quiz__actions--center">
+        <button type="button" class="button" data-quiz-start>
+          {{- 'sections.quiz.start' | t -}}
+        </button>
+      </div>
+    </div>
+
+    {%- comment -%} ---------- Questions ---------- {%- endcomment -%}
+    <div class="quiz__panel quiz__questions" data-quiz-questions hidden>
+      <div class="quiz__progress">
+        <p class="label-micro" data-quiz-step-label></p>
+        <div
+          class="quiz__progress-track"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          aria-label="{{ 'sections.quiz.progress_label' | t }}"
+          data-quiz-progress
+        >
+          <span class="quiz__progress-fill" data-quiz-progress-fill></span>
+        </div>
+      </div>
+
+      {%- assign question_index = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'question' -%}
+          {%- assign question_index = question_index | plus: 1 -%}
+          {%- if question_index > 1 -%}
+            </div>
+            </fieldset>
+          {%- endif -%}
+          <fieldset class="quiz__question" data-quiz-question hidden {{ block.shopify_attributes }}>
+            <legend class="quiz__question-legend">
+              <span class="h3">{{ block.settings.question }}</span>
+              <span class="label-micro quiz__hint">
+                {%- if block.settings.type == 'multiple' -%}
+                  {{ 'sections.quiz.select_multiple' | t }}
+                {%- else -%}
+                  {{ 'sections.quiz.select_one' | t }}
+                {%- endif -%}
+              </span>
+            </legend>
+            <div class="quiz__answers" data-quiz-type="{{ block.settings.type }}">
+        {%- elsif block.type == 'answer' and question_index > 0 -%}
+          <label class="quiz__answer" {{ block.shopify_attributes }}>
+            <input
+              type="{% if block.settings.type_override == 'multiple' %}checkbox{% else %}radio{% endif %}"
+              class="quiz__answer-input visually-hidden"
+              name="quiz-q{{ question_index }}"
+              value="{{ block.id }}"
+              data-products="{{ block.settings.products | escape }}"
+              data-goal="{{ block.settings.goal | escape }}"
+            >
+            <span class="quiz__answer-body">
+              {%- if block.settings.icon != 'none' -%}
+                {% render 'icon', name: block.settings.icon, size: 20 %}
+              {%- endif -%}
+              <span>
+                <span class="quiz__answer-label">{{ block.settings.label }}</span>
+                {%- if block.settings.description != blank -%}
+                  <span class="quiz__answer-description text-caption text-muted">
+                    {{- block.settings.description -}}
+                  </span>
+                {%- endif -%}
+              </span>
+            </span>
+          </label>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if question_index > 0 -%}
+        </div>
+        </fieldset>
+      {%- endif -%}
+
+      <div class="quiz__actions">
+        <button type="button" class="button button--secondary" data-quiz-back>
+          {{- 'sections.quiz.back' | t -}}
+        </button>
+        <button type="button" class="button" data-quiz-next>
+          {{- 'sections.quiz.next' | t -}}
+        </button>
+      </div>
+    </div>
+
+    {%- comment -%} ---------- Results ---------- {%- endcomment -%}
+    <div class="quiz__panel quiz__results" data-quiz-results hidden tabindex="-1">
+      {% render 'section-header',
+        eyebrow: section.settings.results_eyebrow,
+        heading: section.settings.results_heading,
+        text: section.settings.results_text,
+        align: 'center'
+      %}
+
+      <ul class="product-grid list-unstyled" data-quiz-result-grid style="--cols-mobile: 1; --cols-desktop: 3;"></ul>
+
+      <div class="quiz__actions quiz__actions--center">
+        <a class="button" href="#" data-quiz-cart-link>
+          {{- 'sections.quiz.add_stack_to_cart' | t -}}
+        </a>
+        <button type="button" class="button button--secondary" data-quiz-restart>
+          {{- 'sections.quiz.restart' | t -}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}
+    Handle → variant map. Rendered by Liquid because a cart permalink needs
+    variant IDs, and the merchant only ever types product handles.
+  {%- endcomment -%}
+  <script type="application/json" data-quiz-products>
+    {
+      {%- assign printed = 0 -%}
+      {%- for raw in handles -%}
+        {%- assign handle = raw | strip -%}
+        {%- if handle == blank -%}{%- continue -%}{%- endif -%}
+        {%- assign quiz_product = all_products[handle] -%}
+        {%- if quiz_product == blank or quiz_product.empty? -%}{%- continue -%}{%- endif -%}
+        {%- if printed > 0 %},{% endif -%}
+        {{ handle | json }}: {
+          "id": {{ quiz_product.selected_or_first_available_variant.id }},
+          "title": {{ quiz_product.title | json }},
+          "url": {{ quiz_product.url | json }},
+          "price": {{ quiz_product.price | money | strip_html | json }},
+          "image": {{ quiz_product.featured_media | image_url: width: 400 | json }},
+          "available": {{ quiz_product.available | json }}
+        }
+        {%- assign printed = printed | plus: 1 -%}
+      {%- endfor -%}
+    }
+  </script>
+</kl-quiz>
+
+<script src="{{ 'quiz.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:sections.quiz.name",
+  "tag": "section",
+  "class": "quiz-section",
+  "max_blocks": 40,
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.quiz.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow", "default": "FIND YOUR STACK" },
+    {
+      "type": "text",
+      "id": "intro_heading",
+      "label": "t:sections.quiz.intro_heading",
+      "default": "Five questions. One honest recommendation."
+    },
+    { "type": "richtext", "id": "intro_text", "label": "t:sections.quiz.intro_text" },
+    {
+      "type": "text",
+      "id": "results_eyebrow",
+      "label": "t:shared.eyebrow",
+      "default": "YOUR RESULT"
+    },
+    {
+      "type": "text",
+      "id": "results_heading",
+      "label": "t:sections.quiz.results_heading",
+      "default": "Your stack"
+    },
+    { "type": "richtext", "id": "results_text", "label": "t:sections.quiz.results_text" },
+    {
+      "type": "select",
+      "id": "outcome_mode",
+      "label": "t:sections.quiz.outcome_mode",
+      "options": [
+        { "value": "cart", "label": "t:sections.quiz.outcome_cart" },
+        { "value": "collection", "label": "t:sections.quiz.outcome_collection" }
+      ],
+      "default": "cart"
+    },
+    { "type": "collection", "id": "collection", "label": "t:shared.collection" },
+    {
+      "type": "range",
+      "id": "recommend_count",
+      "label": "t:shared.products_to_show",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "t:sections.quiz.block_question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "t:sections.faq.question" },
+        {
+          "type": "select",
+          "id": "type",
+          "label": "t:sections.quiz.question_type",
+          "options": [
+            { "value": "single", "label": "t:sections.quiz.type_single" },
+            { "value": "multiple", "label": "t:sections.quiz.type_multiple" }
+          ],
+          "default": "single"
+        }
+      ]
+    },
+    {
+      "type": "answer",
+      "name": "t:sections.quiz.block_answer",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:shared.label" },
+        { "type": "text", "id": "description", "label": "t:shared.text" },
+        {
+          "type": "select",
+          "id": "type_override",
+          "label": "t:sections.quiz.question_type",
+          "options": [
+            { "value": "single", "label": "t:sections.quiz.type_single" },
+            { "value": "multiple", "label": "t:sections.quiz.type_multiple" }
+          ],
+          "default": "single"
+        },
+        {
+          "type": "text",
+          "id": "products",
+          "label": "t:sections.quiz.answer_products",
+          "info": "t:sections.quiz.answer_products_info"
+        },
+        { "type": "text", "id": "goal", "label": "t:sections.quiz.answer_goal" },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "t:shared.icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "flask", "label": "Flask" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "star", "label": "Star" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "none"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.quiz.name",
+      "blocks": [
+        { "type": "question" },
+        { "type": "answer" },
+        { "type": "answer" },
+        { "type": "question" },
+        { "type": "answer" },
+        { "type": "answer" }
+      ]
+    }
+  ]
+}
+{% endschema %}

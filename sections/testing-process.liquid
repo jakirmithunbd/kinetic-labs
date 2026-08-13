@@ -1,0 +1,98 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    {% render 'section-header',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      text: section.settings.text
+    %}
+
+    <ol class="process list-unstyled">
+      {%- for block in section.blocks -%}
+        <li
+          class="process__step{% if settings.animate_on_scroll %} reveal{% endif %}"
+          style="--reveal-delay: {{ forloop.index0 | times: 70 }}ms;"
+          {{ block.shopify_attributes }}
+        >
+          <span class="process__number data" aria-hidden="true">
+            {{- block.settings.number | default: forloop.index | prepend: '0' | slice: -2, 2 -}}
+          </span>
+          <div class="process__body">
+            <h3 class="process__title h4">{{ block.settings.heading }}</h3>
+            {%- if block.settings.text != blank -%}
+              <div class="process__text rte text-caption">{{ block.settings.text }}</div>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.testing_process.name",
+  "tag": "section",
+  "class": "testing-process-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow", "default": "HOW WE TEST" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "Every batch, every time"
+    },
+    { "type": "richtext", "id": "text", "label": "t:shared.text" },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": false },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "t:sections.testing_process.block_step",
+      "settings": [
+        { "type": "text", "id": "number", "label": "t:sections.testing_process.step_number" },
+        { "type": "text", "id": "heading", "label": "t:shared.heading", "default": "Step" },
+        { "type": "richtext", "id": "text", "label": "t:shared.text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.testing_process.name",
+      "blocks": [{ "type": "step" }, { "type": "step" }, { "type": "step" }, { "type": "step" }]
+    }
+  ]
+}
+{% endschema %}

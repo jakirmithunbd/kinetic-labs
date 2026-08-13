@@ -1,0 +1,63 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width{% if section.settings.narrow %} page-width--narrow{% endif %}">
+    {%- if section.settings.show_breadcrumbs -%}
+      {% render 'breadcrumbs' %}
+    {%- endif -%}
+
+    <div class="section-header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">[&nbsp;{{ section.settings.eyebrow }}&nbsp;]</p>
+      {%- endif -%}
+      <h1 class="h2">{{ page.title }}</h1>
+    </div>
+
+    {%- if page.content != blank -%}
+      <div class="page-content rte">{{ page.content }}</div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:shared.page",
+  "tag": "section",
+  "class": "main-page-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow" },
+    { "type": "checkbox", "id": "narrow", "label": "t:shared.layout", "default": true },
+    { "type": "checkbox", "id": "show_breadcrumbs", "label": "t:shared.link", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ]
+}
+{% endschema %}

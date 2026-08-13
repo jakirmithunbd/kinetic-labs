@@ -1,0 +1,104 @@
+{
+  "sections": {
+    "intro": {
+      "type": "main-page",
+      "settings": {
+        "eyebrow": "WHOLESALE",
+        "narrow": true,
+        "show_breadcrumbs": true,
+        "padding_top": 48,
+        "padding_bottom": 0
+      }
+    },
+    "pitch": {
+      "type": "multicolumn",
+      "blocks": {
+        "c1": {
+          "type": "column",
+          "settings": {
+            "icon": "truck",
+            "heading": "Stocked in 48 hours"
+          }
+        },
+        "c2": {
+          "type": "column",
+          "settings": {
+            "icon": "shield",
+            "heading": "Every batch documented"
+          }
+        },
+        "c3": {
+          "type": "column",
+          "settings": {
+            "icon": "refresh",
+            "heading": "Sale-or-return on first order"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "settings": {
+        "eyebrow": "WHY STOCK US",
+        "heading": "Built for gyms, clinics and independents",
+        "columns_desktop": 3,
+        "columns_mobile": "1",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "blocks": {
+        "f1": {
+          "type": "text_field",
+          "settings": {
+            "label": "Company",
+            "required": true
+          }
+        },
+        "f2": {
+          "type": "text_field",
+          "settings": {
+            "label": "ABN / business number"
+          }
+        },
+        "f3": {
+          "type": "text_field",
+          "settings": {
+            "label": "Your role"
+          }
+        },
+        "f4": {
+          "type": "select",
+          "settings": {
+            "label": "Estimated monthly volume",
+            "options": "Under 50 units\n50–200 units\n200+ units"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
+      "settings": {
+        "color_scheme": "scheme-surface",
+        "eyebrow": "ENQUIRIES",
+        "heading": "Request wholesale access",
+        "submit_label": "Request wholesale access",
+        "show_phone": true,
+        "padding_top": 80,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "intro",
+    "pitch",
+    "form"
+  ]
+}

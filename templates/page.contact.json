@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "form": {
+      "type": "contact-form",
+      "settings": {
+        "eyebrow": "CONTACT",
+        "heading": "Get in touch",
+        "show_phone": true,
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "form"
+  ]
+}

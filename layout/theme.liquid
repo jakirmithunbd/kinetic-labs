@@ -174,6 +174,11 @@
         resultsCount: {{ 'general.search.results_with_count.other' | t: count: '%%' | json }},
         noResults: {{ 'general.search.no_results' | t: terms: '' | json }},
         noShippingRates: {{ 'sections.cart.shipping_estimator.no_rates' | t | json }},
+        coaNoResult: {{ 'sections.testing.coa_no_result' | t | json }},
+        coaDownload: {{ 'sections.testing.download_coa' | t | json }},
+        quizStep: {{ 'sections.quiz.step_of' | t: current: '%%current%%', total: '%%total%%' | json }},
+        quizNext: {{ 'sections.quiz.next' | t | json }},
+        quizSeeResults: {{ 'sections.quiz.see_results' | t | json }},
         quantityError: {{ 'products.product.quantity_error' | t: quantity: '%%' | json }}
       };
       window.routes = {

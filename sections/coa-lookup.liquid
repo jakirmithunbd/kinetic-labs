@@ -1,0 +1,125 @@
+{{ 'component-content.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Certificate of analysis lookup.
+
+  By default the batch records are rendered into the page as JSON and matched
+  in the browser — no backend, and the result is instant. That works well up
+  to a few hundred batches; past that, set "External endpoint" and the form
+  posts the batch number to your own app or COA provider instead. See the
+  README before the batch list gets long.
+{%- endcomment -%}
+
+{%- liquid
+  assign batches = shop.metaobjects.coa_batch.values
+  assign external = section.settings.endpoint
+-%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width page-width--narrow">
+    {% render 'section-header',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading
+    %}
+
+    <kl-coa-lookup class="coa" {% if external != blank %}data-endpoint="{{ external }}"{% endif %}>
+      <form
+        class="coa__form"
+        {% if external != blank %}action="{{ external }}" method="get"{% endif %}
+        role="search"
+      >
+        <div class="field">
+          <label class="field__label" for="CoaBatch-{{ section.id }}">
+            {{- 'sections.testing.coa_label' | t -}}
+          </label>
+          <div class="coa__field">
+            <input
+              id="CoaBatch-{{ section.id }}"
+              class="field__input"
+              type="search"
+              name="batch"
+              placeholder="{{ 'sections.testing.coa_placeholder' | t }}"
+              autocomplete="off"
+              aria-describedby="CoaHelp-{{ section.id }}"
+              data-coa-input
+            >
+            <button type="submit" class="button">{{ 'sections.testing.coa_submit' | t }}</button>
+          </div>
+          <p class="field__help label-micro" id="CoaHelp-{{ section.id }}">
+            {{- 'sections.testing.coa_help' | t -}}
+          </p>
+        </div>
+      </form>
+
+      <div class="coa__result" data-coa-result role="status" aria-live="polite"></div>
+
+      {%- if external == blank -%}
+        <script type="application/json" data-coa-data>
+          [
+            {%- for batch in batches -%}
+              {
+                "batch": {{ batch.batch_number.value | upcase | strip | json }},
+                "product": {{ batch.product.value.title | default: '' | json }},
+                "date": {{ batch.test_date.value | date: format: 'abbreviated_date' | json }},
+                "file": {{ batch.file.value.url | default: '' | json }}
+              }{% unless forloop.last %},{% endunless %}
+            {%- endfor -%}
+          ]
+        </script>
+      {%- endif -%}
+    </kl-coa-lookup>
+  </div>
+</div>
+
+<script src="{{ 'coa-lookup.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:sections.coa_lookup.name",
+  "tag": "section",
+  "class": "coa-lookup-section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.coa_lookup.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-surface"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow", "default": "BATCH LOOKUP" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "Find a certificate of analysis"
+    },
+    { "type": "url", "id": "endpoint", "label": "t:shared.link" },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.coa_lookup.name" }]
+}
+{% endschema %}

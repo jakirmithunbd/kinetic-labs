@@ -1,0 +1,42 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "blocks": {
+        "toc": {
+          "type": "toc",
+          "settings": {}
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "toc",
+        "share"
+      ],
+      "settings": {
+        "show_author": true,
+        "show_date": true,
+        "show_reading_time": true,
+        "padding_top": 40,
+        "padding_bottom": 80
+      }
+    },
+    "related": {
+      "type": "related-posts",
+      "settings": {
+        "eyebrow": "KEEP READING",
+        "heading": "More from the lab notes",
+        "posts_to_show": 3,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}
