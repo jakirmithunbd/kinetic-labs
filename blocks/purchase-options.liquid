@@ -1,0 +1,148 @@
+{%- comment -%}
+  One-time vs. subscribe, as two selectable cards.
+
+  Subscription billing and the customer portal belong to the subscription app;
+  this block only renders the selling plans the app has published and passes
+  the chosen plan id to the cart.
+{%- endcomment -%}
+
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign groups = product.selling_plan_groups
+  assign has_plans = false
+  if groups.size > 0 and block.settings.show_selling_plans
+    assign has_plans = true
+  endif
+
+  assign selected_plan = product.selected_selling_plan
+-%}
+
+{%- if has_plans -%}
+  {%- liquid
+    assign group = groups.first
+    assign first_plan = group.selling_plans.first
+    assign first_allocation = nil
+    for allocation in variant.selling_plan_allocations
+      if allocation.selling_plan.id == first_plan.id
+        assign first_allocation = allocation
+        break
+      endif
+    endfor
+
+    assign saving_amount = 0
+    assign saving_percent = 0
+    if first_allocation and first_allocation.compare_at_price > first_allocation.price
+      assign saving_amount = first_allocation.compare_at_price | minus: first_allocation.price
+      assign saving_percent = saving_amount | times: 100.0 | divided_by: first_allocation.compare_at_price | round
+    endif
+
+    assign saving_percent_str = saving_percent | append: '%'
+    assign saving_amount_money = saving_amount | money
+
+    assign one_time_checked = true
+    if selected_plan
+      assign one_time_checked = false
+    endif
+  -%}
+
+  <div class="product-block product-block--purchase-options" {{ block.shopify_attributes }}>
+    <kl-purchase-options class="purchase-options" data-section="{{ section.id }}">
+      <fieldset class="purchase-options__fieldset">
+        <legend class="visually-hidden">{{ 'products.purchase_options.heading' | t }}</legend>
+
+        {%- comment -%} One-time {%- endcomment -%}
+        <input
+          type="radio"
+          class="purchase-options__input visually-hidden"
+          id="Purchase-{{ section.id }}-onetime"
+          name="purchase-option-{{ section.id }}"
+          value=""
+          data-purchase-option="one-time"
+          {% if one_time_checked %}checked{% endif %}
+        >
+        <label class="purchase-options__card" for="Purchase-{{ section.id }}-onetime">
+          <span class="purchase-options__radio" aria-hidden="true"></span>
+          <span class="purchase-options__body">
+            <span class="purchase-options__title">{{ 'products.purchase_options.one_time' | t }}</span>
+          </span>
+          <span class="purchase-options__price data" data-one-time-price>{{ variant.price | money }}</span>
+        </label>
+
+        {%- comment -%} Subscribe {%- endcomment -%}
+        <input
+          type="radio"
+          class="purchase-options__input visually-hidden"
+          id="Purchase-{{ section.id }}-subscribe"
+          name="purchase-option-{{ section.id }}"
+          value="{{ first_plan.id }}"
+          data-purchase-option="subscribe"
+          {% unless one_time_checked %}checked{% endunless %}
+        >
+        <label class="purchase-options__card" for="Purchase-{{ section.id }}-subscribe">
+          <span class="purchase-options__radio" aria-hidden="true"></span>
+          <span class="purchase-options__body">
+            <span class="purchase-options__title">
+              {%- if saving_percent > 0 -%}
+                {{ 'products.purchase_options.subscribe' | t: percent: saving_percent_str }}
+              {%- else -%}
+                {{ 'products.purchase_options.subscribe_plain' | t }}
+              {%- endif -%}
+            </span>
+            <span class="purchase-options__note label-micro">
+              {{- 'products.purchase_options.cancel_anytime' | t -}}
+            </span>
+            {%- if saving_amount > 0 -%}
+              <span class="purchase-options__saving badge badge--support" data-plan-saving>
+                {{- 'products.purchase_options.save_amount' | t: amount: saving_amount_money -}}
+              </span>
+            {%- endif -%}
+          </span>
+          <span class="purchase-options__price data" data-plan-price>
+            {{- first_allocation.price | default: variant.price | money -}}
+          </span>
+        </label>
+
+        {%- comment -%} Interval, shown only once subscribe is chosen {%- endcomment -%}
+        {%- if group.selling_plans.size > 1 -%}
+          <div class="purchase-options__interval" data-plan-interval {% if one_time_checked %}hidden{% endif %}>
+            <label class="field__label" for="SellingPlan-{{ section.id }}">
+              {{- 'products.purchase_options.delivery_frequency' | t -}}
+            </label>
+            <select
+              id="SellingPlan-{{ section.id }}"
+              class="field__select"
+              data-plan-select
+            >
+              {%- for plan in group.selling_plans -%}
+                <option
+                  value="{{ plan.id }}"
+                  {% if selected_plan.id == plan.id %}selected{% endif %}
+                >
+                  {{ plan.options.first.value | default: plan.name }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+      </fieldset>
+
+      <p class="purchase-options__footnote label-micro">
+        {{- 'products.purchase_options.subscription_note' | t -}}
+      </p>
+    </kl-purchase-options>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_purchase_options",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_selling_plans",
+      "label": "t:sections.product_info.show_selling_plans",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

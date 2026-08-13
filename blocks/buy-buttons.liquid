@@ -1,0 +1,124 @@
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign form_id = 'ProductForm-' | append: section.id
+
+  assign button_label = 'products.product.add_to_cart' | t
+  if product.template_suffix contains 'pre-order'
+    assign button_label = 'products.product.pre_order' | t
+  endif
+  if variant == nil
+    assign button_label = 'products.product.unavailable' | t
+  elsif variant.available == false
+    assign button_label = 'products.product.sold_out' | t
+  endif
+-%}
+
+<div class="product-block product-block--buy-buttons" {{ block.shopify_attributes }}>
+  <kl-product-form data-added-message="{{ 'products.product.added' | t }}">
+    {%- form 'product',
+      product,
+      id: form_id,
+      class: 'product-form',
+      novalidate: 'novalidate',
+      data-type: 'add-to-cart-form'
+    -%}
+      <input
+        type="hidden"
+        name="id"
+        value="{{ variant.id }}"
+        data-variant-input
+        {% if variant == nil or variant.available == false %}disabled{% endif %}
+      >
+      <input type="hidden" name="selling_plan" value="{{ product.selected_selling_plan.id }}" data-selling-plan-input>
+
+      <div class="product-form__row">
+        {%- comment -%}
+          The quantity block, if present, renders its input with
+          form="{{ form_id }}" so it posts here from wherever it sits.
+        {%- endcomment -%}
+        <div class="product-form__quantity-slot" data-quantity-slot></div>
+
+        <button
+          type="submit"
+          name="add"
+          class="button button--full product-form__submit"
+          data-add-to-cart
+          {% if variant == nil or variant.available == false %}
+            disabled
+            aria-disabled="true"
+          {% endif %}
+        >
+          <span data-add-to-cart-text>
+            {{- button_label -}}
+            {%- if block.settings.show_price_in_button and variant.available -%}
+              <span data-add-to-cart-price> &mdash; {{ variant.price | money }}</span>
+            {%- endif -%}
+          </span>
+          <span class="button__spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <p class="product-form__error form-status form-status--error" data-form-error hidden role="alert"></p>
+
+      {%- if block.settings.show_dynamic_checkout -%}
+        <div class="product-form__dynamic">{{ form | payment_button }}</div>
+      {%- endif -%}
+    {%- endform -%}
+  </kl-product-form>
+
+  {%- comment -%}
+    Back-in-stock is an app's job. This is the slot it plugs into; until an app
+    block is added, a sold-out variant just shows the disabled button above.
+  {%- endcomment -%}
+</div>
+
+{%- if block.settings.sticky_mobile -%}
+  <kl-sticky-atc
+    class="sticky-atc"
+    data-form="{{ form_id }}"
+    data-observe="ProductInfo-{{ section.id }}"
+    hidden
+  >
+    <div class="sticky-atc__inner">
+      <div class="sticky-atc__meta">
+        <span class="label-micro">{{ 'products.product.price.regular_price' | t }}</span>
+        <span class="sticky-atc__price data" data-sticky-price>{{ variant.price | money }}</span>
+      </div>
+      <button
+        type="submit"
+        form="{{ form_id }}"
+        name="add"
+        class="button sticky-atc__button"
+        {% if variant == nil or variant.available == false %}disabled aria-disabled="true"{% endif %}
+      >
+        {{ button_label }}
+      </button>
+    </div>
+  </kl-sticky-atc>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_buy_buttons",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "t:sections.product_info.show_dynamic_checkout",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price_in_button",
+      "label": "t:products.product.add_to_cart_with_price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_mobile",
+      "label": "t:sections.product_info.sticky_mobile",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,55 @@
+{%- comment -%}
+  Visual flavour swatches — never a dropdown.
+
+  The option is found by name so a merchant can rename "Flavour" to
+  "Variant" or translate it without touching code. If no option matches, the
+  block renders nothing rather than guessing at option 1.
+{%- endcomment -%}
+
+{%- liquid
+  assign target_name = block.settings.option_name | default: 'Flavour' | downcase | strip
+  assign matched = nil
+  for option in product.options_with_values
+    assign this_name = option.name | downcase | strip
+    if this_name == target_name
+      assign matched = option
+      break
+    endif
+  endfor
+-%}
+
+{%- if matched and matched.values.size > 1 -%}
+  <div class="product-block product-block--flavour" {{ block.shopify_attributes }}>
+    {% render 'option-picker',
+      product: product,
+      option: matched,
+      style: block.settings.swatch_style,
+      section_id: section.id
+    %}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_flavour",
+  "settings": [
+    {
+      "type": "text",
+      "id": "option_name",
+      "label": "t:sections.product_info.option_name",
+      "info": "t:sections.product_info.option_name_info",
+      "default": "Flavour"
+    },
+    {
+      "type": "select",
+      "id": "swatch_style",
+      "label": "t:sections.product_info.swatch_style",
+      "options": [
+        { "value": "swatch", "label": "t:sections.product_info.swatch_image" },
+        { "value": "pill", "label": "t:shared.style_secondary" }
+      ],
+      "default": "swatch"
+    }
+  ]
+}
+{% endschema %}
