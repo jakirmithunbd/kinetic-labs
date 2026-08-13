@@ -1,0 +1,241 @@
+{{ 'component-home.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign has_media = false
+  if section.settings.media_type != 'none'
+    if section.settings.image != blank or section.settings.video != blank or section.settings.video_url != blank
+      assign has_media = true
+    endif
+  endif
+-%}
+
+<div
+  class="hero color-{{ section.settings.color_scheme }} hero--media-{{ section.settings.media_position }} hero--{{ section.settings.height }}{% if has_media and section.settings.media_position == 'background' %} hero--overlaid{% endif %}"
+  style="
+    {% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  "
+>
+  {%- if has_media and section.settings.media_position == 'background' -%}
+    <div class="hero__background" aria-hidden="true">
+      {% render 'hero-media', section: section, eager: true %}
+      <span class="hero__overlay"></span>
+    </div>
+  {%- endif -%}
+
+  <div class="hero__content page-width hero__content--{{ section.settings.text_position }}">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="eyebrow hero__eyebrow">[&nbsp;{{ section.settings.eyebrow }}&nbsp;]</p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      {%- comment -%}
+        The headline carries the product's whole argument, so it's an <h1> on
+        the home page and real text — never baked into the image.
+      {%- endcomment -%}
+      <h1 class="h-display hero__heading">
+        {{ section.settings.heading }}
+        {%- if section.settings.heading_light != blank -%}
+          <span class="h-display--light hero__heading-light">{{ section.settings.heading_light }}</span>
+        {%- endif -%}
+      </h1>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <div class="hero__subheading rte text-body-lg">{{ section.settings.subheading }}</div>
+    {%- endif -%}
+
+    {%- assign button_blocks = section.blocks | where: 'type', 'button' -%}
+    {%- if button_blocks.size > 0 -%}
+      <div class="hero__buttons">
+        {%- for block in button_blocks -%}
+          {%- if block.settings.label != blank -%}
+            <a
+              class="button {% if block.settings.style == 'secondary' %}button--secondary{% elsif block.settings.style == 'tertiary' %}button--tertiary{% endif %}"
+              href="{{ block.settings.link | default: '#' }}"
+              {{ block.shopify_attributes }}
+            >
+              {{- block.settings.label -}}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- assign trust_blocks = section.blocks | where: 'type', 'trust' -%}
+    {%- if trust_blocks.size > 0 -%}
+      <ul class="hero__trust list-unstyled">
+        {%- for block in trust_blocks -%}
+          <li class="hero__trust-item" {{ block.shopify_attributes }}>
+            {%- if block.settings.show_stars -%}
+              <span class="hero__stars" aria-hidden="true">
+                {%- for i in (1..5) -%}
+                  {% render 'icon', name: 'star', size: 10 %}
+                {%- endfor -%}
+              </span>
+            {%- endif -%}
+            <span class="label-micro">{{ block.settings.text }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+
+  {%- if has_media and section.settings.media_position == 'below' -%}
+    <div class="hero__media-below">
+      {% render 'hero-media', section: section, eager: true %}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.hero.name",
+  "tag": "section",
+  "class": "hero-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:shared.heading" },
+    {
+      "type": "text",
+      "id": "heading_light",
+      "label": "t:shared.subheading",
+      "info": "t:sections.hero.trust_line_info"
+    },
+    { "type": "richtext", "id": "subheading", "label": "t:shared.text" },
+    { "type": "header", "content": "t:sections.hero.media_type" },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "t:sections.hero.media_type",
+      "options": [
+        { "value": "none", "label": "t:sections.hero.media_none" },
+        { "value": "image", "label": "t:sections.hero.media_image" },
+        { "value": "video", "label": "t:sections.hero.media_video" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "t:sections.hero.media_position",
+      "options": [
+        { "value": "below", "label": "t:sections.hero.media_below" },
+        { "value": "background", "label": "t:sections.hero.media_background" }
+      ],
+      "default": "below"
+    },
+    { "type": "image_picker", "id": "image", "label": "t:shared.image" },
+    { "type": "image_picker", "id": "image_mobile", "label": "t:shared.image_mobile" },
+    { "type": "video", "id": "video", "label": "t:shared.video" },
+    { "type": "video_url", "id": "video_url", "label": "t:sections.video.video_url", "accept": ["youtube", "vimeo"] },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:sections.hero.overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 30
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "t:sections.hero.height",
+      "options": [
+        { "value": "small", "label": "t:sections.hero.height_small" },
+        { "value": "medium", "label": "t:sections.hero.height_medium" },
+        { "value": "large", "label": "t:sections.hero.height_large" },
+        { "value": "full", "label": "t:sections.hero.height_full" }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "t:sections.hero.text_position",
+      "options": [
+        { "value": "left", "label": "t:shared.align_left" },
+        { "value": "center", "label": "t:shared.align_center" }
+      ],
+      "default": "left"
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "t:sections.hero.block_button",
+      "settings": [
+        { "type": "text", "id": "label", "label": "t:shared.button_label", "default": "Shop now" },
+        { "type": "url", "id": "link", "label": "t:shared.button_link" },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "t:shared.button_style",
+          "options": [
+            { "value": "primary", "label": "t:shared.style_primary" },
+            { "value": "secondary", "label": "t:shared.style_secondary" },
+            { "value": "tertiary", "label": "t:shared.style_tertiary" }
+          ],
+          "default": "primary"
+        }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "t:sections.hero.block_trust",
+      "settings": [
+        { "type": "text", "id": "text", "label": "t:shared.text", "default": "2,100+ verified reviews" },
+        { "type": "checkbox", "id": "show_stars", "label": "t:shared.icon", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.hero.name",
+      "settings": {
+        "eyebrow": "CLINICALLY DOSED · NO PROPRIETARY BLENDS",
+        "heading": "5.00g of creatine monohydrate.",
+        "heading_light": "Not 5g of a blend containing creatine.",
+        "subheading": "<p>Every active, dosed to the literature, printed on the label in milligrams you can read. This is what honest sports nutrition looks like.</p>"
+      },
+      "blocks": [
+        { "type": "button", "settings": { "label": "Shop creatine", "style": "primary" } },
+        { "type": "button", "settings": { "label": "Read the dosage panel", "style": "secondary" } },
+        { "type": "trust", "settings": { "text": "4.9", "show_stars": true } },
+        { "type": "trust", "settings": { "text": "2,100+ verified reviews" } },
+        { "type": "trust", "settings": { "text": "Ships same day" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

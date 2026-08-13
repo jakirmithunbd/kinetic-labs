@@ -1,0 +1,280 @@
+{{ 'component-collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign per_page = section.settings.products_per_page
+  assign filtering = section.settings.enable_filtering
+  assign sorting = section.settings.enable_sorting
+  assign has_facets = false
+  if filtering and collection.filters.size > 0
+    assign has_facets = true
+  endif
+-%}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}"
+  id="CollectionGrid-{{ section.id }}"
+  data-collection-section
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    <div class="collection{% if has_facets and section.settings.filter_layout == 'sidebar' %} collection--sidebar{% endif %}">
+      {%- comment -%} ---------- Desktop sidebar ---------- {%- endcomment -%}
+      {%- if has_facets and section.settings.filter_layout == 'sidebar' -%}
+        <aside class="collection__sidebar" aria-label="{{ 'sections.collection_grid.filters' | t }}">
+          {% render 'facets',
+            results: collection,
+            layout: 'sidebar',
+            enable_sort: false,
+            section_id: section.id
+          %}
+        </aside>
+      {%- endif -%}
+
+      <div class="collection__main">
+        {%- comment -%} ---------- Toolbar ---------- {%- endcomment -%}
+        <div class="collection__toolbar">
+          {%- if has_facets -%}
+            <button
+              type="button"
+              class="button button--secondary button--small collection__filter-trigger"
+              data-drawer-open="FilterDrawer"
+              aria-haspopup="dialog"
+            >
+              {% render 'icon', name: 'filter', size: 16 %}
+              {{ 'sections.collection_grid.filter_and_sort' | t }}
+            </button>
+          {%- endif -%}
+
+          <p class="collection__count label-micro" data-collection-count aria-live="polite">
+            {{- 'sections.collection_grid.showing_count' | t: count: collection.products_count -}}
+          </p>
+
+          {%- if sorting -%}
+            <div class="collection__sort">
+              {% render 'facets',
+                results: collection,
+                layout: 'toolbar',
+                enable_sort: true,
+                section_id: section.id
+              %}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} ---------- Horizontal filters ---------- {%- endcomment -%}
+        {%- if has_facets and section.settings.filter_layout == 'horizontal' -%}
+          <div class="collection__horizontal-facets">
+            {% render 'facets',
+              results: collection,
+              layout: 'horizontal',
+              enable_sort: false,
+              section_id: section.id
+            %}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} ---------- Grid ---------- {%- endcomment -%}
+        {%- paginate collection.products by per_page -%}
+          {%- if collection.products.size == 0 -%}
+            <div class="collection__empty">
+              <p class="h3">{{ 'sections.collection_grid.empty' | t }}</p>
+              <p class="text-sm text-muted">{{ 'sections.collection_grid.empty_action' | t }}</p>
+              <a class="button button--secondary" href="{{ collection.url }}">
+                {{- 'sections.collection_grid.clear_all' | t -}}
+              </a>
+            </div>
+          {%- else -%}
+            <ul
+              class="product-grid"
+              id="ProductGrid-{{ section.id }}"
+              data-product-grid
+              style="--cols-mobile: {{ section.settings.columns_mobile }}; --cols-desktop: {{ section.settings.columns_desktop }};"
+            >
+              {%- for product in collection.products -%}
+                <li>
+                  {% render 'product-card',
+                    card_product: product,
+                    index: forloop.index0,
+                    lazy: forloop.index > 4,
+                    sizes: '(min-width: 990px) 22vw, (min-width: 750px) 33vw, 45vw'
+                  %}
+                </li>
+              {%- endfor -%}
+            </ul>
+
+            {%- if section.settings.pagination_type == 'load_more' and paginate.next -%}
+              <div class="collection__load-more">
+                {%- assign shown_count = paginate.current_offset | plus: collection.products.size -%}
+                <p class="label-micro" data-load-more-status>
+                  {{- 'general.pagination.showing' | t: shown: shown_count, total: paginate.items -}}
+                </p>
+                {%- comment -%}
+                  A real link, enhanced into a button by collection.js. With
+                  JavaScript off it's simply "next page".
+                {%- endcomment -%}
+                <a
+                  class="button button--secondary"
+                  href="{{ paginate.next.url }}"
+                  data-load-more
+                  data-grid-target="ProductGrid-{{ section.id }}"
+                >
+                  {{- 'general.pagination.load_more' | t -}}
+                </a>
+              </div>
+            {%- else -%}
+              {% render 'pagination', paginate: paginate, anchor: '#CollectionGrid-' | append: section.id %}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- comment -%} ---------- Mobile filter drawer ---------- {%- endcomment -%}
+{%- if has_facets -%}
+  <kl-drawer
+    class="drawer filter-drawer"
+    id="FilterDrawer"
+    role="dialog"
+    aria-modal="true"
+    aria-label="{{ 'sections.collection_grid.filters' | t }}"
+    aria-hidden="true"
+  >
+    <div class="drawer__overlay" tabindex="-1"></div>
+    <div class="drawer__panel">
+      <div class="drawer__header">
+        <h2 class="h4">{{ 'sections.collection_grid.filter_and_sort' | t }}</h2>
+        <button
+          type="button"
+          class="drawer__close"
+          data-drawer-close
+          aria-label="{{ 'sections.collection_grid.close_filters' | t }}"
+        >
+          {% render 'icon', name: 'close', size: 20 %}
+        </button>
+      </div>
+
+      <div class="drawer__body">
+        {% render 'facets',
+          results: collection,
+          layout: 'drawer',
+          enable_sort: true,
+          section_id: section.id
+        %}
+      </div>
+
+      <div class="drawer__footer filter-drawer__footer">
+        <a class="button button--secondary" href="{{ collection.url }}" data-facet-clear>
+          {{- 'sections.collection_grid.clear' | t -}}
+        </a>
+        <button type="button" class="button" data-drawer-close>
+          {{- 'sections.collection_grid.apply' | t -}}
+        </button>
+      </div>
+    </div>
+  </kl-drawer>
+{%- endif -%}
+
+<script src="{{ 'collection.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:sections.collection_grid.name",
+  "tag": "section",
+  "class": "collection-grid-section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.collection_grid.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "t:sections.collection_grid.products_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "t:shared.columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "t:shared.columns_mobile",
+      "options": [
+        { "value": "1", "label": "t:shared.one_column" },
+        { "value": "2", "label": "t:shared.two_columns" }
+      ],
+      "default": "2"
+    },
+    { "type": "header", "content": "t:sections.collection_grid.enable_filtering" },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "t:sections.collection_grid.enable_filtering",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "filter_layout",
+      "label": "t:sections.collection_grid.filter_layout",
+      "options": [
+        { "value": "sidebar", "label": "t:sections.collection_grid.filter_sidebar" },
+        { "value": "horizontal", "label": "t:sections.collection_grid.filter_horizontal" }
+      ],
+      "default": "sidebar"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "t:sections.collection_grid.enable_sorting",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "t:sections.collection_grid.pagination_type",
+      "options": [
+        { "value": "paged", "label": "t:sections.collection_grid.pagination_paged" },
+        { "value": "load_more", "label": "t:sections.collection_grid.pagination_load_more" }
+      ],
+      "default": "load_more"
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.collection_grid.name" }]
+}
+{% endschema %}

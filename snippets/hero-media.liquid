@@ -1,0 +1,76 @@
+{%- comment -%}
+  Hero background media: a mobile-specific image where one is supplied, a
+  hosted video, or an embed. The image is the LCP candidate on the home page,
+  so it loads eagerly with high priority and never lazily.
+
+  Accepts:
+    section {Section}
+    eager   {Boolean}
+{%- endcomment -%}
+
+{%- liquid
+  assign loading = 'lazy'
+  assign priority = 'auto'
+  if eager
+    assign loading = 'eager'
+    assign priority = 'high'
+  endif
+-%}
+
+{%- if section.settings.media_type == 'video' and section.settings.video != blank -%}
+  {{
+    section.settings.video
+    | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: 'hero__video'
+  }}
+
+{%- elsif section.settings.media_type == 'video' and section.settings.video_url != blank -%}
+  <div class="hero__embed">
+    {%- if section.settings.video_url.type == 'youtube' -%}
+      <iframe
+        src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}?autoplay=1&mute=1&loop=1&controls=0&playlist={{ section.settings.video_url.id }}&playsinline=1"
+        title="{{ section.settings.heading | escape }}"
+        loading="lazy"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+      ></iframe>
+    {%- else -%}
+      <iframe
+        src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}?autoplay=1&muted=1&loop=1&background=1"
+        title="{{ section.settings.heading | escape }}"
+        loading="lazy"
+        allow="autoplay"
+        allowfullscreen
+      ></iframe>
+    {%- endif -%}
+  </div>
+
+{%- elsif section.settings.image != blank -%}
+  <picture>
+    {%- if section.settings.image_mobile != blank -%}
+      <source
+        media="(max-width: 749px)"
+        srcset="
+          {{ section.settings.image_mobile | image_url: width: 750 }} 750w,
+          {{ section.settings.image_mobile | image_url: width: 1100 }} 1100w
+        "
+        sizes="100vw"
+      >
+    {%- endif -%}
+    <img
+      src="{{ section.settings.image | image_url: width: 1600 }}"
+      srcset="
+        {{ section.settings.image | image_url: width: 750 }} 750w,
+        {{ section.settings.image | image_url: width: 1100 }} 1100w,
+        {{ section.settings.image | image_url: width: 1600 }} 1600w,
+        {{ section.settings.image | image_url: width: 2200 }} 2200w
+      "
+      sizes="100vw"
+      alt="{{ section.settings.image.alt | escape }}"
+      width="{{ section.settings.image.width }}"
+      height="{{ section.settings.image.height }}"
+      loading="{{ loading }}"
+      fetchpriority="{{ priority }}"
+      class="hero__image"
+    >
+  </picture>
+{%- endif -%}
