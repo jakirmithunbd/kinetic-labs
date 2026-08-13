@@ -61,6 +61,13 @@
       {{ display_font | font_face: font_display: 'swap' }}
     {%- endunless -%}
 
+    {%- comment -%}
+      base.css loads first so the inline token block below wins the cascade —
+      base.css carries brand-colour fallbacks at the same :root specificity,
+      and the merchant's real scheme values must override them.
+    {%- endcomment -%}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
     <style data-theme-tokens>
       {%- comment -%} Colour schemes — one class per scheme, assignable per section. {%- endcomment -%}
       {% for scheme in settings.color_schemes -%}
@@ -142,7 +149,6 @@
       {%- endif %}
     </style>
 
-    {{ 'base.css' | asset_url | stylesheet_tag }}
 
     <script>
       document.documentElement.className = document.documentElement.className.replace('no-js', 'js');

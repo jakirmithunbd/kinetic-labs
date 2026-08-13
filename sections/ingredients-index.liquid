@@ -3,12 +3,12 @@
 {%- comment -%}
   Grid of every ingredient metaobject.
 
-  `shop.metaobjects.ingredient.values` returns the whole set, so a merchant
+  `metaobjects.ingredient.values` returns the whole set, so a merchant
   who adds a new ingredient in the admin sees it here with no theme change.
 {%- endcomment -%}
 
 {%- liquid
-  assign ingredients = shop.metaobjects.ingredient.values
+  assign ingredients = metaobjects.ingredient.values
 -%}
 
 <div

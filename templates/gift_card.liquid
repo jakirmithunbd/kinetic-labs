@@ -16,6 +16,13 @@
       {{ 'fraunces-variable.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
     {%- endif -%}
 
+    {%- comment -%}
+      base.css loads first so the inline token block below wins the cascade —
+      base.css carries brand-colour fallbacks at the same :root specificity,
+      and the merchant's real scheme values must override them.
+    {%- endcomment -%}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
     <style data-theme-tokens>
       {%- assign s = settings.color_schemes['scheme-1'].settings -%}
       :root {
@@ -39,7 +46,6 @@
       }
     </style>
 
-    {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'component-content.css' | asset_url | stylesheet_tag }}
   </head>
 
