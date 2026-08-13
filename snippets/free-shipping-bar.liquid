@@ -1,0 +1,55 @@
+{%- comment -%}
+  Free-shipping progress bar, driven by cart.total_price against the threshold
+  in theme settings.
+
+  The threshold is entered in the store's default currency. Under Shopify
+  Markets the cart total is in the presentment currency, so a merchant selling
+  in several currencies should set the threshold per market via a market-
+  specific translation of `sections.cart.free_shipping_label`, or turn the bar
+  off — see the README.
+{%- endcomment -%}
+
+{%- liquid
+  assign threshold_raw = settings.cart_free_shipping_threshold | strip
+  assign threshold = threshold_raw | times: 100 | round
+-%}
+
+{%- if settings.cart_show_free_shipping_bar and threshold > 0 -%}
+  {%- liquid
+    assign remaining = threshold | minus: cart.total_price
+    assign reached = false
+    if remaining <= 0
+      assign reached = true
+      assign remaining = 0
+    endif
+
+    assign percent = cart.total_price | times: 100.0 | divided_by: threshold | round
+    if percent > 100
+      assign percent = 100
+    endif
+
+    assign remaining_money = remaining | money
+    assign threshold_money = threshold | money
+  -%}
+
+  <div class="shipping-bar{% if reached %} shipping-bar--reached{% endif %}">
+    <p class="shipping-bar__text label-micro" role="status">
+      {%- if reached -%}
+        {% render 'icon', name: 'check', size: 12 %}
+        {{ 'sections.cart.free_shipping_reached' | t }}
+      {%- else -%}
+        {{ 'sections.cart.free_shipping_progress' | t: amount: remaining_money }}
+      {%- endif -%}
+    </p>
+    <div
+      class="shipping-bar__track"
+      role="progressbar"
+      aria-valuenow="{{ percent }}"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-label="{{ 'sections.cart.free_shipping_label' | t: threshold: threshold_money }}"
+    >
+      <span class="shipping-bar__fill" style="--bar-width: {{ percent }}%;"></span>
+    </div>
+  </div>
+{%- endif -%}

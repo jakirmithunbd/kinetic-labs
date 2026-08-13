@@ -1,0 +1,45 @@
+{%- comment -%}
+  Shipping estimator. Posts to /cart/shipping_rates.json via cart.js's
+  estimator handler; without JavaScript the fields simply don't submit, which
+  is acceptable for an optional convenience.
+{%- endcomment -%}
+
+<details class="shipping-estimator accordion__item">
+  <summary class="accordion__summary">
+    <span>{{ 'sections.cart.shipping_estimator.heading' | t }}</span>
+    <span class="accordion__icon" aria-hidden="true"></span>
+  </summary>
+
+  <div class="accordion__panel">
+    <div class="field">
+      <label class="field__label" for="EstimatorCountry">
+        {{- 'sections.cart.shipping_estimator.country' | t -}}
+      </label>
+      <select id="EstimatorCountry" class="field__select" data-estimator-country>
+        {{ country_option_tags }}
+      </select>
+    </div>
+
+    <div class="field" data-estimator-province-wrapper hidden>
+      <label class="field__label" for="EstimatorProvince">
+        {{- 'sections.cart.shipping_estimator.province' | t -}}
+      </label>
+      <select id="EstimatorProvince" class="field__select" data-estimator-province></select>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="EstimatorZip">
+        {{- 'sections.cart.shipping_estimator.zip' | t -}}
+      </label>
+      <input id="EstimatorZip" class="field__input" type="text" autocomplete="postal-code" data-estimator-zip>
+    </div>
+
+    <button type="button" class="button button--secondary button--full" data-estimator-submit>
+      {{- 'sections.cart.shipping_estimator.calculate' | t -}}
+    </button>
+
+    <div class="shipping-estimator__results" data-estimator-results role="status"></div>
+  </div>
+</details>
+
+<script src="{{ 'shipping-estimator.js' | asset_url }}" defer="defer"></script>

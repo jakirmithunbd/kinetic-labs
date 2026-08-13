@@ -1,0 +1,53 @@
+{%- comment -%}
+  Social links from theme settings. Renders nothing when none are set, so an
+  empty row never appears in the footer.
+{%- endcomment -%}
+
+{%- liquid
+  assign networks = 'instagram,tiktok,youtube,facebook,x,strava' | split: ','
+-%}
+
+{%- capture links -%}
+  {%- for network in networks -%}
+    {%- liquid
+      case network
+        when 'instagram'
+          assign url = settings.social_instagram_link
+          assign label = 'Instagram'
+        when 'tiktok'
+          assign url = settings.social_tiktok_link
+          assign label = 'TikTok'
+        when 'youtube'
+          assign url = settings.social_youtube_link
+          assign label = 'YouTube'
+        when 'facebook'
+          assign url = settings.social_facebook_link
+          assign label = 'Facebook'
+        when 'x'
+          assign url = settings.social_x_link
+          assign label = 'X'
+        when 'strava'
+          assign url = settings.social_strava_link
+          assign label = 'Strava'
+      endcase
+    -%}
+    {%- if url != blank -%}
+      <li>
+        <a
+          class="social-icons__link"
+          href="{{ url }}"
+          target="_blank"
+          rel="noopener"
+          aria-describedby="a11y-new-window-message"
+        >
+          <span class="visually-hidden">{{ label }}</span>
+          {% render 'icon', name: network, size: 18 %}
+        </a>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if links != blank -%}
+  <ul class="list-unstyled social-icons">{{ links }}</ul>
+{%- endif -%}

@@ -1,0 +1,41 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "shop": {
+          "type": "link_list",
+          "settings": { "heading": "Shop", "menu": "footer" }
+        },
+        "learn": {
+          "type": "link_list",
+          "settings": { "heading": "Learn" }
+        },
+        "support": {
+          "type": "link_list",
+          "settings": { "heading": "Support" }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Lab notes, occasionally",
+            "text": "<p>New research, new batches, and the occasional restock. No daily email.</p>"
+          }
+        }
+      },
+      "block_order": ["shop", "learn", "support", "newsletter"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_social": true,
+        "show_payment": true,
+        "show_localization": true,
+        "use_global_disclaimer": true,
+        "padding_top": 64,
+        "padding_bottom": 40
+      }
+    }
+  },
+  "order": ["footer"]
+}

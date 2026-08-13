@@ -1,0 +1,104 @@
+{%- comment -%}
+  Rendered only via the Predictive Search API (section_id=predictive-search).
+  Never appears on a page of its own, so it has no presets and no settings.
+{%- endcomment -%}
+
+{%- if predictive_search.performed -%}
+  {%- liquid
+    assign products = predictive_search.resources.products
+    assign collections = predictive_search.resources.collections
+    assign pages = predictive_search.resources.pages
+    assign articles = predictive_search.resources.articles
+    assign total = products.size | plus: collections.size | plus: pages.size | plus: articles.size
+  -%}
+
+  {%- if total == 0 -%}
+    <p class="predictive__empty text-sm text-muted">
+      {{- 'general.search.no_results' | t: terms: predictive_search.terms -}}
+    </p>
+    <p class="predictive__empty-help text-caption text-muted">
+      {{- 'general.search.no_results_help' | t -}}
+    </p>
+  {%- else -%}
+    {%- if products.size > 0 -%}
+      <div class="predictive__group">
+        <p class="predictive__group-title label-micro">{{ 'general.search.products' | t }}</p>
+        {%- for product in products -%}
+          <a class="predictive__item" href="{{ product.url }}" data-predictive-item>
+            <span class="predictive__thumb">
+              {%- if product.featured_media -%}
+                <img
+                  src="{{ product.featured_media | image_url: width: 96 }}"
+                  alt=""
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                >
+              {%- endif -%}
+            </span>
+            <span class="predictive__text">
+              <span class="predictive__title">{{ product.title }}</span>
+              <span class="predictive__meta">
+                {% render 'price', target: product %}
+              </span>
+            </span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if collections.size > 0 -%}
+      <div class="predictive__group">
+        <p class="predictive__group-title label-micro">{{ 'general.search.collections' | t }}</p>
+        {%- for collection in collections -%}
+          <a class="predictive__item" href="{{ collection.url }}" data-predictive-item>
+            <span class="predictive__text">
+              <span class="predictive__title">{{ collection.title }}</span>
+            </span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if articles.size > 0 -%}
+      <div class="predictive__group">
+        <p class="predictive__group-title label-micro">{{ 'general.search.articles' | t }}</p>
+        {%- for article in articles -%}
+          <a class="predictive__item" href="{{ article.url }}" data-predictive-item>
+            <span class="predictive__text">
+              <span class="predictive__title">{{ article.title }}</span>
+              <span class="predictive__meta">{{ article.published_at | date: format: 'abbreviated_date' }}</span>
+            </span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if pages.size > 0 -%}
+      <div class="predictive__group">
+        <p class="predictive__group-title label-micro">{{ 'general.search.pages' | t }}</p>
+        {%- for page in pages -%}
+          <a class="predictive__item" href="{{ page.url }}" data-predictive-item>
+            <span class="predictive__text">
+              <span class="predictive__title">{{ page.title }}</span>
+            </span>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <a
+      class="button button--secondary button--full predictive__view-all"
+      href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}"
+    >
+      {{- 'general.search.view_all' | t -}}
+    </a>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Predictive search",
+  "settings": []
+}
+{% endschema %}

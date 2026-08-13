@@ -1,0 +1,164 @@
+{%- comment -%}
+  Cart line items. Shared by the cart drawer and the cart page so the two can
+  never drift apart.
+
+  Accepts:
+    layout {String} 'drawer' | 'page'
+{%- endcomment -%}
+
+{%- assign is_page = false -%}
+{%- if layout == 'page' -%}{%- assign is_page = true -%}{%- endif -%}
+
+<kl-cart-items class="cart-items cart-items--{{ layout | default: 'drawer' }}">
+  {%- if is_page -%}
+    <table class="cart-items__table">
+      <caption class="visually-hidden">{{ 'sections.cart.title' | t }}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{{ 'products.product.view_details' | t }}</th>
+          <th scope="col">{{ 'products.product.quantity' | t }}</th>
+          <th scope="col" class="cart-items__cell--right">{{ 'sections.cart.total' | t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+  {%- else -%}
+    <ul class="list-unstyled cart-items__list">
+  {%- endif -%}
+
+  {%- for line in cart.items -%}
+    {%- capture line_media -%}
+      <a class="cart-item__media media media--square" href="{{ line.url }}" tabindex="-1" aria-hidden="true">
+        {%- if line.image -%}
+          <img
+            src="{{ line.image | image_url: width: 200 }}"
+            srcset="{{ line.image | image_url: width: 100 }} 100w, {{ line.image | image_url: width: 200 }} 200w"
+            sizes="80px"
+            alt=""
+            width="80"
+            height="80"
+            loading="lazy"
+          >
+        {%- endif -%}
+      </a>
+    {%- endcapture -%}
+
+    {%- capture line_details -%}
+      <div class="cart-item__details">
+        <a class="cart-item__title" href="{{ line.url }}">{{ line.product.title }}</a>
+
+        {%- comment -%} Flavour, size and any other option, spelled out. {%- endcomment -%}
+        {%- if line.product.has_only_default_variant == false -%}
+          <ul class="list-unstyled cart-item__options">
+            {%- for option in line.options_with_values -%}
+              <li class="cart-item__option label-micro">
+                {{- option.name }}: {{ option.value -}}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if line.selling_plan_allocation -%}
+          <p class="cart-item__selling-plan badge badge--support">
+            {{- line.selling_plan_allocation.selling_plan.name -}}
+          </p>
+        {%- endif -%}
+
+        {%- for property in line.properties -%}
+          {%- liquid
+            assign first_char = property.first | slice: 0
+            if first_char == '_' or property.last == blank
+              continue
+            endif
+          -%}
+          <p class="cart-item__property label-micro">
+            {{ property.first }}:
+            {%- if property.last contains '/uploads/' -%}
+              <a href="{{ property.last }}" class="link">{{ property.last | split: '/' | last }}</a>
+            {%- else -%}
+              {{ property.last }}
+            {%- endif -%}
+          </p>
+        {%- endfor -%}
+
+        {%- if line.line_level_discount_allocations.size > 0 -%}
+          <ul class="list-unstyled cart-item__discounts">
+            {%- for allocation in line.line_level_discount_allocations -%}
+              <li class="badge badge--sale">
+                {{- allocation.discount_application.title }} (&minus;{{ allocation.amount | money }})
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if line.unit_price_measurement -%}
+          <span class="price__unit">
+            {{- line.unit_price | money }}/{{ line.unit_price_measurement.reference_unit -}}
+          </span>
+        {%- endif -%}
+
+        {% render 'price-per-serving', product: line.product, variant: line.variant, price: line.final_price %}
+      </div>
+    {%- endcapture -%}
+
+    {%- capture line_quantity -%}
+      <div class="cart-item__quantity">
+        {% render 'quantity-input',
+          variant: line.variant,
+          value: line.quantity,
+          id: 'CartQuantity-' | append: layout | append: '-' | append: forloop.index,
+          line: forloop.index,
+          label: 'sections.cart.quantity' | t: title: line.title
+        %}
+        <button
+          type="button"
+          class="cart-item__remove link-mono"
+          data-cart-remove
+          data-line="{{ forloop.index }}"
+        >
+          <span aria-hidden="true">{{ 'general.close' | t }}</span>
+          <span class="visually-hidden">{{ 'sections.cart.remove' | t: title: line.title }}</span>
+        </button>
+      </div>
+    {%- endcapture -%}
+
+    {%- capture line_price -%}
+      <div class="cart-item__price">
+        {%- if line.original_line_price != line.final_line_price -%}
+          <s class="price__regular--on-sale">{{ line.original_line_price | money }}</s>
+          <span class="price__sale data">{{ line.final_line_price | money }}</span>
+        {%- else -%}
+          <span class="data">{{ line.final_line_price | money }}</span>
+        {%- endif -%}
+      </div>
+    {%- endcapture -%}
+
+    {%- if is_page -%}
+      <tr class="cart-item">
+        <td class="cart-item__cell cart-item__cell--product">
+          {{ line_media }}
+          {{ line_details }}
+        </td>
+        <td class="cart-item__cell">{{ line_quantity }}</td>
+        <td class="cart-item__cell cart-items__cell--right">{{ line_price }}</td>
+      </tr>
+    {%- else -%}
+      <li class="cart-item">
+        {{ line_media }}
+        <div class="cart-item__body">
+          {{ line_details }}
+          <div class="cart-item__row">
+            {{ line_quantity }}
+            {{ line_price }}
+          </div>
+        </div>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if is_page -%}
+      </tbody>
+    </table>
+  {%- else -%}
+    </ul>
+  {%- endif -%}
+</kl-cart-items>

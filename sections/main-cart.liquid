@@ -1,0 +1,127 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="section color-{{ section.settings.color_scheme }}"
+  style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+>
+  <div class="page-width">
+    {% render 'breadcrumbs' %}
+
+    <h1 class="h2 cart-page__title">{{ 'sections.cart.title' | t }}</h1>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-page__empty">
+        <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+        <p class="text-sm text-muted">{{ 'sections.cart.empty_text' | t }}</p>
+        <a class="button" href="{{ routes.all_products_collection_url }}">
+          {{- 'general.continue_shopping' | t -}}
+        </a>
+      </div>
+    {%- else -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart-page__form" id="CartPageForm">
+        <div class="cart-page__layout">
+          <div class="cart-page__items">
+            {% render 'cart-items', layout: 'page' %}
+
+            {%- if settings.cart_show_note -%}
+              <div class="cart-page__note">
+                <label class="field__label" for="CartPageNote">{{ 'sections.cart.note' | t }}</label>
+                <textarea
+                  id="CartPageNote"
+                  class="field__textarea"
+                  name="note"
+                  data-cart-note
+                  placeholder="{{ 'sections.cart.note_placeholder' | t }}"
+                >{{ cart.note }}</textarea>
+              </div>
+            {%- endif -%}
+          </div>
+
+          <aside class="cart-page__summary" aria-label="{{ 'sections.cart.subtotal' | t }}">
+            <div class="cart-page__summary-box">
+              {% render 'free-shipping-bar' %}
+
+              {%- if cart.cart_level_discount_applications.size > 0 -%}
+                {%- for discount in cart.cart_level_discount_applications -%}
+                  <div class="cart-page__summary-row">
+                    <span class="badge badge--sale">{{ discount.title }}</span>
+                    <span class="data">&minus;{{ discount.total_allocated_amount | money }}</span>
+                  </div>
+                {%- endfor -%}
+              {%- endif -%}
+
+              <div class="cart-page__summary-row cart-page__summary-total">
+                <span>{{ 'sections.cart.subtotal' | t }}</span>
+                <span class="data">{{ cart.total_price | money }}</span>
+              </div>
+
+              <p class="label-micro">{{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}</p>
+
+              <button type="submit" name="checkout" class="button button--full">
+                {{ 'sections.cart.checkout' | t }}
+              </button>
+
+              {%- if additional_checkout_buttons -%}
+                <div class="cart-page__dynamic-checkout">{{ content_for_additional_checkout_buttons }}</div>
+              {%- endif -%}
+            </div>
+
+            {%- if section.settings.show_shipping_estimator -%}
+              {% render 'shipping-estimator' %}
+            {%- endif -%}
+          </aside>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.KL && window.KL.registerCartSection) {
+      window.KL.registerCartSection('{{ section.id }}');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main_cart.name",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_estimator",
+      "label": "t:sections.main_cart.show_shipping_estimator",
+      "default": true
+    },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ]
+}
+{% endschema %}

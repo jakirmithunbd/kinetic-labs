@@ -1,0 +1,194 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+
+<kl-drawer
+  class="drawer cart-drawer color-{{ section.settings.color_scheme }}"
+  id="CartDrawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'sections.cart.title' | t }}"
+  aria-hidden="true"
+>
+  <div class="drawer__overlay" tabindex="-1"></div>
+
+  <div class="drawer__panel">
+    <div class="drawer__header">
+      <h2 class="h4">
+        {{ 'sections.cart.title' | t }}
+        <span class="cart-drawer__count data text-muted">
+          {{- 'sections.cart.items_count' | t: count: cart.item_count -}}
+        </span>
+      </h2>
+      <button
+        type="button"
+        class="drawer__close"
+        data-drawer-close
+        aria-label="{{ 'general.close' | t }}"
+      >
+        {% render 'icon', name: 'close', size: 20 %}
+      </button>
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      {% render 'free-shipping-bar' %}
+
+      <div class="drawer__body">
+        {% render 'cart-items', layout: 'drawer' %}
+
+        {%- if settings.cart_show_note -%}
+          <details class="cart-drawer__note accordion__item">
+            <summary class="accordion__summary">
+              <span>{{ 'sections.cart.add_note' | t }}</span>
+              <span class="accordion__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="accordion__panel">
+              <label class="visually-hidden" for="CartDrawerNote">
+                {{- 'sections.cart.note' | t -}}
+              </label>
+              <textarea
+                id="CartDrawerNote"
+                class="field__textarea"
+                name="note"
+                data-cart-note
+                placeholder="{{ 'sections.cart.note_placeholder' | t }}"
+              >{{ cart.note }}</textarea>
+            </div>
+          </details>
+        {%- endif -%}
+      </div>
+
+      <div class="drawer__footer cart-drawer__footer">
+        {%- if cart.cart_level_discount_applications.size > 0 -%}
+          <ul class="list-unstyled cart-drawer__discounts">
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <li class="cart-drawer__row cart-drawer__row--discount">
+                <span class="badge badge--sale">{{ discount.title }}</span>
+                <span class="data">&minus;{{ discount.total_allocated_amount | money }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div class="cart-drawer__row cart-drawer__subtotal">
+          <span>{{ 'sections.cart.subtotal' | t }}</span>
+          <span class="data cart-drawer__subtotal-value">{{ cart.total_price | money }}</span>
+        </div>
+
+        <p class="cart-drawer__tax label-micro">
+          {{- 'sections.cart.taxes_and_shipping_at_checkout' | t -}}
+        </p>
+
+        <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm">
+          <button
+            type="submit"
+            name="checkout"
+            class="button button--full"
+            {% if cart.item_count == 0 %}disabled{% endif %}
+          >
+            {{ 'sections.cart.checkout' | t }}
+          </button>
+        </form>
+
+        <a class="button button--secondary button--full cart-drawer__view" href="{{ routes.cart_url }}">
+          {{- 'sections.cart.view_cart' | t -}}
+        </a>
+      </div>
+    {%- else -%}
+      <div class="drawer__body cart-drawer__empty">
+        <p class="h3">{{ 'sections.cart.empty' | t }}</p>
+        <p class="text-sm text-muted">{{ 'sections.cart.empty_text' | t }}</p>
+        <a class="button" href="{{ routes.all_products_collection_url }}" data-drawer-close>
+          {{- 'general.continue_shopping' | t -}}
+        </a>
+
+        {%- if section.settings.show_recommendations and section.settings.recommendations_collection != blank -%}
+          {%- assign recommended = section.settings.recommendations_collection.products -%}
+          {%- if recommended.size > 0 -%}
+            <div class="cart-drawer__recommendations">
+              <h3 class="label-micro">
+                {{- section.settings.recommendations_heading | default: 'sections.cart.recommendations_heading' | t -}}
+              </h3>
+              <ul class="product-grid list-unstyled" style="--cols-mobile: 2; --cols-desktop: 2;">
+                {%- for product in recommended limit: 2 -%}
+                  <li>
+                    {% render 'product-card',
+                      card_product: product,
+                      show_quick_add: true,
+                      show_rating: false,
+                      sizes: '180px'
+                    %}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</kl-drawer>
+
+{%- comment -%}
+  Quick add lives beside the cart drawer so any product card anywhere in the
+  theme can open a flavour picker without shipping its own modal.
+{%- endcomment -%}
+<kl-drawer
+  class="drawer quick-add-drawer"
+  id="QuickAddDrawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'sections.quick_add.title' | t }}"
+  aria-hidden="true"
+>
+  <div class="drawer__overlay" tabindex="-1"></div>
+  <div class="drawer__panel">
+    <div class="drawer__header">
+      <h2 class="h4">{{ 'sections.quick_add.title' | t }}</h2>
+      <button type="button" class="drawer__close" data-drawer-close aria-label="{{ 'general.close' | t }}">
+        {% render 'icon', name: 'close', size: 20 %}
+      </button>
+    </div>
+    <kl-quick-add-modal id="QuickAddModal">
+      <div class="drawer__body" data-quick-add-body></div>
+    </kl-quick-add-modal>
+  </div>
+</kl-drawer>
+
+<script>
+  // Register the sections that render cart state so one mutation refreshes
+  // them all in a single request.
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.KL || !window.KL.registerCartSection) return;
+    window.KL.registerCartSection('{{ section.id }}');
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.cart_drawer.name",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_recommendations",
+      "label": "t:sections.cart_drawer.show_recommendations",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "recommendations_heading",
+      "label": "t:sections.cart_drawer.recommendations_heading",
+      "default": "Start here"
+    },
+    {
+      "type": "collection",
+      "id": "recommendations_collection",
+      "label": "t:shared.collection"
+    }
+  ]
+}
+{% endschema %}

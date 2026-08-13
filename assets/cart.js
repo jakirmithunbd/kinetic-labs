@@ -111,6 +111,35 @@
     }
   };
 
+  /* ------------------------------------------------------------------------
+     Header count. The header is not re-rendered on every mutation — replacing
+     it would tear down the open drawer — so the badge is refreshed from the
+     cart itself after any change.
+     ------------------------------------------------------------------------ */
+
+  function refreshCartCount() {
+    KL.cart
+      .get()
+      .then((cart) => {
+        document.querySelectorAll('[data-cart-count]').forEach((el) => {
+          el.textContent = cart.item_count;
+          el.setAttribute('data-cart-count', cart.item_count);
+        });
+
+        const link = document.querySelector('.header__cart');
+        if (link) {
+          link.setAttribute(
+            'aria-label',
+            `${cart.item_count} ${cart.item_count === 1 ? 'item' : 'items'} in cart`
+          );
+        }
+      })
+      .catch(() => {});
+  }
+
+  document.addEventListener('cart:added', refreshCartCount);
+  document.addEventListener('cart:changed', refreshCartCount);
+
   function openCartDrawer() {
     if (window.shopSettings && window.shopSettings.cartType !== 'drawer') return false;
     const drawer = document.getElementById('CartDrawer');
