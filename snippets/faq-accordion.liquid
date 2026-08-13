@@ -1,0 +1,33 @@
+{%- comment -%}
+  Accordion built on native <details>/<summary>: open/close works without
+  JavaScript, the browser handles the ARIA, and in-page search (Cmd-F) can
+  still find text inside a closed panel in modern browsers.
+
+  Accepts:
+    entries    {Array} of faq_entry metaobjects, each with question/answer
+    pairs      {Array} of {question, answer} hashes (for section blocks)
+    exclusive  {Boolean} keep only one open at a time
+    id_prefix  {String}
+{%- endcomment -%}
+
+<kl-accordion-group class="accordion" {% if exclusive %}data-exclusive{% endif %}>
+  {%- if entries != blank -%}
+    {%- for entry in entries -%}
+      {%- liquid
+        assign q = entry.question.value
+        assign a = entry.answer.value
+      -%}
+      {%- if q != blank -%}
+        <details class="accordion__item" data-faq-item id="{{ id_prefix }}-{{ forloop.index }}">
+          <summary class="accordion__summary">
+            <span>{{ q }}</span>
+            <span class="accordion__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="accordion__panel rte">{{ a }}</div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {{ extra_items }}
+</kl-accordion-group>

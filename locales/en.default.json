@@ -58,7 +58,6 @@
     "on_sale": "Sale",
     "sold_out": "Sold out"
   },
-
   "accessibility": {
     "skip_to_text": "Skip to content",
     "refresh_page": "Choosing a selection results in a full page refresh.",
@@ -79,7 +78,6 @@
     "star_rating": "{{ rating }} out of {{ scale }} stars",
     "loading_media": "Loading media"
   },
-
   "sections": {
     "announcements": {
       "label": "Announcement",
@@ -149,7 +147,9 @@
           "one": "1 shipping rate available:",
           "other": "{{ count }} shipping rates available:"
         }
-      }
+      },
+      "item_removed": "Item removed",
+      "updated_html": "Cart updated"
     },
     "quick_add": {
       "title": "Quick add",
@@ -242,7 +242,6 @@
       "empty": "This section is for an app block. Add one in the theme editor."
     }
   },
-
   "products": {
     "product": {
       "add_to_cart": "Add to cart",
@@ -287,7 +286,6 @@
       "share": "Share this product",
       "breadcrumb_home": "Home"
     },
-
     "options": {
       "flavour": "Flavour",
       "size": "Size",
@@ -295,7 +293,6 @@
       "unavailable_with": "{{ value }} — unavailable",
       "variant_sold_out": "Sold out"
     },
-
     "purchase_options": {
       "heading": "Purchase options",
       "one_time": "One-time purchase",
@@ -308,7 +305,6 @@
       "selling_plan_label": "Delivery schedule",
       "subscription_note": "Managed in your account after checkout."
     },
-
     "dosage": {
       "industry": "Industry",
       "ours": "Ours",
@@ -318,13 +314,11 @@
       "summary_industry": " The industry average is {{ industry_percent }} percent of the studied dose.",
       "heading_default": "Our dose vs. the clinical dose"
     },
-
     "ingredients": {
       "heading": "What’s in it, and why",
       "dose": "Dose",
       "read_more": "Read about {{ name }}"
     },
-
     "supplement_facts": {
       "heading": "Supplement facts",
       "serving_size": "Serving size",
@@ -335,30 +329,25 @@
       "not_established": "† Daily value not established.",
       "caption": "Nutrition information per serving"
     },
-
     "how_to_use": {
       "heading": "Timing & stacking",
       "timing": "Timing",
       "stacking": "Stacking"
     },
-
     "allergens": {
       "heading": "Allergens & certifications",
       "allergens": "Allergens",
       "certifications": "Certifications",
       "banned_substance_tested": "Banned-substance tested"
     },
-
     "faq": {
       "heading": "Questions, answered"
     },
-
     "recommendations": {
       "complementary": "Pairs well with",
       "related": "You might also like",
       "recently_viewed": "Recently viewed"
     },
-
     "trust": {
       "third_party_tested": "Third-party tested",
       "ships_same_day": "Ships same day",
@@ -366,7 +355,6 @@
       "free_shipping": "Free shipping over {{ amount }}"
     }
   },
-
   "customer": {
     "account": {
       "title": "Account",
@@ -474,7 +462,6 @@
     "log_out": "Log out",
     "log_in": "Log in"
   },
-
   "gift_cards": {
     "issued": {
       "title": "Here’s your {{ value }} gift card for {{ shop }}",
@@ -490,7 +477,6 @@
       "copied": "Code copied"
     }
   },
-
   "templates": {
     "404": {
       "title": "Page not found",
@@ -525,14 +511,12 @@
       "title": "Search"
     }
   },
-
   "localization": {
     "country_label": "Country/region",
     "language_label": "Language",
     "update_language": "Update language",
     "update_country": "Update country/region"
   },
-
   "onboarding": {
     "product_title": "Example product title",
     "collection_title": "Example collection",

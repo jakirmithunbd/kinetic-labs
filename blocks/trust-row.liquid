@@ -1,0 +1,39 @@
+{%- comment -%}
+  Icon + text proof points. Nestable child blocks so a merchant can add,
+  remove and reorder each item.
+{%- endcomment -%}
+
+<div class="product-block product-block--trust" {{ block.shopify_attributes }}>
+  <ul class="trust-row list-unstyled">
+    {%- for child in block.blocks -%}
+      <li class="trust-row__item" {{ child.shopify_attributes }}>
+        {% render 'icon', name: child.settings.icon, size: 20 %}
+        <span class="trust-row__label label-micro">{{ child.settings.text }}</span>
+      </li>
+    {%- endfor -%}
+
+    {%- if block.settings.show_banned_substance and product.metafields.custom.banned_substance_tested.value -%}
+      <li class="trust-row__item">
+        {% render 'icon', name: 'shield', size: 20 %}
+        <span class="trust-row__label label-micro">
+          {{- 'products.allergens.banned_substance_tested' | t -}}
+        </span>
+      </li>
+    {%- endif -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_trust",
+  "blocks": [{ "type": "trust-item" }],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_banned_substance",
+      "label": "t:products.allergens.banned_substance_tested",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

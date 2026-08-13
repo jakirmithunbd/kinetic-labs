@@ -1,0 +1,33 @@
+{%- comment -%}
+  A single trust proof point. Rendered by its parent (trust-row), which owns
+  the list markup, so this file only declares the schema.
+{%- endcomment -%}
+
+{% schema %}
+{
+  "name": "t:sections.hero.block_trust",
+  "settings": [
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "t:shared.icon",
+      "options": [
+        { "value": "shield", "label": "Shield" },
+        { "value": "truck", "label": "Truck" },
+        { "value": "refresh", "label": "Refresh" },
+        { "value": "flask", "label": "Flask" },
+        { "value": "leaf", "label": "Leaf" },
+        { "value": "check", "label": "Check" },
+        { "value": "star", "label": "Star" }
+      ],
+      "default": "shield"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:shared.text",
+      "default": "Third-party tested"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,127 @@
+{{ 'component-product.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Renders only when the metafields are actually populated — an empty
+  "Allergens" heading with nothing under it is worse than no section at all.
+{%- endcomment -%}
+
+{%- liquid
+  assign allergens = product.metafields.custom.allergens.value
+  assign certifications = product.metafields.custom.certifications.value
+  assign tested = product.metafields.custom.banned_substance_tested.value
+
+  assign has_content = false
+  if allergens != blank or certifications != blank or tested
+    assign has_content = true
+  endif
+-%}
+
+{%- if has_content -%}
+  <div
+    class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+    style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+  >
+    <div class="page-width">
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading
+      %}
+
+      <div class="allergens">
+        {%- if allergens != blank -%}
+          <div class="allergens__column">
+            <h3 class="label-micro">{{ 'products.allergens.allergens' | t }}</h3>
+            <p class="allergens__text">{{ allergens | newline_to_br }}</p>
+          </div>
+        {%- endif -%}
+
+        {%- if certifications != blank and certifications.size > 0 -%}
+          <div class="allergens__column">
+            <h3 class="label-micro">{{ 'products.allergens.certifications' | t }}</h3>
+            <ul class="allergens__certs list-unstyled">
+              {%- for cert in certifications -%}
+                <li class="allergens__cert">
+                  {%- if cert.badge.value != blank -%}
+                    <img
+                      src="{{ cert.badge.value | image_url: width: 96 }}"
+                      alt="{{ cert.name.value | escape }}"
+                      width="48"
+                      height="48"
+                      loading="lazy"
+                      class="allergens__badge"
+                    >
+                  {%- endif -%}
+                  <span>
+                    <span class="allergens__cert-name">{{ cert.name.value }}</span>
+                    {%- if cert.description.value != blank -%}
+                      <span class="allergens__cert-description text-caption-sm text-muted">
+                        {{- cert.description.value -}}
+                      </span>
+                    {%- endif -%}
+                  </span>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if tested -%}
+          <div class="allergens__column">
+            <h3 class="label-micro">{{ 'products.allergens.banned_substance_tested' | t }}</h3>
+            <p class="allergens__text">
+              {% render 'icon', name: 'shield', size: 18 %}
+              {{ 'products.trust.third_party_tested' | t }}
+            </p>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.allergens.name",
+  "tag": "section",
+  "class": "allergens-section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.allergens.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-1"
+    },
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow", "default": "THE SMALL PRINT" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "Allergens & certifications"
+    },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [{ "name": "t:sections.allergens.name" }]
+}
+{% endschema %}

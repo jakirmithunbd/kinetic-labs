@@ -1,0 +1,63 @@
+{%- comment -%}
+  Generic text block. Available inside product info and every generic section,
+  so a merchant can drop a note anywhere without asking for a code change.
+{%- endcomment -%}
+
+<div class="product-block block-text text-{{ block.settings.alignment }}" {{ block.shopify_attributes }}>
+  {%- if block.settings.eyebrow != blank -%}
+    <p class="eyebrow">[&nbsp;{{ block.settings.eyebrow }}&nbsp;]</p>
+  {%- endif -%}
+
+  {%- if block.settings.heading != blank -%}
+    <h2 class="{{ block.settings.heading_size }}">{{ block.settings.heading }}</h2>
+  {%- endif -%}
+
+  {%- if block.settings.text != blank -%}
+    <div class="rte {{ block.settings.text_size }}">{{ block.settings.text }}</div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:shared.text",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:shared.eyebrow" },
+    { "type": "text", "id": "heading", "label": "t:shared.heading" },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "t:settings.typography.display_scale",
+      "options": [
+        { "value": "h4", "label": "Small" },
+        { "value": "h3", "label": "Medium" },
+        { "value": "h2", "label": "Large" },
+        { "value": "h-display", "label": "Display" }
+      ],
+      "default": "h3"
+    },
+    { "type": "richtext", "id": "text", "label": "t:shared.text" },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "t:settings.typography.body_scale",
+      "options": [
+        { "value": "text-caption", "label": "Small" },
+        { "value": "", "label": "Medium" },
+        { "value": "text-body-lg", "label": "Large" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "t:shared.alignment",
+      "options": [
+        { "value": "left", "label": "t:shared.align_left" },
+        { "value": "center", "label": "t:shared.align_center" },
+        { "value": "right", "label": "t:shared.align_right" }
+      ],
+      "default": "left"
+    }
+  ]
+}
+{% endschema %}

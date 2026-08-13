@@ -1,0 +1,102 @@
+{%- comment -%}
+  Fetched into the quick-add drawer (?section_id=quick-add). Not for direct
+  placement, so no presets.
+
+  It reuses the same option-picker and product-form components as the full
+  product page — a customer picking a flavour in the drawer gets exactly the
+  same availability logic they'd get on the product page.
+{%- endcomment -%}
+
+{{ 'component-product.css' | asset_url | stylesheet_tag }}
+
+<div data-quick-add-content>
+  {%- liquid
+    assign variant = product.selected_or_first_available_variant
+    assign form_id = 'QuickAddForm-' | append: product.id
+  -%}
+
+  <div class="quick-add">
+    <div class="quick-add__header">
+      {%- if product.featured_media -%}
+        <div class="quick-add__media media media--square">
+          <img
+            src="{{ product.featured_media | image_url: width: 200 }}"
+            alt="{{ product.featured_media.alt | escape }}"
+            width="88"
+            height="88"
+            loading="lazy"
+          >
+        </div>
+      {%- endif -%}
+
+      <div>
+        <h3 class="quick-add__title h4">{{ product.title }}</h3>
+        {% render 'price', target: product, use_variant: true %}
+        {% render 'price-per-serving', product: product, variant: variant %}
+      </div>
+    </div>
+
+    <kl-variant-state data-url="{{ product.url }}" data-section="quick-add-{{ product.id }}">
+      <script type="application/json" data-variant-data>
+        {% render 'variant-json', product: product %}
+      </script>
+    </kl-variant-state>
+
+    <div class="product-info quick-add__body">
+      {%- for option in product.options_with_values -%}
+        {%- if option.values.size > 1 -%}
+          {%- liquid
+            assign option_style = 'pill'
+            assign lowered = option.name | downcase
+            if lowered == 'flavour' or lowered == 'flavor' or lowered == 'colour' or lowered == 'color'
+              assign option_style = 'swatch'
+            endif
+          -%}
+          {% render 'option-picker',
+            product: product,
+            option: option,
+            style: option_style,
+            section_id: product.id
+          %}
+        {%- endif -%}
+      {%- endfor -%}
+
+      <kl-product-form>
+        {%- form 'product', product, id: form_id, class: 'product-form' -%}
+          <input type="hidden" name="id" value="{{ variant.id }}" data-variant-input>
+          <input type="hidden" name="quantity" value="1">
+          <button
+            type="submit"
+            name="add"
+            class="button button--full"
+            data-add-to-cart
+            {% unless variant.available %}disabled aria-disabled="true"{% endunless %}
+          >
+            <span data-add-to-cart-text>
+              {%- if variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </span>
+          </button>
+          <p class="form-status form-status--error" data-form-error hidden role="alert"></p>
+        {%- endform -%}
+      </kl-product-form>
+
+      <a class="link-mono quick-add__details" href="{{ product.url }}">
+        {{ 'sections.quick_add.view_details' | t }}
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'product.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:sections.quick_add.title",
+  "settings": []
+}
+{% endschema %}

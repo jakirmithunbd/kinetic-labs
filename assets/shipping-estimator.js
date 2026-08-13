@@ -58,7 +58,8 @@
       .then((data) => {
         const rates = data.shipping_rates || [];
         if (!rates.length) {
-          results.innerHTML = '<p class="text-caption text-muted">No shipping rates found for that address.</p>';
+          const message = (window.themeStrings || {}).noShippingRates || '';
+          results.innerHTML = `<p class="text-caption text-muted">${message}</p>`;
           return;
         }
 
@@ -75,7 +76,8 @@
         results.appendChild(list);
       })
       .catch(() => {
-        results.innerHTML = '<p class="text-caption text-muted">Couldn’t fetch rates. Try again.</p>';
+        const message = (window.themeStrings || {}).noShippingRates || '';
+        results.innerHTML = `<p class="text-caption text-muted">${message}</p>`;
       })
       .finally(() => submit.removeAttribute('aria-busy'));
   });

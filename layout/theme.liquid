@@ -153,13 +153,28 @@
 
     <script>
       document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      // Every user-visible string JavaScript can produce lives here, so the
+      // whole theme stays translatable from the locale files.
       window.themeStrings = {
         addToCart: {{ 'products.product.add_to_cart' | t | json }},
         soldOut: {{ 'products.product.sold_out' | t | json }},
         unavailable: {{ 'products.product.unavailable' | t | json }},
         preOrder: {{ 'products.product.pre_order' | t | json }},
+        added: {{ 'products.product.added' | t | json }},
         cartError: {{ 'sections.cart.error' | t | json }},
-        quantityError: {{ 'products.product.quantity_error' | t | json }}
+        cartRemoved: {{ 'sections.cart.item_removed' | t | json }},
+        cartUpdated: {{ 'sections.cart.updated_html' | t | json }},
+        cartItemOne: {{ 'sections.cart.items_count.one' | t: count: 1 | json }},
+        cartItemOther: {{ 'sections.cart.items_count.other' | t: count: '%%' | json }},
+        inStock: {{ 'products.product.inventory.in_stock' | t | json }},
+        outOfStock: {{ 'products.product.inventory.out_of_stock' | t | json }},
+        lowStock: {{ 'products.product.inventory.low_stock' | t: count: '%%' | json }},
+        backorder: {{ 'products.product.inventory.backorder' | t | json }},
+        linkCopied: {{ 'general.share.copied' | t | json }},
+        resultsCount: {{ 'general.search.results_with_count.other' | t: count: '%%' | json }},
+        noResults: {{ 'general.search.no_results' | t: terms: '' | json }},
+        noShippingRates: {{ 'sections.cart.shipping_estimator.no_rates' | t | json }},
+        quantityError: {{ 'products.product.quantity_error' | t: quantity: '%%' | json }}
       };
       window.routes = {
         cart_add_url: '{{ routes.cart_add_url }}',

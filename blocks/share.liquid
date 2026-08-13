@@ -1,0 +1,42 @@
+{%- liquid
+  assign share_url = shop.url | append: product.url
+  assign share_title = product.title
+-%}
+
+<div class="product-block product-block--share" {{ block.shopify_attributes }}>
+  <kl-share class="share" data-url="{{ share_url }}" data-title="{{ share_title | escape }}">
+    <button type="button" class="link-mono share__button" data-share-trigger>
+      {% render 'icon', name: 'share', size: 14 %}
+      {{ 'general.share.label' | t }}
+    </button>
+    <span class="share__status label-micro" data-share-status role="status" hidden></span>
+
+    {%- comment -%}
+      Fallback for browsers without the Web Share API: a plain, selectable URL
+      and a copy button. No third-party share widgets, no tracking pixels.
+    {%- endcomment -%}
+    <div class="share__fallback" data-share-fallback hidden>
+      <label class="visually-hidden" for="ShareUrl-{{ block.id }}">
+        {{- 'general.share.copy_link' | t -}}
+      </label>
+      <input
+        id="ShareUrl-{{ block.id }}"
+        class="field__input share__input"
+        type="text"
+        value="{{ share_url }}"
+        readonly
+        onclick="this.select()"
+      >
+      <button type="button" class="button button--secondary button--small" data-share-copy>
+        {{- 'general.share.copy_link' | t -}}
+      </button>
+    </div>
+  </kl-share>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_share",
+  "settings": []
+}
+{% endschema %}

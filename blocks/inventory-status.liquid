@@ -1,0 +1,38 @@
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign threshold = settings.low_stock_threshold
+  assign tracked = false
+  if variant.inventory_management == 'shopify'
+    assign tracked = true
+  endif
+-%}
+
+<div class="product-block product-block--inventory" {{ block.shopify_attributes }}>
+  <p class="inventory-status" data-inventory-status role="status">
+    {%- if variant == nil -%}
+    {%- elsif variant.available == false -%}
+      <span class="inventory-status__dot inventory-status__dot--out" aria-hidden="true"></span>
+      <span class="label-micro">{{ 'products.product.inventory.out_of_stock' | t }}</span>
+    {%- elsif tracked and variant.inventory_quantity > 0 and variant.inventory_quantity <= threshold -%}
+      <span class="inventory-status__dot inventory-status__dot--low" aria-hidden="true"></span>
+      <span class="label-micro">
+        {{- 'products.product.inventory.low_stock' | t: count: variant.inventory_quantity -}}
+      </span>
+    {%- elsif tracked and variant.inventory_quantity <= 0 and variant.inventory_policy == 'continue' -%}
+      <span class="inventory-status__dot inventory-status__dot--low" aria-hidden="true"></span>
+      <span class="label-micro">{{ 'products.product.inventory.backorder' | t }}</span>
+    {%- else -%}
+      <span class="inventory-status__dot inventory-status__dot--in" aria-hidden="true"></span>
+      <span class="label-micro">{{ 'products.product.inventory.in_stock' | t }}</span>
+    {%- endif -%}
+  </p>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.product_info.block_inventory",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.product_info.inventory_info" }
+  ]
+}
+{% endschema %}

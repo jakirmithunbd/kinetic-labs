@@ -1,0 +1,171 @@
+{{ 'component-product.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  The supplement facts panel, rendered as a real HTML table.
+
+  This is deliberately not an uploaded image. An image of a nutrition panel
+  can't be indexed, can't be translated, can't be read aloud, can't be zoomed
+  without going soft, and can't be corrected without a designer. Every figure
+  here comes from the `nutrient_row` metaobject and prints in the data
+  typeface with tabular figures so the columns line up.
+{%- endcomment -%}
+
+{%- liquid
+  assign rows = product.metafields.custom.supplement_facts.value
+  assign serving_size = product.metafields.custom.serving_size.value
+  assign servings = product.metafields.custom.servings_per_container.value
+  assign show_dv = section.settings.show_daily_value
+-%}
+
+{%- if rows != blank and rows.size > 0 -%}
+  <div
+    class="section color-{{ section.settings.color_scheme }}{% if section.settings.divider_top %} section--hairline-top{% endif %}"
+    style="{% render 'section-style', st: section.settings.padding_top, sb: section.settings.padding_bottom %}"
+  >
+    <div class="page-width">
+      {% render 'section-header',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading
+      %}
+
+      <div class="supplement-facts">
+        <table class="supplement-facts__table">
+          <caption class="supplement-facts__caption">
+            <span class="supplement-facts__title h4">
+              {{- 'products.supplement_facts.heading' | t -}}
+            </span>
+            {%- if serving_size != blank or servings != blank -%}
+              <span class="supplement-facts__serving data">
+                {%- if serving_size != blank -%}
+                  {{ serving_size }}
+                {%- endif -%}
+                {%- if serving_size != blank and servings != blank %} &middot; {% endif -%}
+                {%- if servings != blank -%}
+                  {{ 'products.supplement_facts.servings_per_container' | t }}: {{ servings }}
+                {%- endif -%}
+              </span>
+            {%- endif -%}
+          </caption>
+
+          <thead>
+            <tr>
+              <th scope="col">{{ 'products.supplement_facts.nutrient' | t }}</th>
+              <th scope="col" class="supplement-facts__cell--right">
+                {{- 'products.supplement_facts.amount_per_serving' | t -}}
+              </th>
+              {%- if show_dv -%}
+                <th scope="col" class="supplement-facts__cell--right">
+                  {{- 'products.supplement_facts.daily_value' | t -}}
+                </th>
+              {%- endif -%}
+            </tr>
+          </thead>
+
+          <tbody>
+            {%- assign has_unestablished = false -%}
+            {%- for row in rows -%}
+              {%- liquid
+                assign row_name = row.name.value
+                assign row_amount = row.amount.value
+                assign row_unit = row.unit.value | default: ''
+                assign row_dv = row.daily_value.value
+              -%}
+              <tr>
+                <th scope="row" class="supplement-facts__name">{{ row_name }}</th>
+                <td class="supplement-facts__amount data supplement-facts__cell--right">
+                  {%- if row_amount != blank -%}
+                    {% render 'format-dose', value: row_amount, unit: row_unit %}
+                  {%- endif -%}
+                </td>
+                {%- if show_dv -%}
+                  <td class="supplement-facts__dv data supplement-facts__cell--right">
+                    {%- if row_dv != blank and row_dv > 0 -%}
+                      {{ row_dv }}%
+                    {%- else -%}
+                      {%- assign has_unestablished = true -%}
+                      <span aria-hidden="true">&dagger;</span>
+                      <span class="visually-hidden">
+                        {{- 'products.supplement_facts.not_established' | t -}}
+                      </span>
+                    {%- endif -%}
+                  </td>
+                {%- endif -%}
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+
+        {%- if show_dv and has_unestablished -%}
+          <p class="supplement-facts__footnote label-micro">
+            {{- 'products.supplement_facts.not_established' | t -}}
+          </p>
+        {%- endif -%}
+
+        {%- if section.settings.other_ingredients != blank -%}
+          <div class="supplement-facts__other rte text-caption">
+            {{ section.settings.other_ingredients }}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.supplement_facts.name",
+  "tag": "section",
+  "class": "supplement-facts-section",
+  "settings": [
+    { "type": "paragraph", "content": "t:sections.supplement_facts.info" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:shared.colour_scheme",
+      "default": "scheme-surface"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "t:shared.eyebrow",
+      "default": "SUPPLEMENT FACTS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:shared.heading",
+      "default": "The full panel"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_daily_value",
+      "label": "t:sections.supplement_facts.show_daily_value",
+      "default": true
+    },
+    { "type": "richtext", "id": "other_ingredients", "label": "t:shared.text" },
+    { "type": "checkbox", "id": "divider_top", "label": "t:shared.divider_top", "default": true },
+    { "type": "header", "content": "t:shared.padding_header" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:shared.padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:shared.padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [{ "name": "t:sections.supplement_facts.name" }]
+}
+{% endschema %}

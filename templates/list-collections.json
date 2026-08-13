@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "list-collections",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "THE RANGE",
+        "heading": "Shop by goal",
+        "image_ratio": "landscape",
+        "columns_desktop": 3,
+        "columns_mobile": "2",
+        "show_description": true,
+        "show_count": true,
+        "hide_empty": true,
+        "padding_top": 64,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": ["main"]
+}
