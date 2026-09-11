@@ -93,12 +93,7 @@
             >
               {%- for product in collection.products -%}
                 <li>
-                  {% render 'product-card',
-                    card_product: product,
-                    index: forloop.index0,
-                    lazy: forloop.index > 4,
-                    sizes: '(min-width: 990px) 22vw, (min-width: 750px) 33vw, 45vw'
-                  %}
+                  {% render 'product-card', card_product: product, index: forloop.index0, lazy: forloop.index, sizes: '(min-width: 990px) 22vw, (min-width: 750px) 33vw, 45vw' %}
                 </li>
               {%- endfor -%}
             </ul>
@@ -279,3 +274,21 @@
   "presets": [{ "name": "t:sections.collection_grid.name" }]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: |-
+    {% render 'product-card',
+                        card_product: product,
+                        index: forloop.index0,
+                        lazy: forloop.index > 4,
+                        sizes: '(min-width: 990px) 22vw, (min-width: 750px) 33vw, 45vw'
+                      %}
+  to: "{% render 'product-card', card_product: product, index: forloop.index0, lazy:
+    forloop.index, sizes: '(min-width: 990px) 22vw, (min-width: 750px) 33vw, 45vw'
+    %}"
+  position: 3821..3980
+{% endcomment %}

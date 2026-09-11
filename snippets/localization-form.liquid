@@ -24,7 +24,7 @@
 {%- if show_country or show_language -%}
   <div class="localization{% if compact %} localization--compact{% endif %}">
     {%- if show_country -%}
-      {%- form 'localization', class: 'localization__form', id: context | append: '-country-form' -%}
+      {%- form '-country-form' -%}
         <div class="field">
           <label class="visually-hidden" for="{{ context }}-country">
             {{- 'localization.country_label' | t -}}
@@ -56,7 +56,7 @@
     {%- endif -%}
 
     {%- if show_language -%}
-      {%- form 'localization', class: 'localization__form', id: context | append: '-language-form' -%}
+      {%- form '-language-form' -%}
         <div class="field">
           <label class="visually-hidden" for="{{ context }}-language">
             {{- 'localization.language_label' | t -}}
@@ -88,3 +88,18 @@
     {%- endif -%}
   </div>
 {%- endif -%}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- form 'localization', class: 'localization__form', id: context | append:
+    '-country-form' -%}"
+  to: "{%- form '-country-form' -%}"
+  position: 853..881
+- from: "{%- form 'localization', class: 'localization__form', id: context | append:
+    '-language-form' -%}"
+  to: "{%- form '-language-form' -%}"
+  position: 2080..2109
+{% endcomment %}

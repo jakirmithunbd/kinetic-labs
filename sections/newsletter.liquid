@@ -17,7 +17,7 @@
       <div class="newsletter-section__text rte">{{ section.settings.text }}</div>
     {%- endif -%}
 
-    {%- form 'customer', class: 'newsletter-section__form', id: 'Newsletter-' | append: section.id -%}
+    {%- form section.id -%}
       <input type="hidden" name="contact[tags]" value="newsletter">
       <label class="visually-hidden" for="NewsletterEmail-{{ section.id }}">
         {{- 'general.newsletter.label' | t -}}
@@ -118,3 +118,14 @@
   "presets": [{ "name": "t:sections.newsletter.name" }]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- form 'customer', class: 'newsletter-section__form', id: 'Newsletter-'
+    | append: section.id -%}"
+  to: "{%- form section.id -%}"
+  position: 825..848
+{% endcomment %}

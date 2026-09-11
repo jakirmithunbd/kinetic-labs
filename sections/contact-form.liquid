@@ -21,7 +21,7 @@
       text: section.settings.text
     %}
 
-    {%- form 'contact', id: 'ContactForm-' | append: section.id, class: 'contact-form' -%}
+    {%- form section.id, class: 'contact-form' -%}
       {%- if form.posted_successfully? -%}
         <p class="form-status" role="status">
           {{- section.settings.success_message | default: 'templates.contact.form.post_success' | t -}}
@@ -242,3 +242,14 @@
   "presets": [{ "name": "t:sections.wholesale_form.name" }]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- form 'contact', id: 'ContactForm-' | append: section.id, class: 'contact-form'
+    -%}"
+  to: "{%- form section.id, class: 'contact-form' -%}"
+  position: 855..901
+{% endcomment %}
